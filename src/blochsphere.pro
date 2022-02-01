@@ -19,7 +19,11 @@ TEMPLATE = app
 QT += widgets core 3dcore 3drender 3dinput 3dextras
 
 SOURCES += \
-    main.cpp
+    main.cpp \
+    scene.cpp
+
+HEADERS += \
+    scene.hpp
 
 TARGET = Bloch Sphere
 
