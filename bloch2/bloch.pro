@@ -14,7 +14,8 @@ HEADERS += \
     qubitvect.hpp \
     glut.h
     
-LIBS += libopengl32 libglu32 c:\Users\baseoleph\git\blochsphere\bloch2\glut32.dll
+#LIBS += libopengl32 libglu32 c:\Users\baseoleph\git\blochsphere\bloch2\glut32.dll
+LIBS += libopengl32
 
 TARGET = bloch
 

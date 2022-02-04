@@ -6,11 +6,11 @@
 #define _M_IX86
 
 #include "bloch.hpp"
-#include "glut.h"
+//#include "glut.h"
 #include <QEvent>
 #include <QWheelEvent>
 #include <gl/gl.h>
-#include <gl/glu.h>
+//#include <gl/glu.h>
 
 // -------------------------------------
 //         Реализация QBVector
@@ -385,12 +385,12 @@ void Bloch::paintGL()
 
     // Отрисовка сферы
     glColor4f(0.85f, 0.85f, 0.85f, 0.5f);
-    //    drawSphere(1.0, 50, 50);
+    drawSphere(1.0, 50, 50);
 
     //    GLUquadricObj *qobj = 0;
     //    qobj = gluNewQuadric();
     //    gluSphere(qobj, 1, 50, 50);
-    glutSolidSphere(1.0, 50, 50);
+    //    glutSolidSphere(1.0, 50, 50);
 
     drawCircle();
 
