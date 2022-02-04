@@ -2,10 +2,15 @@
 // -------------------------------
 // Кадочников Д. 4 курс (06.10.2014)
 
+#define _STDCALL_SUPPORTED
+#define _M_IX86
+
 #include "bloch.hpp"
+#include "glut.h"
 #include <QEvent>
 #include <QWheelEvent>
 #include <gl/gl.h>
+#include <gl/glu.h>
 
 // -------------------------------------
 //         Реализация QBVector
@@ -349,9 +354,9 @@ void Bloch::drawSphere(double r, int lats, int longs) {
             double x = cos(lng);
             double y = sin(lng);
 
-            glNormal3f(x * zr0, y * zr0, z0);
+            //            glNormal3f(x * zr0, y * zr0, z0);
             glVertex3f(r * x * zr0, r * y * zr0, r * z0);
-            glNormal3f(x * zr1, y * zr1, z1);
+            //            glNormal3f(x * zr1, y * zr1, z1);
             glVertex3f(r * x * zr1, r * y * zr1, r * z1);
         }
         glEnd();
@@ -380,7 +385,13 @@ void Bloch::paintGL()
 
     // Отрисовка сферы
     glColor4f(0.85f, 0.85f, 0.85f, 0.5f);
-    drawSphere(1.0, 50, 50);
+    //    drawSphere(1.0, 50, 50);
+
+    //    GLUquadricObj *qobj = 0;
+    //    qobj = gluNewQuadric();
+    //    gluSphere(qobj, 1, 50, 50);
+    glutSolidSphere(1.0, 50, 50);
+
     drawCircle();
 
     glEnable(GL_DEPTH_TEST);

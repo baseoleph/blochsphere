@@ -11,9 +11,10 @@ SOURCES += \
 HEADERS += \
     mainwid.hpp \
     bloch.hpp \
-    qubitvect.hpp
+    qubitvect.hpp \
+    glut.h
     
-LIBS += libopengl32
+LIBS += libopengl32 libglu32 c:\Users\baseoleph\git\blochsphere\bloch2\glut32.dll
 
 TARGET = bloch
 
