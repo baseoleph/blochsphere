@@ -39,4 +39,12 @@ void MainWindow::createScene() {
     spheres.append(new Sphere(this, "first sphere"));
     this->setCentralWidget(spheres[0]);
     spheres[0]->setFocus();
+
+    Vector *a = new Vector(0, 0, 1);
+    Vector *b = new Vector(0, 1, 0);
+    Vector *c = new Vector(0.2, 0.4, 0.9);
+
+    spheres[0]->addVector(a);
+    spheres[0]->addVector(b);
+    spheres[0]->addVector(c);
 }

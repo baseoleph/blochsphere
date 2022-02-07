@@ -17,6 +17,7 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
+#include "vector.h"
 #include <QDebug>
 #include <QGLWidget>
 
@@ -24,6 +25,8 @@ class Sphere : public QGLWidget {
     Q_OBJECT
 public:
     Sphere(QWidget *parent, const QString objName);
+
+    void addVector(Vector *v);
 
 protected:
     void initializeGL();
@@ -39,10 +42,11 @@ private:
     // TODO I don't like this font
     const QFont font = QFont("System", 11);
     // TODO better create functions with pattern views
-    GLfloat scaleFactor = 1;
-    GLfloat xAngle = -60;
-    GLfloat yAngle = 0;
-    GLfloat zAngle = -135;
+    GLfloat           scaleFactor = 1;
+    GLfloat           xAngle = -60;
+    GLfloat           yAngle = 0;
+    GLfloat           zAngle = -135;
+    QVector<Vector *> vectors;
 
     QPoint ptrMousePosition;
 
@@ -51,6 +55,7 @@ private:
     void drawAxis();
     void scalePlus();
     void scaleMinus();
+    void drawVectors();
 };
 
 #endif // SPHERE_H

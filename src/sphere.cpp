@@ -23,6 +23,10 @@ Sphere::Sphere(QWidget *parent, const QString objName) : QGLWidget{parent} {
     this->setObjectName(objName);
 }
 
+void Sphere::addVector(Vector *v) {
+    vectors.append(v);
+}
+
 void Sphere::initializeGL() {
     // TODO why I use it?
     qglClearColor(Qt::white);
@@ -63,6 +67,7 @@ void Sphere::paintGL() {
 
     drawAxis();
     glDisable(GL_DEPTH_TEST);
+    drawVectors();
 }
 
 void Sphere::mousePressEvent(QMouseEvent *pe) {
@@ -213,4 +218,25 @@ void Sphere::scalePlus() {
 
 void Sphere::scaleMinus() {
     scaleFactor = scaleFactor / 1.1;
+}
+
+void Sphere::drawVectors() {
+
+    for (auto &e : vectors) {
+        glColor3f(1, 0, 0);
+        glLineWidth(2.5f);
+
+        glBegin(GL_LINES);
+        glVertex3f(0, 0, 0);
+        //    glVertex3f(x, y, z);
+        glVertex3f(e->x(), e->y(), e->z());
+        glEnd();
+
+        //    glBegin(GL_LINES);
+        //    for (int i = 0; i < qbpVector.size(); i++) {
+        //        glVertex3f(x, y, z);
+        //        glVertex3f(qbpVector[i]._x(), qbpVector[i]._y(), qbpVector[i]._z());
+        //    }
+        //    glEnd();
+    }
 }

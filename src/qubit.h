@@ -14,22 +14,34 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef QUBIT_H
+#define QUBIT_H
 
-#include "qubit.h"
-#include "sphere.h"
-#include <QMainWindow>
-#include <QVector>
+#include "point.h"
+#include <complex>
 
-class MainWindow : public QMainWindow {
-    Q_OBJECT
+typedef std::complex<double> complex;
+
+class Qubit : public Point {
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    Qubit();
+    Qubit(double x, double y, double z);
+    Qubit(double the, double phi);
+    Qubit(complex a, complex b);
 
-private:
-    void              createScene();
-    QVector<Sphere *> spheres;
+    inline complex a() {
+        return a_;
+    }
+    inline complex b() {
+        return b_;
+    }
+
+protected:
+    complex a_;
+    complex b_;
+
+    void evalVertex();
+    void evalAB();
 };
 
-#endif // MAINWINDOW_H
+#endif // QUBIT_H

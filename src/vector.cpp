@@ -14,22 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#include "vector.h"
 
-#include "qubit.h"
-#include "sphere.h"
-#include <QMainWindow>
-#include <QVector>
+Vector::Vector() {
+}
 
-class MainWindow : public QMainWindow {
-    Q_OBJECT
-public:
-    explicit MainWindow(QWidget *parent = nullptr);
-
-private:
-    void              createScene();
-    QVector<Sphere *> spheres;
-};
-
-#endif // MAINWINDOW_H
+// TODO срезка!
+Vector::Vector(double x, double y, double z) {
+    x_ = x;
+    y_ = y;
+    z_ = z;
+    evalPT();
+    evalAB();
+}

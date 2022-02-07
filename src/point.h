@@ -14,22 +14,40 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef POINT_H
+#define POINT_H
 
-#include "qubit.h"
-#include "sphere.h"
-#include <QMainWindow>
-#include <QVector>
-
-class MainWindow : public QMainWindow {
-    Q_OBJECT
+class Point {
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    Point();
+    Point(double x, double y, double z);
+    Point(double the, double phi);
 
-private:
-    void              createScene();
-    QVector<Sphere *> spheres;
+    inline double x() {
+        return x_;
+    }
+    inline double y() {
+        return y_;
+    }
+    inline double z() {
+        return z_;
+    }
+    inline double the() {
+        return the_;
+    }
+    inline double phi() {
+        return phi_;
+    }
+
+protected:
+    double x_;
+    double y_;
+    double z_;
+    double the_;
+    double phi_;
+
+    void evalPT(); 
+    void evalXYZ();
 };
 
-#endif // MAINWINDOW_H
+#endif // POINT_H

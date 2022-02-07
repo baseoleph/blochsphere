@@ -21,11 +21,17 @@ QT += core opengl
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    sphere.cpp
+    point.cpp \
+    qubit.cpp \
+    sphere.cpp \
+    vector.cpp
 
 HEADERS += \
     mainwindow.h \
-    sphere.h
+    point.h \
+    qubit.h \
+    sphere.h \
+    vector.h
 
 TARGET = blochsphere
 

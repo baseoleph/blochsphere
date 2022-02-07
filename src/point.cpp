@@ -14,22 +14,31 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#include "point.h"
+#include <complex>
 
-#include "qubit.h"
-#include "sphere.h"
-#include <QMainWindow>
-#include <QVector>
+Point::Point() {
+    the_ = 0;
+    phi_ = 0;
+    evalXYZ();
+}
 
-class MainWindow : public QMainWindow {
-    Q_OBJECT
-public:
-    explicit MainWindow(QWidget *parent = nullptr);
+Point::Point(double x, double y, double z) : x_(x), y_(y), z_(z) {
+    evalPT();
+}
 
-private:
-    void              createScene();
-    QVector<Sphere *> spheres;
-};
+Point::Point(double the, double phi) : the_(the), phi_(phi) {
+    evalXYZ();
+}
 
-#endif // MAINWINDOW_H
+// TODO after all may be set it inline?
+void Point::evalPT() {
+    the_ = acos(z_ / sqrt(x_ * x_ + y_ * y_ + z_ * z_));
+    phi_ = atan2(y_, x_);
+}
+
+void Point::evalXYZ() {
+    x_ = cos(phi_) * sin(the_);
+    y_ = sin(phi_) * sin(the_);
+    z_ = cos(the_);
+}
