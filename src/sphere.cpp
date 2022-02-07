@@ -39,6 +39,7 @@ Sphere::Sphere(QWidget *parent) : QGLWidget{parent} {
 }
 
 void Sphere::initializeGL() {
+    // TODO why I use it?
     qglClearColor(Qt::white);
 }
 

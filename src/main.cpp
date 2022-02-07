@@ -21,6 +21,7 @@
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
+    // TODO add support old codecs
     MainWindow w;
     w.resize(800, 600);
     w.show();
