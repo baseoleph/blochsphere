@@ -34,27 +34,15 @@ protected:
     void wheelEvent(QWheelEvent *pe);
 
 private:
-    GLfloat xRot, yRot, zRot; // Углы поворота системы координат
-    GLfloat nSca;             // Масштаб
-    GLfloat sRadius;          // Радиус сферы
-    float   iter;
-    int     timerID;       // таймер
-    bool    isTimerActive; // флаг активности таймера
-    int     trCol;
+    GLfloat xRot, yRot, zRot;
+    GLfloat nSca;
+    GLfloat sRadius;
     QFont   font;
-    QPoint ptrMousePosition; // Позиция указателя мыши
-    // --------------------------------------------------
-
-    QColor           oZCol, oYCol, oXCol; // Цвет осей
-    QVector<GLfloat> tracePts;            // Список точек тректории
-    bool             traceFlag;
-    bool             showNewAx;
-    float            naX, naY, naZ;
+    QPoint  ptrMousePosition;
 
     void drawSphere(double r, int lats, int longs);
     void drawCircle();
-    void drawAxis(); // Отрисовка осей координат
-    void drawNewAx();
+    void drawAxis();
     void scalePlus();
     void scaleMinus();
 };

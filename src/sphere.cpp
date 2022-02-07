@@ -24,17 +24,6 @@ Sphere::Sphere(QWidget *parent) : QGLWidget{parent} {
     zRot = -135;
     nSca = 1.2;
     sRadius = 1;
-    iter = 0;
-    naX = 0;
-    naY = 0;
-    naZ = 0;
-    trCol = 0;
-    oZCol = Qt::black;
-    oYCol = Qt::black;
-    oXCol = Qt::black;
-    isTimerActive = false;
-    showNewAx = false;
-    traceFlag = true;
     font = QFont("System", 11);
 }
 
@@ -62,9 +51,6 @@ void Sphere::paintGL() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // if(isTimerActive)
-    //    drawRotInfo();
-
     // Масштаб
     glScalef(nSca, nSca, nSca);
 
@@ -77,37 +63,11 @@ void Sphere::paintGL() {
     glColor4f(0.85f, 0.85f, 0.85f, 0.5f);
     drawSphere(1.0, 50, 50);
 
-    //    GLUquadricObj *qobj = 0;
-    //    qobj = gluNewQuadric();
-    //    gluSphere(qobj, 1, 50, 50);
-    //    glutSolidSphere(1.0, 50, 50);
-
     drawCircle();
 
     glEnable(GL_DEPTH_TEST);
 
-    drawAxis(); // Отрисовка осей
-    drawNewAx();
-
-    //    if (traceFlag)
-    //        drawTrace(); // Траектория
-
-    //    bool cond = (abs(qubitVector._x()) > 0.01f || abs(qubitVector._y()) > 0.01f) &&
-    //                (abs(qubitVector._x()) > 0.01f || abs(qubitVector._z()) > 0.01f) &&
-    //                (abs(qubitVector._y()) > 0.01f || abs(qubitVector._z()) > 0.01f);
-
-    //    if (cond) {
-    //        glDisable(GL_DEPTH_TEST);
-    //        drawProj(); // Проекции на оси
-    //        glEnable(GL_DEPTH_TEST);
-    //    }
-
-    //    if (!cond)
-    //        glDisable(GL_DEPTH_TEST);
-    //    qubitVector.draw(); // Рисование вектора
-    //    if (!cond)
-    //        glEnable(GL_DEPTH_TEST);
-
+    drawAxis();
     glDisable(GL_DEPTH_TEST);
 }
 
@@ -183,7 +143,7 @@ void Sphere::drawAxis() {
 
     glLineWidth(2.0f);
     // OX
-    qglColor(oXCol);
+    qglColor(Qt::black);
     glBegin(GL_LINES);
     glVertex3f(axSize, 0.f, 0.f);
     glVertex3f(-axSize, 0.f, 0.f);
@@ -199,8 +159,9 @@ void Sphere::drawAxis() {
     glVertex3f(axSize - 0.1f, -0.025f, 0.f);
     glEnd();
     renderText(axSize + 0.1, 0.0, 0.0, "x", font);
+
     // OY
-    qglColor(oYCol);
+    qglColor(Qt::black);
     glBegin(GL_LINES);
     glVertex3f(0.f, axSize, 0.f);
     glVertex3f(0.f, -axSize, 0.f);
@@ -216,8 +177,9 @@ void Sphere::drawAxis() {
     glVertex3f(-0.025f, axSize - 0.1f, 0.f);
     glEnd();
     renderText(0, axSize + 0.1f, 0.f, "y", font);
+
     // OZ
-    qglColor(oZCol);
+    qglColor(Qt::black);
     glBegin(GL_LINES);
     glVertex3f(0.f, 0.f, axSize);
     glVertex3f(0.f, 0.f, -axSize);
@@ -233,38 +195,6 @@ void Sphere::drawAxis() {
     glVertex3f(0.f, -0.025f, axSize - 0.1f);
     glEnd();
     renderText(0, 0, axSize + 0.1f, "z", font);
-}
-
-void Sphere::drawNewAx() {
-    if (!showNewAx)
-        return;
-    bool cond;
-    glColor3f(0.0f, 0.9f, 0.0f);
-    glLineWidth(2.5f);
-
-    float ax, ay, az;
-
-    if (isTimerActive)
-        //        ax = rZYCur.naX, ay = rZYCur.naY, az = rZYCur.naZ;
-        ;
-    else
-        ax = naX, ay = naY, az = naZ;
-
-    cond = !((abs(ax) > 0.001f || abs(ay) > 0.001f) && (abs(ax) > 0.001f || abs(az) > 0.001f) &&
-             (abs(ay) > 0.001f || abs(az) > 0.001f));
-
-    if (cond)
-        glDisable(GL_DEPTH_TEST);
-
-    glBegin(GL_LINES);
-    glVertex3f(-ax, -ay, -az);
-    glVertex3f(ax, ay, az);
-    glEnd();
-    glColor3f(0.0f, 0.0f, 0.0f);
-    renderText(ax * 1.15, ay * 1.15, az * 1.3, "n", font);
-
-    if (cond)
-        glEnable(GL_DEPTH_TEST);
 }
 
 void Sphere::scalePlus() {
