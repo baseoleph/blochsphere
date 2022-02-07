@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "sphere.h"
+#include <QMouseEvent>
 #include <QtMath>
 
 Sphere::Sphere(QWidget *parent) : QGLWidget{parent} {
@@ -107,6 +108,29 @@ void Sphere::paintGL() {
     //        glEnable(GL_DEPTH_TEST);
 
     glDisable(GL_DEPTH_TEST);
+}
+
+void Sphere::mousePressEvent(QMouseEvent *pe) {
+    this->setFocus();
+    ptrMousePosition = pe->pos();
+}
+
+void Sphere::mouseMoveEvent(QMouseEvent *pe) {
+    xRot += 180 / nSca * (GLfloat)(pe->y() - ptrMousePosition.y()) / height();
+    zRot += 180 / nSca * (GLfloat)(pe->x() - ptrMousePosition.x()) / width();
+
+    ptrMousePosition = pe->pos();
+
+    updateGL();
+}
+
+void Sphere::wheelEvent(QWheelEvent *pe) {
+    if (pe->angleDelta().y() > 0)
+        scalePlus();
+    else if (pe->angleDelta().y() < 0)
+        scaleMinus();
+
+    updateGL();
 }
 
 void Sphere::drawSphere(double r, int lats, int longs) {
@@ -240,4 +264,12 @@ void Sphere::drawNewAx() {
 
     if (cond)
         glEnable(GL_DEPTH_TEST);
+}
+
+void Sphere::scalePlus() {
+    nSca = nSca * 1.1;
+}
+
+void Sphere::scaleMinus() {
+    nSca = nSca / 1.1;
 }

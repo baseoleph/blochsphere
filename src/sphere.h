@@ -28,6 +28,10 @@ protected:
     void initializeGL();
     void resizeGL(int nWidth, int nHeight);
     void paintGL();
+    // TODO add shortcuts
+    void mousePressEvent(QMouseEvent *pe);
+    void mouseMoveEvent(QMouseEvent *pe);
+    void wheelEvent(QWheelEvent *pe);
 
 private:
     GLfloat xRot, yRot, zRot; // Углы поворота системы координат
@@ -38,6 +42,7 @@ private:
     bool    isTimerActive; // флаг активности таймера
     int     trCol;
     QFont   font;
+    QPoint ptrMousePosition; // Позиция указателя мыши
     // --------------------------------------------------
 
     QColor           oZCol, oYCol, oXCol; // Цвет осей
@@ -50,6 +55,8 @@ private:
     void drawCircle();
     void drawAxis(); // Отрисовка осей координат
     void drawNewAx();
+    void scalePlus();
+    void scaleMinus();
 };
 
 #endif // SPHERE_H
