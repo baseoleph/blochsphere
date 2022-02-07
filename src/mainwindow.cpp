@@ -21,7 +21,22 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
 }
 
 void MainWindow::createScene() {
-    spheres.append(new Sphere);
+    // Many spheres
+
+    //    QWidget *w = new QWidget(this);
+    //    setCentralWidget(w);
+    //    QGridLayout *layout = new QGridLayout(w);
+    //    w->setLayout(layout);
+    //    for (int i = 0; i < 2; ++i) {
+    //        for (int j = 0; j < 5; ++j) {
+    //            spheres.append(new Sphere(w));
+    //            layout->addWidget(spheres.last(), i, j);
+    //        }
+    //    }
+
+    // One sphere
+
+    spheres.append(new Sphere(this, "first sphere"));
     this->setCentralWidget(spheres[0]);
     spheres[0]->setFocus();
 }

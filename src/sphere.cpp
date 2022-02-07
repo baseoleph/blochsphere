@@ -15,16 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "sphere.h"
+#include <QDebug>
 #include <QMouseEvent>
 #include <QtMath>
 
-Sphere::Sphere(QWidget *parent) : QGLWidget{parent} {
-    xRot = -60;
-    yRot = 0;
-    zRot = -135;
-    nSca = 1.2;
-    sRadius = 1;
-    font = QFont("System", 11);
+Sphere::Sphere(QWidget *parent, const QString objName) : QGLWidget{parent} {
+    this->setObjectName(objName);
 }
 
 void Sphere::initializeGL() {
@@ -32,17 +28,18 @@ void Sphere::initializeGL() {
     qglClearColor(Qt::white);
 }
 
-void Sphere::resizeGL(int nWidth, int nHeight) {
+void Sphere::resizeGL(int w, int h) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    GLfloat ratio = (GLfloat)nHeight / (GLfloat)nWidth;
+    GLfloat ratio = static_cast<GLfloat>(h) / w;
 
-    if (nWidth >= nHeight)
+    // TODO check calculations
+    if (w >= h)
         glOrtho(-2.0 / ratio, 2.0 / ratio, -2.0, 2.0, -10.0, 10.0);
     else
         glOrtho(-2.0, 2.0, -2.0 * ratio, 2.0 * ratio, -10.0, 10.0);
-    glViewport(0, 0, (GLfloat)nWidth, (GLfloat)nHeight);
+    glViewport(0, 0, w, h);
 }
 
 void Sphere::paintGL() {
@@ -51,17 +48,14 @@ void Sphere::paintGL() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // Масштаб
-    glScalef(nSca, nSca, nSca);
+    glScalef(scaleFactor, scaleFactor, scaleFactor);
 
-    // Вращение системы координат
-    glRotatef(xRot, 1.0f, 0.0f, 0.0f);
-    glRotatef(yRot, 0.0f, 1.0f, 0.0f);
-    glRotatef(zRot, 0.0f, 0.0f, 1.0f);
+    glRotatef(xAngle, 1.0f, 0.0f, 0.0f);
+    glRotatef(yAngle, 0.0f, 1.0f, 0.0f);
+    glRotatef(zAngle, 0.0f, 0.0f, 1.0f);
 
-    // Отрисовка сферы
     glColor4f(0.85f, 0.85f, 0.85f, 0.5f);
-    drawSphere(1.0, 50, 50);
+    drawSphere(50, 50);
 
     drawCircle();
 
@@ -77,8 +71,9 @@ void Sphere::mousePressEvent(QMouseEvent *pe) {
 }
 
 void Sphere::mouseMoveEvent(QMouseEvent *pe) {
-    xRot += 180 / nSca * (GLfloat)(pe->y() - ptrMousePosition.y()) / height();
-    zRot += 180 / nSca * (GLfloat)(pe->x() - ptrMousePosition.x()) / width();
+    // TODO check theoretical range of xyzAgnles
+    xAngle += 180 / scaleFactor * static_cast<GLfloat>(pe->y() - ptrMousePosition.y()) / height();
+    zAngle += 180 / scaleFactor * static_cast<GLfloat>(pe->x() - ptrMousePosition.x()) / width();
 
     ptrMousePosition = pe->pos();
 
@@ -86,15 +81,17 @@ void Sphere::mouseMoveEvent(QMouseEvent *pe) {
 }
 
 void Sphere::wheelEvent(QWheelEvent *pe) {
-    if (pe->angleDelta().y() > 0)
+    if (pe->angleDelta().y() > 0) {
         scalePlus();
-    else if (pe->angleDelta().y() < 0)
+    } else if (pe->angleDelta().y() < 0) {
         scaleMinus();
+    }
 
     updateGL();
 }
 
-void Sphere::drawSphere(double r, int lats, int longs) {
+// TODO optimize function. remove c-style cast
+void Sphere::drawSphere(int lats, int longs) {
     int i, j;
     for (i = 0; i <= lats; i++) {
         double lat0 = M_PI * (-0.5 + (double)(i - 1) / lats);
@@ -112,9 +109,9 @@ void Sphere::drawSphere(double r, int lats, int longs) {
             double y = sin(lng);
 
             //            glNormal3f(x * zr0, y * zr0, z0);
-            glVertex3f(r * x * zr0, r * y * zr0, r * z0);
+            glVertex3f(x * zr0, y * zr0, z0);
             //            glNormal3f(x * zr1, y * zr1, z1);
-            glVertex3f(r * x * zr1, r * y * zr1, r * z1);
+            glVertex3f(x * zr1, y * zr1, z1);
         }
         glEnd();
     }
@@ -122,22 +119,35 @@ void Sphere::drawSphere(double r, int lats, int longs) {
 
 void Sphere::drawCircle() {
     glColor4f(0.7f, 0.8f, 0.8f, 0.5f);
+
+    // TODO Isn't 20.f too much? (also check sphere slices)
     glBegin(GL_POLYGON);
-    for (float i = 0.f; i < 2.f * 3.14f; i += 3.14f / 18.f)
-        glVertex2f(sRadius * sin(i), sRadius * cos(i));
+    float i = 0;
+    while (i < 6.28f) {
+        glVertex2f(sphereRadius * sin(i), sphereRadius * cos(i));
+        i += 0.157f; // 3.14/20
+    }
     glEnd();
+
     glLineWidth(1.5f);
     glColor3f(0.6f, 0.7f, 0.7f);
+
     glBegin(GL_LINE_LOOP);
-    for (float i = 0.f; i < 2.f * 3.14f; i += 3.14f / 18.f)
-        glVertex2f(sRadius * sin(i), sRadius * cos(i));
+    i = 0;
+    while (i < 6.28f) {
+        glVertex2f(sphereRadius * sin(i), sphereRadius * cos(i));
+        i += 0.157f; // 3.14/20
+    }
     glEnd();
 
     glColor3f(0.0f, 0.0f, 0.0f);
+
+    // TODO Why this symbols renders here?
     renderText(0.0, 0.05, -1.2, "|1>", font);
     renderText(0.0, 0.05, 1.2, "|0>", font);
 }
 
+// TODO I don't like how xyz renders
 void Sphere::drawAxis() {
     float axSize = 1.7f;
 
@@ -198,9 +208,9 @@ void Sphere::drawAxis() {
 }
 
 void Sphere::scalePlus() {
-    nSca = nSca * 1.1;
+    scaleFactor = scaleFactor * 1.1;
 }
 
 void Sphere::scaleMinus() {
-    nSca = nSca / 1.1;
+    scaleFactor = scaleFactor / 1.1;
 }

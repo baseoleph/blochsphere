@@ -17,16 +17,17 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
+#include <QDebug>
 #include <QGLWidget>
 
 class Sphere : public QGLWidget {
     Q_OBJECT
 public:
-    explicit Sphere(QWidget *parent = nullptr);
+    Sphere(QWidget *parent, const QString objName);
 
 protected:
     void initializeGL();
-    void resizeGL(int nWidth, int nHeight);
+    void resizeGL(int w, int h);
     void paintGL();
     // TODO add shortcuts
     void mousePressEvent(QMouseEvent *pe);
@@ -34,13 +35,18 @@ protected:
     void wheelEvent(QWheelEvent *pe);
 
 private:
-    GLfloat xRot, yRot, zRot;
-    GLfloat nSca;
-    GLfloat sRadius;
-    QFont   font;
-    QPoint  ptrMousePosition;
+    const GLfloat sphereRadius = 1;
+    // TODO I don't like this font
+    const QFont font = QFont("System", 11);
+    // TODO better create functions with pattern views
+    GLfloat scaleFactor = 1;
+    GLfloat xAngle = -60;
+    GLfloat yAngle = 0;
+    GLfloat zAngle = -135;
 
-    void drawSphere(double r, int lats, int longs);
+    QPoint ptrMousePosition;
+
+    void drawSphere(int lats, int longs);
     void drawCircle();
     void drawAxis();
     void scalePlus();
