@@ -14,16 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "mainwindow.h"
-#include <QApplication>
-#include <QDebug>
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
-int main(int argc, char *argv[]) {
-    QApplication app(argc, argv);
+#include "sphere.h"
+#include <QMainWindow>
+#include <QVector>
 
-    MainWindow w;
-    w.resize(800, 600);
-    w.show();
+class MainWindow : public QMainWindow {
+    Q_OBJECT
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
 
-    return app.exec();
-}
+private:
+    void              createScene();
+    QVector<Sphere *> spheres;
+};
+
+#endif // MAINWINDOW_H

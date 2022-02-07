@@ -15,15 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "mainwindow.h"
-#include <QApplication>
-#include <QDebug>
 
-int main(int argc, char *argv[]) {
-    QApplication app(argc, argv);
+MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
+    createScene();
+}
 
-    MainWindow w;
-    w.resize(800, 600);
-    w.show();
-
-    return app.exec();
+void MainWindow::createScene() {
+    spheres.append(new Sphere);
+    this->setCentralWidget(spheres[0]);
+    spheres[0]->setFocus();
 }

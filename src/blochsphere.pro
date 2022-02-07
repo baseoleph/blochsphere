@@ -16,15 +16,19 @@
 
 TEMPLATE = app
 
-QT += widgets core 3dcore 3drender 3dinput 3dextras
+QT += core opengl
 
 SOURCES += \
     main.cpp \
-    scene.cpp
+    mainwindow.cpp \
+    sphere.cpp
 
 HEADERS += \
-    scene.hpp
+    mainwindow.h \
+    sphere.h
 
-TARGET = Bloch Sphere
+TARGET = blochsphere
+
+LIBS += libopengl32
 
 CONFIG += qt wanr_on
