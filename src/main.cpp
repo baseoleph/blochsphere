@@ -16,14 +16,20 @@
 
 #include "mainwindow.h"
 #include <QApplication>
-#include <QDebug>
+#include <QDesktopWidget>
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
     // TODO add support old codecs
     MainWindow w;
-    w.resize(800, 600);
+    w.resize(1200, 1024);
+
+    QDesktopWidget *desktop = QApplication::desktop();
+    int             x = (desktop->width() - w.width()) / 2;
+    int             y = (desktop->height() - w.height()) / 3;
+    w.move(x, y);
+
     w.show();
 
     return app.exec();
