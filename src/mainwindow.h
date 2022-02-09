@@ -27,9 +27,13 @@ class MainWindow : public QMainWindow {
 public:
     explicit MainWindow(QWidget *parent = nullptr);
 
+public slots:
+    void pushed();
+
 private:
     void              createScene();
     QVector<Sphere *> spheres;
+    QVector<Vector *> vectors;
 };
 
 #endif // MAINWINDOW_H

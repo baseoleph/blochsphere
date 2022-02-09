@@ -21,11 +21,19 @@
 #include <QDebug>
 #include <QGLWidget>
 
+struct Trace {
+    QColor    color;
+    QVector3D first;
+    QVector3D last;
+    // TODO why there is need a semicolon?
+};
+
 class Sphere : public QGLWidget {
     Q_OBJECT
 public:
     Sphere(QWidget *parent, const QString objName);
 
+    // TODO realize safety add end detacch vectors
     void addVector(Vector *v);
 
 protected:
@@ -36,12 +44,15 @@ protected:
     void mousePressEvent(QMouseEvent *pe);
     void mouseMoveEvent(QMouseEvent *pe);
     void wheelEvent(QWheelEvent *pe);
+    void timerEvent(QTimerEvent *);
 
 private:
     const GLfloat sphereRadius = 1;
+    const int     ANIMATION_INTERVAL = 10; // ms
     // TODO I don't like this font
     const QFont font = QFont("System", 11);
     // TODO better create functions with pattern views
+    // like default view, xOy vew etc.
     GLfloat           scaleFactor = 1;
     GLfloat           xAngle = -60;
     GLfloat           yAngle = 0;
@@ -50,12 +61,16 @@ private:
 
     QPoint ptrMousePosition;
 
+    bool           isNowAnimate = false;
+    QVector<Trace> bankTrace;
+
     void drawSphere(int lats, int longs);
     void drawCircle();
     void drawAxis();
     void scalePlus();
     void scaleMinus();
     void drawVectors();
+    void drawVector(Vector *v);
 };
 
 #endif // SPHERE_H

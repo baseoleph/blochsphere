@@ -18,13 +18,36 @@
 #define VECTOR_H
 
 #include "qubit.h"
+#include <QColor>
+#include <QObject>
+#include <QRandomGenerator>
+#include <QVector3D>
 
-class Vector : public Qubit {
+class Vector : public QObject, public Qubit {
+    Q_OBJECT
 public:
     Vector();
     Vector(double x, double y, double z);
+    Vector(double the, double phi);
+    Vector(complex a, complex b);
 
-    // TODO set color
+    // TODO is this correct way to share private data?
+    const QColor &getColor();
+    void          setColor(QColor color);
+    void          generateRandomColor();
+
+    QVector3D getCurrentPos();
+
+    // TODO when I should use inline?
+    bool hasPath();
+    void popPath();
+
+    void changeVector(QVector<Qubit> path);
+    void changeVector(Qubit qbt);
+
+private:
+    QVector<Qubit> path_;
+    QColor         color_ = Qt::red;
 };
 
 #endif // VECTOR_H

@@ -17,6 +17,7 @@
 #include "sphere.h"
 #include <QDebug>
 #include <QMouseEvent>
+#include <QTime>
 #include <QtMath>
 
 Sphere::Sphere(QWidget *parent, const QString objName) : QGLWidget{parent} {
@@ -95,6 +96,22 @@ void Sphere::wheelEvent(QWheelEvent *pe) {
     updateGL();
 }
 
+void Sphere::timerEvent(QTimerEvent *) {
+    isNowAnimate = false;
+    for (auto &e : vectors) {
+        if (e->hasPath()) {
+            e->popPath();
+            isNowAnimate = true;
+        }
+    }
+
+    if (not isNowAnimate) {
+        killTimer(0);
+    }
+
+    update();
+}
+
 // TODO optimize function. remove c-style cast
 void Sphere::drawSphere(int lats, int longs) {
     int i, j;
@@ -152,7 +169,7 @@ void Sphere::drawCircle() {
     renderText(0.0, 0.05, 1.2, "|0>", font);
 }
 
-// TODO I don't like how xyz renders
+// TODO I don't like how xyz renders (i mean letters)
 void Sphere::drawAxis() {
     float axSize = 1.7f;
 
@@ -221,15 +238,20 @@ void Sphere::scaleMinus() {
 }
 
 void Sphere::drawVectors() {
-
     for (auto &e : vectors) {
-        glColor3f(1, 0, 0);
+        glColor3f(e->getColor().redF(), e->getColor().greenF(), e->getColor().blueF());
         glLineWidth(2.5f);
 
         glBegin(GL_LINES);
         glVertex3f(0, 0, 0);
-        //    glVertex3f(x, y, z);
-        glVertex3f(e->x(), e->y(), e->z());
+
+        if (e->hasPath() && not isNowAnimate) {
+            startTimer(ANIMATION_INTERVAL);
+        }
+        QVector3D vertex = e->getCurrentPos();
+
+        glVertex3f(vertex.x(), vertex.y(), vertex.z());
+
         glEnd();
 
         //    glBegin(GL_LINES);
