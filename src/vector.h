@@ -55,6 +55,8 @@ public:
     void changeVector(QVector<Qubit> path);
     void changeVector(Qubit qbt);
 
+    void printVector();
+
 private:
     // TODO must be queue
     QVector<Qubit> path_;

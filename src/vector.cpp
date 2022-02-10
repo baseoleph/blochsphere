@@ -108,6 +108,17 @@ void Vector::changeVector(Qubit qbt) {
     evalAB();
 }
 
+void Vector::printVector() {
+    qDebug() << "---------------";
+    qDebug() << "xyz" << x_ << y_ << z_;
+    qDebug() << "pt" << the_ << phi_;
+    qDebug() << "ab" << a_.real() << a_.imag() << b_.real() << b_.imag();
+    qDebug() << "len" << sqrt(x_ * x_ + y_ * y_ + z_ * z_)
+             << (sqrt(a_ * a_) * sqrt(a_ * a_) + sqrt(b_ * b_) * sqrt(b_ * b_)).real()
+             << (sqrt(a_ * a_) * sqrt(a_ * a_) + sqrt(b_ * b_) * sqrt(b_ * b_)).imag();
+    qDebug() << "---------------";
+}
+
 void Vector::tracePushBack() {
     Trace tr;
     tr.first = QVector3D(path_[path_.size() - 2].x(), path_[path_.size() - 2].y(),
