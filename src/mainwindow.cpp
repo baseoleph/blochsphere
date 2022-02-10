@@ -38,11 +38,20 @@ QVector<Qubit> generatePath() {
     int r4 = r();
     int r5 = r();
     int r6 = r();
+    //    qDebug() << r1 << r2 << r3 << r4 << r5 << r6;
+    //    int r1 = -81;
+    //    int r2 = 1;
+    //    int r3 = -68;
+    //    int r4 = 25;
+    //    int r5 = -14;
+    //    int r6 = 57;
     //    qDebug() << "2";
     float i = 0;
     float dur = QRandomGenerator::global()->bounded(1., 30);
+    //    float dur = 3;
     //    qDebug() << dur;
     float discrete = QRandomGenerator::global()->bounded(0.05);
+    //    float discrete = 0.0157;
     while (i < dur) {
         //        Qubit *t = new Qubit(0, 0.5, sin(i));
         double x = sin(i) * r1 + cos(i) * r2;
@@ -54,20 +63,23 @@ QVector<Qubit> generatePath() {
         y /= length;
         z /= length;
 
+        //        qDebug() << x << y << z;
         pth.append(Qubit(x, y, z));
         //        i += 0.0157f; // 3.14/20
         i += discrete; // 3.14/20
     }
 
+    std::reverse(pth.begin(), pth.end());
     return pth;
 }
 
 void MainWindow::pushed() {
     for (auto &e : vectors) {
         //        e->updateVector(generatePath());
+        e->setEnableTrace(false);
     }
 
-    for (int i = 0; i < 1; ++i) {
+    for (int i = 0; i < 10; ++i) {
         vectors.append(new Vector);
         vectors.last()->changeVector(generatePath());
         spheres[QRandomGenerator::global()->bounded(spheres.size())]->addVector(vectors.last());
@@ -86,7 +98,7 @@ void MainWindow::createScene() {
     QGridLayout *layout = new QGridLayout(w);
     w->setLayout(layout);
     for (int i = 0; i < 1; ++i) {
-        for (int j = 0; j < 1; ++j) {
+        for (int j = 0; j < 2; ++j) {
             spheres.append(new Sphere(w, QString::number(i + 10 * j)));
             layout->addWidget(spheres.last(), i, j);
         }
