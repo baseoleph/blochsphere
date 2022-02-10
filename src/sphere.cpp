@@ -15,9 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "sphere.h"
-#include <QDebug>
 #include <QMouseEvent>
-#include <QTime>
+#include <QQuaternion>
 #include <QtMath>
 
 Sphere::Sphere(QWidget *parent, const QString objName) : QGLWidget{parent} {
@@ -265,11 +264,29 @@ void Sphere::drawVectors() {
 
         glEnd();
 
-        //    glBegin(GL_LINES);
-        //    for (int i = 0; i < qbpVector.size(); i++) {
-        //        glVertex3f(x, y, z);
-        //        glVertex3f(qbpVector[i]._x(), qbpVector[i]._y(), qbpVector[i]._z());
-        //    }
-        //    glEnd();
+        glBegin(GL_LINES);
+
+        QQuaternion        q = QQuaternion::rotationTo(QVector3D(0, 0, 1), vertex);
+        QVector<QVector3D> arrowhead;
+        arrowhead.append(q.rotatedVector(QVector3D(0.02, 0.0, 0.9)));
+        arrowhead.append(q.rotatedVector(QVector3D(-0.02, 0.0, 0.9)));
+        arrowhead.append(q.rotatedVector(QVector3D(0.0, 0.02, 0.9)));
+        arrowhead.append(q.rotatedVector(QVector3D(0.0, -0.02, 0.9)));
+        for (int i = 0; i < arrowhead.size(); i++) {
+            glVertex3f(vertex.x(), vertex.y(), vertex.z());
+            glVertex3f(arrowhead[i].x(), arrowhead[i].y(), arrowhead[i].z());
+        }
+        glEnd();
+
+        //        glBegin(GL_TRIANGLES);
+        //        for (int k = 0; k <= 360; k += 5) {
+        //            //        glColor3f(0.0, 0.0, 1.0);
+        //            glVertex3f(0, 0, 1);
+        //            //        glColor3f(0.0, 1.0, 1.0);
+        //            glVertex3f(cos(k) * 0.02, sin(k) * 0.02, 0.9);
+        //            //        glColor3f(1.0, 0.0, 0.0);
+        //            glVertex3f(cos(k + 5) * 0.02, sin(k + 5) * 0.02, 0.9);
+        //        }
+        //        glEnd();
     }
 }

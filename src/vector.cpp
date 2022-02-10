@@ -37,6 +37,10 @@ Vector::Vector(double x, double y, double z) {
     traceColor_ = generateRandomColor();
 }
 
+// TODO when vector creates it calls Point()
+// then Qubit() and after all this
+// that work any constructor for vector
+// why?
 Vector::Vector(double the, double phi) {
     the_ = the;
     phi_ = phi;
@@ -90,6 +94,7 @@ void Vector::popPath() {
     path_.pop_back();
 }
 
+// TODO it's bad to copy vector
 void Vector::changeVector(QVector<Qubit> path) {
     path_ = path;
     changeVector(path_.first());

@@ -19,6 +19,7 @@
 
 #include "qubit.h"
 #include <QColor>
+#include <QDebug>
 #include <QObject>
 #include <QRandomGenerator>
 #include <QVector3D>
