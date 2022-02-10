@@ -39,24 +39,24 @@ QVector<Qubit> generatePath() {
     int r5 = r();
     int r6 = r();
     //    qDebug() << r1 << r2 << r3 << r4 << r5 << r6;
-    //    int r1 = -81;
-    //    int r2 = 1;
+    //    int r1 = 0;
+    //    int r2 = 0;
     //    int r3 = -68;
     //    int r4 = 25;
-    //    int r5 = -14;
-    //    int r6 = 57;
+    //    int r5 = 0/*;
+    //    int r6 = 0;*/
     //    qDebug() << "2";
     float i = 0;
-    float dur = QRandomGenerator::global()->bounded(1., 30);
+    float dur = QRandomGenerator::global()->bounded(20., 300);
     //    float dur = 3;
     //    qDebug() << dur;
     float discrete = QRandomGenerator::global()->bounded(0.05);
     //    float discrete = 0.0157;
     while (i < dur) {
         //        Qubit *t = new Qubit(0, 0.5, sin(i));
-        double x = sin(i) * r1 + cos(i) * r2;
-        double y = sin(i) * r3 + cos(i) * r4;
-        double z = sin(i) * r5 + cos(i) * r6;
+        double x = sin(i) * r1 + cos(i) * r2 + r1;
+        double y = sin(i) * r3 + cos(i) * r4 + r2;
+        double z = sin(i) * r5 + cos(i) * r6 + r3;
 
         double length = sqrt(x * x + y * y + z * z);
         x /= length;
@@ -75,8 +75,14 @@ QVector<Qubit> generatePath() {
 
 void MainWindow::pushed() {
     for (auto &e : vectors) {
-        //        e->updateVector(generatePath());
-        e->setEnableTrace(false);
+        //        QVector3D a = m->fromEulerAngles(e->getCurrentPos()).toEulerAngles();
+        //        QVector3D a = QQuaternion::fromEulerAngles(180, 0,
+        //        0).rotatedVector(e->getCurrentPos()); e->updateVector(generatePath());
+        //        qDebug() << e->getCurrentPos();
+        //        qDebug() << a;
+        //        e->changeVector(Qubit(a.x(), a.y(), a.z()));
+        //        qDebug() << e->getCurrentPos();
+        //        e->setEnableTrace(false);
     }
 
     for (int i = 0; i < 10; ++i) {
@@ -116,12 +122,23 @@ void MainWindow::createScene() {
     //    vectors.append(a);
     //    vectors.append(b);
     //    vectors.append(c);
-    //    vectors.append(new Vector(-0.56, 0.44, 0.7));
-    //    vectors.append(new Vector(45.5, 141.8));
-    //    vectors.append(new Vector((complex)0.922, complex(-0.304, 0.239)));
-    //    vectors.append(new Vector(0, 0, 0));
+    //    vectors.append(new Vector(0.49, 0.31, 0.82));
+    //    vectors.last()->setSelfColor(Qt::darkBlue);
+    //    vectors.append(new Vector(0.02, 0.0, 0.9));
+    //    vectors.append(new Vector(0.61548 + 0.0222186, 0.564084));
+    //    arrowhead_.append(QVector3D(0.02, 0.0, 0.9));
+    //    qDebug() << "";
+    //    vectors.append(new Vector(35.4, 32.2));
+    //    vectors.last()->setSelfColor(Qt::darkRed);
+    //    qDebug() << "";
+    //    vectors.append(new Vector((complex)0.953, complex(0.257, 0.162)));
+    //    vectors.last()->setSelfColor(Qt::darkCyan);
+    //    qDebug() << "";
+    //    vectors.append(new Vector(0, 0, 1));
+    //    spheres[0]->addVector(vectors.last());
 
-    //    for (auto &e : vectors) {
-    //        spheres[0]->addVector(e);
-    //    }
+    for (auto &e : vectors) {
+        spheres[0]->addVector(e);
+        //        e->printVector();
+    }
 }
