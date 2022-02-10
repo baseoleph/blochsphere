@@ -239,7 +239,18 @@ void Sphere::scaleMinus() {
 
 void Sphere::drawVectors() {
     for (auto &e : vectors) {
-        glColor3f(e->getColor().redF(), e->getColor().greenF(), e->getColor().blueF());
+        if (e->isTraceEnabled()) {
+            glColor3f(e->getTraceColor().redF(), e->getTraceColor().greenF(),
+                      e->getTraceColor().blueF());
+            glLineWidth(2.5f);
+            glBegin(GL_LINES);
+            for (auto &segment : e->getTrace()) {
+                glVertex3f(segment.first.x(), segment.first.y(), segment.first.z());
+                glVertex3f(segment.last.x(), segment.last.y(), segment.last.z());
+            }
+            glEnd();
+        }
+        glColor3f(e->getSelfColor().redF(), e->getSelfColor().greenF(), e->getSelfColor().blueF());
         glLineWidth(2.5f);
 
         glBegin(GL_LINES);

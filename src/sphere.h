@@ -21,13 +21,6 @@
 #include <QDebug>
 #include <QGLWidget>
 
-struct Trace {
-    QColor    color;
-    QVector3D first;
-    QVector3D last;
-    // TODO why there is need a semicolon?
-};
-
 class Sphere : public QGLWidget {
     Q_OBJECT
 public:
@@ -61,8 +54,7 @@ private:
 
     QPoint ptrMousePosition;
 
-    bool           isNowAnimate = false;
-    QVector<Trace> bankTrace;
+    bool isNowAnimate = false;
 
     void drawSphere(int lats, int longs);
     void drawCircle();

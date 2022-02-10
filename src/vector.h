@@ -23,6 +23,8 @@
 #include <QRandomGenerator>
 #include <QVector3D>
 
+struct Trace;
+
 class Vector : public QObject, public Qubit {
     Q_OBJECT
 public:
@@ -32,9 +34,17 @@ public:
     Vector(complex a, complex b);
 
     // TODO is this correct way to share private data?
-    const QColor &getColor();
-    void          setColor(QColor color);
-    void          generateRandomColor();
+    const QColor &getSelfColor();
+    void          setSelfColor(QColor color);
+    const QColor &getTraceColor();
+    void          setTraceColor(QColor color);
+    QColor        generateRandomColor();
+
+    void setEnableTrace(bool b);
+
+    // TODO check other functions for const
+    bool                  isTraceEnabled() const;
+    const QVector<Trace> &getTrace() const;
 
     QVector3D getCurrentPos();
 
@@ -46,8 +56,20 @@ public:
     void changeVector(Qubit qbt);
 
 private:
+    // TODO must be queue
     QVector<Qubit> path_;
-    QColor         color_ = Qt::red;
+    QVector<Trace> trace_;
+    QColor         selfColor_ = Qt::red;
+    QColor         traceColor_ = Qt::red;
+    bool           traceEnabled_ = true;
+
+    void tracePushBack();
+};
+
+struct Trace {
+    QVector3D first;
+    QVector3D last;
+    // TODO why there is need a semicolon?
 };
 
 #endif // VECTOR_H

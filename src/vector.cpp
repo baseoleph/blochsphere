@@ -22,7 +22,8 @@ Vector::Vector() {
     z_ = 0;
     evalPT();
     evalAB();
-    generateRandomColor();
+    selfColor_ = generateRandomColor();
+    traceColor_ = generateRandomColor();
 }
 
 // TODO срезка!
@@ -32,7 +33,8 @@ Vector::Vector(double x, double y, double z) {
     z_ = z;
     evalPT();
     evalAB();
-    generateRandomColor();
+    selfColor_ = generateRandomColor();
+    traceColor_ = generateRandomColor();
 }
 
 Vector::Vector(double the, double phi) {
@@ -40,22 +42,32 @@ Vector::Vector(double the, double phi) {
     phi_ = phi;
     evalXYZ();
     evalAB();
-    generateRandomColor();
+    selfColor_ = generateRandomColor();
+    traceColor_ = generateRandomColor();
 }
 
 Vector::Vector(complex a, complex b) {
     a_ = a;
     b_ = b;
     evalVertex();
-    generateRandomColor();
+    selfColor_ = generateRandomColor();
+    traceColor_ = generateRandomColor();
 }
 
-void Vector::setColor(QColor color) {
-    color_ = color;
+void Vector::setSelfColor(QColor color) {
+    selfColor_ = color;
 }
 
-const QColor &Vector::getColor() {
-    return color_;
+const QColor &Vector::getTraceColor() {
+    return traceColor_;
+}
+
+void Vector::setTraceColor(QColor color) {
+    traceColor_ = color;
+}
+
+const QColor &Vector::getSelfColor() {
+    return selfColor_;
 }
 
 QVector3D Vector::getCurrentPos() {
@@ -72,12 +84,15 @@ bool Vector::hasPath() {
 
 void Vector::popPath() {
     Q_ASSERT(not path_.isEmpty());
+    if (path_.size() > 1) {
+        tracePushBack();
+    }
     path_.pop_back();
 }
 
 void Vector::changeVector(QVector<Qubit> path) {
     path_ = path;
-    changeVector(path_.last());
+    changeVector(path_.first());
 }
 
 // TODO there is a way to copy qubit to vector by slicing
@@ -93,8 +108,28 @@ void Vector::changeVector(Qubit qbt) {
     evalAB();
 }
 
-void Vector::generateRandomColor() {
-    color_ =
-        QColor(QRandomGenerator::global()->bounded(255), QRandomGenerator::global()->bounded(255),
-               QRandomGenerator::global()->bounded(255));
+void Vector::tracePushBack() {
+    Trace tr;
+    tr.first = QVector3D(path_[path_.size() - 2].x(), path_[path_.size() - 2].y(),
+                         path_[path_.size() - 2].z());
+    tr.last = getCurrentPos();
+    trace_.append(tr);
+}
+
+QColor Vector::generateRandomColor() {
+    return QColor(QRandomGenerator::global()->bounded(255),
+                  QRandomGenerator::global()->bounded(255),
+                  QRandomGenerator::global()->bounded(255));
+}
+
+void Vector::setEnableTrace(bool b) {
+    traceEnabled_ = b;
+}
+
+bool Vector::isTraceEnabled() const {
+    return traceEnabled_;
+}
+
+const QVector<Trace> &Vector::getTrace() const {
+    return trace_;
 }
