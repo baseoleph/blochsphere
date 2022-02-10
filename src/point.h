@@ -43,10 +43,10 @@ protected:
     double x_;
     double y_;
     double z_;
-    double the_;
-    double phi_;
+    double the_; // radians
+    double phi_; // radians
 
-    void evalPT(); 
+    void evalPT();
     void evalXYZ();
 };
 

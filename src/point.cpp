@@ -38,7 +38,7 @@ void Point::evalPT() {
 }
 
 void Point::evalXYZ() {
-    x_ = cos(phi_) * sin(the_);
-    y_ = sin(phi_) * sin(the_);
+    x_ = sin(the_) * cos(phi_);
+    y_ = sin(the_) * sin(phi_);
     z_ = cos(the_);
 }

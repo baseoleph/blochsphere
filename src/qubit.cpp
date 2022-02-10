@@ -46,8 +46,7 @@ Qubit::Qubit(complex a, complex b) : a_(a), b_(b) {
 }
 
 void Qubit::evalVertex() {
-    // TODO must be tested
-    phi_ = arg(b_) - M_PI;
+    phi_ = (complex(0, -1) * log(b_ / sqrt(complex(1, 0) - a_ * a_))).real();
     if (abs(a_) == 0) {
         the_ = M_PI;
     } else {
