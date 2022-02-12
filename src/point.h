@@ -23,19 +23,19 @@ public:
     Point(double x, double y, double z);
     Point(double the, double phi);
 
-    inline double x() {
+    inline double x() const {
         return x_;
     }
-    inline double y() {
+    inline double y() const {
         return y_;
     }
-    inline double z() {
+    inline double z() const {
         return z_;
     }
-    inline double the() {
+    inline double the() const {
         return the_;
     }
-    inline double phi() {
+    inline double phi() const {
         return phi_;
     }
 

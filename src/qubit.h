@@ -29,10 +29,10 @@ public:
     Qubit(double the, double phi);
     Qubit(complex a, complex b);
 
-    inline complex a() {
+    inline complex a() const {
         return a_;
     }
-    inline complex b() {
+    inline complex b() const {
         return b_;
     }
 

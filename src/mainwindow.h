@@ -31,9 +31,10 @@ public slots:
     void pushed();
 
 private:
-    void              createScene();
     QVector<Sphere *> spheres;
     QVector<Vector *> vectors;
+
+    void createScene();
 };
 
 #endif // MAINWINDOW_H
