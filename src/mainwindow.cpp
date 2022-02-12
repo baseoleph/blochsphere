@@ -25,9 +25,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
     connect(bt, &QPushButton::clicked, this, &MainWindow::pushed);
 }
 
-int r() {
-    return QRandomGenerator::global()->bounded(-100, 100);
-}
+int r() { return QRandomGenerator::global()->bounded(-100, 100); }
 
 QVector<Qubit> generatePath() {
     QVector<Qubit> pth;
@@ -47,10 +45,10 @@ QVector<Qubit> generatePath() {
     //    int r6 = 0;*/
     //    qDebug() << "2";
     float i = 0;
-    float dur = QRandomGenerator::global()->bounded(20., 300);
+    float dur = QRandomGenerator::global()->bounded(20, 300);
     //    float dur = 3;
     //    qDebug() << dur;
-    float discrete = QRandomGenerator::global()->bounded(0.05);
+    float discrete = QRandomGenerator::global()->bounded(0.05) + 0.01;
     //    float discrete = 0.0157;
     while (i < dur) {
         //        Qubit *t = new Qubit(0, 0.5, sin(i));
@@ -92,6 +90,7 @@ void MainWindow::pushed() {
     }
 
     for (auto &e : spheres) {
+
         e->update();
     }
 }

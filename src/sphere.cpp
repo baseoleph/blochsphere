@@ -23,10 +23,6 @@ Sphere::Sphere(QWidget *parent, const QString objName) : QGLWidget{parent} {
     this->setObjectName(objName);
 }
 
-void Sphere::addVector(Vector *v) {
-    vectors.append(v);
-}
-
 void Sphere::initializeGL() {
     // TODO why I use it?
     qglClearColor(Qt::white);
@@ -226,14 +222,6 @@ void Sphere::drawAxis() {
     glVertex3f(0.f, -0.025f, axSize - 0.1f);
     glEnd();
     renderText(0, 0, axSize + 0.1f, "z", font);
-}
-
-void Sphere::scalePlus() {
-    scaleFactor = scaleFactor * 1.1;
-}
-
-void Sphere::scaleMinus() {
-    scaleFactor = scaleFactor / 1.1;
 }
 
 void Sphere::drawVectors() {

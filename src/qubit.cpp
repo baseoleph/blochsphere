@@ -17,48 +17,43 @@
 #include "qubit.h"
 #include <complex>
 
-Qubit::Qubit() {
-    x_ = 0;
-    y_ = 0;
-    z_ = 0;
-    evalPT();
+Qubit::Qubit() { evalAB(); }
+Qubit::Qubit(double x, double y, double z) : Point(x, y, z) { evalAB(); }
+Qubit::Qubit(double the, double phi) : Point(the, phi) { evalAB(); }
+Qubit::Qubit(complex a, complex b) : a_(a), b_(b) { evalVertex(); }
+
+void Qubit::changeQubit(double x, double y, double z) {
+    changePoint(x, y, z);
     evalAB();
 }
 
-// TODO why I cant use x_(x)?
-Qubit::Qubit(double x, double y, double z) {
-    x_ = x;
-    y_ = y;
-    z_ = z;
-    evalPT();
+void Qubit::changeQubit(double the, double phi) {
+    changePoint(the, phi);
     evalAB();
 }
 
-Qubit::Qubit(double the, double phi) {
-    the_ = the;
-    phi_ = phi;
-    evalXYZ();
-    evalAB();
-}
-
-Qubit::Qubit(complex a, complex b) : a_(a), b_(b) {
+void Qubit::changeQubit(complex a, complex b) {
+    a_ = a;
+    b_ = b;
     evalVertex();
 }
 
 void Qubit::evalVertex() {
-    phi_ = (complex(0, -1) * log(b_ / sqrt(complex(1, 0) - a_ * a_))).real();
+    double the = 0;
+    double phi = (complex(0, -1) * log(b_ / sqrt(complex(1, 0) - a_ * a_))).real();
     if (abs(a_) == 0) {
-        the_ = M_PI;
+        the = M_PI;
     } else {
-        the_ = 2.0 * asin(abs(b_));
+        the = 2.0 * asin(abs(b_));
     }
-    evalXYZ();
+
+    changePoint(the, phi);
 }
 
 void Qubit::evalAB() {
     const complex C_E = complex(exp(1), 0.0);
     const complex C_I = complex(0.0, 1.0);
-    complex       csin(sin(the_ / 2.0), 0.0);
-    a_ = cos(the_ / 2.0);
-    b_ = pow(C_E, C_I * phi_) * csin;
+    complex       csin(sin(the() / 2.0), 0.0);
+    a_ = cos(the() / 2.0);
+    b_ = pow(C_E, C_I * phi()) * csin;
 }

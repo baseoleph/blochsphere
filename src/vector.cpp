@@ -17,73 +17,31 @@
 #include "vector.h"
 
 Vector::Vector() {
-    x_ = 0;
-    y_ = 0;
-    z_ = 0;
-    evalPT();
-    evalAB();
     selfColor_ = generateRandomColor();
     traceColor_ = generateRandomColor();
 }
 
-// TODO срезка!
-Vector::Vector(double x, double y, double z) {
-    x_ = x;
-    y_ = y;
-    z_ = z;
-    evalPT();
-    evalAB();
+Vector::Vector(double x, double y, double z) : Qubit(x, y, z) {
     selfColor_ = generateRandomColor();
     traceColor_ = generateRandomColor();
 }
 
-// TODO when vector creates it calls Point()
-// then Qubit() and after all this
-// that work any constructor for vector
-// why?
-Vector::Vector(double the, double phi) {
-    the_ = the;
-    phi_ = phi;
-    evalXYZ();
-    evalAB();
+Vector::Vector(double the, double phi) : Qubit(the, phi) {
     selfColor_ = generateRandomColor();
     traceColor_ = generateRandomColor();
 }
 
-Vector::Vector(complex a, complex b) {
-    a_ = a;
-    b_ = b;
-    evalVertex();
+Vector::Vector(complex a, complex b) : Qubit(a, b) {
     selfColor_ = generateRandomColor();
     traceColor_ = generateRandomColor();
-}
-
-void Vector::setSelfColor(QColor color) {
-    selfColor_ = color;
-}
-
-const QColor &Vector::getTraceColor() const {
-    return traceColor_;
-}
-
-void Vector::setTraceColor(QColor color) {
-    traceColor_ = color;
-}
-
-const QColor &Vector::getSelfColor() const {
-    return selfColor_;
 }
 
 QVector3D Vector::getCurrentPos() const {
     if (path_.empty()) {
-        return QVector3D(x(), y(), z());
+        return toQVector3D();
     } else {
-        return QVector3D(path_.last().x(), path_.last().y(), path_.last().z());
+        return toQVector3D(path_.last());
     }
-}
-
-bool Vector::hasPath() const {
-    return not path_.empty();
 }
 
 void Vector::popPath() {
@@ -100,27 +58,14 @@ void Vector::changeVector(QVector<Qubit> path) {
     changeVector(path_.first());
 }
 
-// TODO there is a way to copy qubit to vector by slicing
-void Vector::changeVector(Qubit qbt) {
-    //    a_ = qbt.a();
-    //    b_ = qbt.b();
-    //    evalVertex();
-    x_ = qbt.x();
-    y_ = qbt.y();
-    z_ = qbt.z();
-    //    x_ = y_ = z_ = 0;
-    evalPT();
-    evalAB();
-}
-
 void Vector::printVector() const {
     qDebug() << "---------------";
-    qDebug() << "xyz" << x_ << y_ << z_;
-    qDebug() << "pt" << the_ << phi_;
-    qDebug() << "ab" << a_.real() << a_.imag() << b_.real() << b_.imag();
-    qDebug() << "len" << sqrt(x_ * x_ + y_ * y_ + z_ * z_)
-             << (sqrt(a_ * a_) * sqrt(a_ * a_) + sqrt(b_ * b_) * sqrt(b_ * b_)).real()
-             << (sqrt(a_ * a_) * sqrt(a_ * a_) + sqrt(b_ * b_) * sqrt(b_ * b_)).imag();
+    qDebug() << "xyz" << x() << y() << z();
+    qDebug() << "pt" << the() << phi();
+    qDebug() << "ab" << a().real() << a().imag() << b().real() << b().imag();
+    qDebug() << "len" << sqrt(x() * x() + y() * y() + z() * z())
+             << (sqrt(a() * a()) * sqrt(a() * a()) + sqrt(b() * b()) * sqrt(b() * b())).real()
+             << (sqrt(a() * a()) * sqrt(a() * a()) + sqrt(b() * b()) * sqrt(b() * b())).imag();
     qDebug() << "---------------";
 }
 
@@ -134,16 +79,4 @@ QColor Vector::generateRandomColor() const {
     return QColor(QRandomGenerator::global()->bounded(255),
                   QRandomGenerator::global()->bounded(255),
                   QRandomGenerator::global()->bounded(255));
-}
-
-void Vector::setEnableTrace(bool b) {
-    traceEnabled_ = b;
-}
-
-bool Vector::isTraceEnabled() const {
-    return traceEnabled_;
-}
-
-const QVector<Trace> &Vector::getTrace() const {
-    return trace_;
 }

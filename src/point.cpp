@@ -17,24 +17,27 @@
 #include "point.h"
 #include <complex>
 
-Point::Point() {
-    the_ = 0;
-    phi_ = 0;
-    evalXYZ();
-}
+Point::Point() { evalPT(); }
+Point::Point(double x, double y, double z) : x_(x), y_(y), z_(z) { evalPT(); }
+Point::Point(double the, double phi) : the_(the), phi_(phi) { evalXYZ(); }
 
-Point::Point(double x, double y, double z) : x_(x), y_(y), z_(z) {
+void Point::changePoint(double x, double y, double z) {
+    x_ = x;
+    y_ = y;
+    z_ = z;
     evalPT();
 }
 
-Point::Point(double the, double phi) : the_(the), phi_(phi) {
+void Point::changePoint(double the, double phi) {
+    the_ = the;
+    phi_ = phi;
     evalXYZ();
 }
 
 // TODO after all may be set it inline?
 void Point::evalPT() {
-    the_ = acos(z_ / sqrt(x_ * x_ + y_ * y_ + z_ * z_));
-    phi_ = atan2(y_, x_);
+    the_ = acos(z() / sqrt(x() * x() + y() * y() + z() * z()));
+    phi_ = atan2(y(), x());
 }
 
 void Point::evalXYZ() {
