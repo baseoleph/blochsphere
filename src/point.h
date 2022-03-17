@@ -17,17 +17,30 @@
 #ifndef POINT_H
 #define POINT_H
 
+#include <QDebug>
+#define EPSILON 0.0001
+
 class Point {
 public:
     Point();
     Point(double x, double y, double z);
     Point(double the, double phi);
 
-    inline double x() const { return x_; }
-    inline double y() const { return y_; }
-    inline double z() const { return z_; }
-    inline double the() const { return the_; }
-    inline double phi() const { return phi_; }
+    inline double x() const {
+        return x_;
+    }
+    inline double y() const {
+        return y_;
+    }
+    inline double z() const {
+        return z_;
+    }
+    inline double the() const {
+        return the_;
+    }
+    inline double phi() const {
+        return phi_;
+    }
 
 protected:
     void changePoint(double x, double y, double z);

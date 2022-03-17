@@ -17,10 +17,18 @@
 #include "qubit.h"
 #include <complex>
 
-Qubit::Qubit() { evalAB(); }
-Qubit::Qubit(double x, double y, double z) : Point(x, y, z) { evalAB(); }
-Qubit::Qubit(double the, double phi) : Point(the, phi) { evalAB(); }
-Qubit::Qubit(complex a, complex b) : a_(a), b_(b) { evalVertex(); }
+Qubit::Qubit() {
+    evalAB();
+}
+Qubit::Qubit(double x, double y, double z) : Point(x, y, z) {
+    evalAB();
+}
+Qubit::Qubit(double the, double phi) : Point(the, phi) {
+    evalAB();
+}
+Qubit::Qubit(complex a, complex b) : a_(a), b_(b) {
+    evalVertex();
+}
 
 void Qubit::changeQubit(double x, double y, double z) {
     changePoint(x, y, z);
@@ -38,9 +46,12 @@ void Qubit::changeQubit(complex a, complex b) {
     evalVertex();
 }
 
+// It's bad algorithm
 void Qubit::evalVertex() {
     double the = 0;
-    double phi = (complex(0, -1) * log(b_ / sqrt(complex(1, 0) - a_ * a_))).real();
+    double phi =
+        abs(b_) < EPSILON ? 0 : (complex(0, -1) * log(b_ / sqrt(complex(1, 0) - a_ * a_))).real();
+    //    double phi = (complex(0, -1) * log(b_ / sqrt(complex(1, 0) - a_ * a_))).real();
     if (abs(a_) == 0) {
         the = M_PI;
     } else {

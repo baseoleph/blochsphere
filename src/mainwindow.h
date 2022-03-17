@@ -17,10 +17,13 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "operator.h"
 #include "qubit.h"
 #include "sphere.h"
 #include <QMainWindow>
+#include <QMap>
 #include <QVector>
+#include <QtMath>
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -28,13 +31,19 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
 
 public slots:
-    void pushed();
+    void addVector();
+    void removeVector(Vector *v);
+    void removeAllVectors();
+    void rotateVector();
 
 private:
     QVector<Sphere *> spheres;
-    QVector<Vector *> vectors;
+    //    QVector<Vector *> vectors;
+    QMap<Vector *, QVector<Sphere *>> vectors;
 
-    void createScene();
+    QWidget *controlWidget;
+    void     createScene();
+    void     setupControlBlock();
 };
 
 #endif // MAINWINDOW_H

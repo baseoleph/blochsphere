@@ -20,38 +20,26 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
     createScene();
-    QPushButton *bt = new QPushButton("push", this);
-    bt->show();
-    connect(bt, &QPushButton::clicked, this, &MainWindow::pushed);
+    setupControlBlock();
 }
 
-int r() { return QRandomGenerator::global()->bounded(-100, 100); }
+int r() {
+    return QRandomGenerator::global()->bounded(-100, 100);
+}
 
 QVector<Qubit> generatePath() {
     QVector<Qubit> pth;
 
-    int r1 = r();
-    int r2 = r();
-    int r3 = r();
-    int r4 = r();
-    int r5 = r();
-    int r6 = r();
-    //    qDebug() << r1 << r2 << r3 << r4 << r5 << r6;
-    //    int r1 = 0;
-    //    int r2 = 0;
-    //    int r3 = -68;
-    //    int r4 = 25;
-    //    int r5 = 0/*;
-    //    int r6 = 0;*/
-    //    qDebug() << "2";
+    int   r1 = r();
+    int   r2 = r();
+    int   r3 = r();
+    int   r4 = r();
+    int   r5 = r();
+    int   r6 = r();
     float i = 0;
     float dur = QRandomGenerator::global()->bounded(20, 300);
-    //    float dur = 3;
-    //    qDebug() << dur;
     float discrete = QRandomGenerator::global()->bounded(0.05) + 0.01;
-    //    float discrete = 0.0157;
     while (i < dur) {
-        //        Qubit *t = new Qubit(0, 0.5, sin(i));
         double x = sin(i) * r1 + cos(i) * r2 + r1;
         double y = sin(i) * r3 + cos(i) * r4 + r2;
         double z = sin(i) * r5 + cos(i) * r6 + r3;
@@ -61,9 +49,7 @@ QVector<Qubit> generatePath() {
         y /= length;
         z /= length;
 
-        //        qDebug() << x << y << z;
         pth.append(Qubit(x, y, z));
-        //        i += 0.0157f; // 3.14/20
         i += discrete; // 3.14/20
     }
 
@@ -71,73 +57,90 @@ QVector<Qubit> generatePath() {
     return pth;
 }
 
-void MainWindow::pushed() {
-    for (auto &e : vectors) {
-        //        QVector3D a = m->fromEulerAngles(e->getCurrentPos()).toEulerAngles();
-        //        QVector3D a = QQuaternion::fromEulerAngles(180, 0,
-        //        0).rotatedVector(e->getCurrentPos()); e->updateVector(generatePath());
-        //        qDebug() << e->getCurrentPos();
-        //        qDebug() << a;
-        //        e->changeVector(Qubit(a.x(), a.y(), a.z()));
-        //        qDebug() << e->getCurrentPos();
-        //        e->setEnableTrace(false);
-    }
+void MainWindow::addVector() {
+    Vector *v = new Vector;
+    vectors.insert(v, QVector<Sphere *>());
+    //    v->changeVector(generatePath());
+    spheres[0]->addVector(v);
+    vectors[v].append(spheres[0]);
+    v->changeVector(Qubit(qDegreesToRadians(45.), qDegreesToRadians(45.)));
+    v->printVector();
 
-    for (int i = 0; i < 10; ++i) {
-        vectors.append(new Vector);
-        vectors.last()->changeVector(generatePath());
-        spheres[QRandomGenerator::global()->bounded(spheres.size())]->addVector(vectors.last());
+    //    for (int i = 0; i < 10; ++i) {
+    //        Vector *v = new Vector;
+    //        vectors.insert(v, QVector<Sphere *>());
+    //        v->changeVector(generatePath());
+
+    //        int ind = QRandomGenerator::global()->bounded(spheres.size());
+    //        spheres[ind]->addVector(v);
+    //        vectors[v].append(spheres[ind]);
+    //    }
+
+    for (auto &e : spheres) {
+        e->update();
+    }
+}
+
+void MainWindow::removeVector(Vector *v) {
+    for (auto &e : vectors[v]) {
+        e->deleteVector(v);
+        e->update();
+    }
+    vectors.remove(v);
+    v->~Vector();
+}
+
+void MainWindow::removeAllVectors() {
+    while (not vectors.isEmpty()) {
+        removeVector(vectors.lastKey());
+    }
+}
+
+void MainWindow::rotateVector() {
+    for (auto &e : vectors.keys()) {
+        e->changeVector(
+            //            Operator::zxRotate(*e, qDegreesToRadians(90.), 0, qDegreesToRadians(180.),
+            //            0));
+            Operator::rXRotate(*e, qDegreesToRadians(180.)));
+        e->printVector();
+        Operator::printOperator(Operator::getRX(qDegreesToRadians(180.)));
     }
 
     for (auto &e : spheres) {
-
         e->update();
     }
 }
 
 void MainWindow::createScene() {
-    // Many spheres
+    controlWidget = new QWidget(this);
 
     QWidget *w = new QWidget(this);
     setCentralWidget(w);
     QGridLayout *layout = new QGridLayout(w);
     w->setLayout(layout);
     for (int i = 0; i < 1; ++i) {
-        for (int j = 0; j < 2; ++j) {
+        for (int j = 1; j < 2; ++j) {
             spheres.append(new Sphere(w, QString::number(i + 10 * j)));
             layout->addWidget(spheres.last(), i, j);
         }
     }
+    layout->addWidget(controlWidget, 0, 0);
+}
 
-    // One sphere
-
-    //    spheres.append(new Sphere(this, "first sphere"));
-    //    this->setCentralWidget(spheres[0]);
-    //    spheres[0]->setFocus();
-
-    //    Vector *a = new Vector(0, 0.0001, 1);
-    //    Vector *b = new Vector(0.5, 1, 0);
-    //    Vector *c = new Vector(0.2, 0.4, 0.9);
-    //    vectors.append(a);
-    //    vectors.append(b);
-    //    vectors.append(c);
-    //    vectors.append(new Vector(0.49, 0.31, 0.82));
-    //    vectors.last()->setSelfColor(Qt::darkBlue);
-    //    vectors.append(new Vector(0.02, 0.0, 0.9));
-    //    vectors.append(new Vector(0.61548 + 0.0222186, 0.564084));
-    //    arrowhead_.append(QVector3D(0.02, 0.0, 0.9));
-    //    qDebug() << "";
-    //    vectors.append(new Vector(35.4, 32.2));
-    //    vectors.last()->setSelfColor(Qt::darkRed);
-    //    qDebug() << "";
-    //    vectors.append(new Vector((complex)0.953, complex(0.257, 0.162)));
-    //    vectors.last()->setSelfColor(Qt::darkCyan);
-    //    qDebug() << "";
-    //    vectors.append(new Vector(0, 0, 1));
-    //    spheres[0]->addVector(vectors.last());
-
-    for (auto &e : vectors) {
-        spheres[0]->addVector(e);
-        //        e->printVector();
-    }
+void MainWindow::setupControlBlock() {
+    controlWidget->setMaximumWidth(200);
+    QGridLayout *layout = new QGridLayout(controlWidget);
+    controlWidget->setLayout(layout);
+    QPushButton *bAddVector = new QPushButton("Add vector", this);
+    QPushButton *bResetVectors = new QPushButton("Reset vector", this);
+    QPushButton *bRotateVectors = new QPushButton("Rotate vector", this);
+    layout->addWidget(bAddVector, 0, 0);
+    layout->addWidget(bResetVectors, 0, 1);
+    layout->addWidget(bRotateVectors, 0, 2);
+    bAddVector->show();
+    bResetVectors->show();
+    bRotateVectors->show();
+    connect(bAddVector, &QPushButton::clicked, this, &MainWindow::addVector);
+    connect(bResetVectors, &QPushButton::clicked, this, &MainWindow::removeAllVectors);
+    connect(bRotateVectors, &QPushButton::clicked, this, &MainWindow::rotateVector);
 }

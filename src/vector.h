@@ -23,6 +23,7 @@
 #include <QObject>
 #include <QRandomGenerator>
 #include <QVector3D>
+#include <QtMath>
 
 struct Trace {
     QVector3D first;
@@ -36,29 +37,46 @@ public:
     Vector(double x, double y, double z);
     Vector(double the, double phi);
     Vector(complex a, complex b);
-    ~Vector() {
-        // FIX vector doesn't destructs
-        // TODO check valgrind
-        qDebug() << "12";
-    }
 
-    inline QColor                getSelfColor() const { return selfColor_; }
-    inline void                  setSelfColor(QColor color) { selfColor_ = color; }
-    inline QColor                getTraceColor() const { return traceColor_; }
-    inline void                  setTraceColor(QColor color) { traceColor_ = color; }
-    inline void                  setEnableTrace(bool b) { traceEnabled_ = b; }
-    inline bool                  isTraceEnabled() const { return traceEnabled_; }
-    inline QVector<Trace> const &getTrace() const { return trace_; }
-    inline QVector3D             getCurrentPos() const;
-    inline QVector3D toQVector3D(Qubit const &q) const { return QVector3D(q.x(), q.y(), q.z()); }
-    inline QVector3D toQVector3D() const { return QVector3D(x(), y(), z()); }
-    inline bool      hasPath() const { return not path_.empty(); }
+    inline QColor getSelfColor() const {
+        return selfColor_;
+    }
+    inline void setSelfColor(QColor color) {
+        selfColor_ = color;
+    }
+    inline QColor getTraceColor() const {
+        return traceColor_;
+    }
+    inline void setTraceColor(QColor color) {
+        traceColor_ = color;
+    }
+    inline void setEnableTrace(bool b) {
+        traceEnabled_ = b;
+    }
+    inline bool isTraceEnabled() const {
+        return traceEnabled_;
+    }
+    inline QVector<Trace> const &getTrace() const {
+        return trace_;
+    }
+    inline QVector3D getCurrentPos() const;
+    inline QVector3D toQVector3D(Qubit const &q) const {
+        return QVector3D(q.x(), q.y(), q.z());
+    }
+    inline QVector3D toQVector3D() const {
+        return QVector3D(x(), y(), z());
+    }
+    inline bool hasPath() const {
+        return not path_.empty();
+    }
 
     // TODO when I should use inline?
     void popPath();
 
     void changeVector(QVector<Qubit> path);
-    void changeVector(Qubit qbt) { changeQubit(qbt.a(), qbt.b()); }
+    void changeVector(Qubit qbt) {
+        changeQubit(qbt.a(), qbt.b());
+    }
 
     void printVector() const;
 
@@ -66,7 +84,6 @@ public:
 
 private:
     using Qubit::changeQubit;
-    // TODO must be queue
     QVector<Qubit> path_;
     QVector<Trace> trace_;
     QColor         selfColor_ = Qt::red;

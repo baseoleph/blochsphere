@@ -26,7 +26,10 @@ class Sphere : public QGLWidget {
 public:
     Sphere(QWidget *parent, const QString objName);
     // TODO realize safety add end detacch vectors
-    void addVector(Vector *v) { vectors.append(v); }
+    void addVector(Vector *v) {
+        vectors.append(v);
+    }
+    void deleteVector(Vector *v);
 
 protected:
     void initializeGL();
@@ -45,11 +48,11 @@ private:
     const QFont font = QFont("System", 11);
     // TODO better create functions with pattern views
     // like default view, xOy vew etc.
-    GLfloat           scaleFactor = 1;
-    GLfloat           xAngle = -60;
-    GLfloat           yAngle = 0;
-    GLfloat           zAngle = -135;
-    QVector<Vector *> vectors;
+    GLfloat         scaleFactor = 1;
+    GLfloat         xAngle = -60;
+    GLfloat         yAngle = 0;
+    GLfloat         zAngle = -135;
+    QList<Vector *> vectors;
 
     QPoint ptrMousePosition;
 
@@ -58,8 +61,12 @@ private:
     void drawSphere(int lats, int longs);
     void drawCircle();
     void drawAxis();
-    void scalePlus() { scaleFactor = scaleFactor * 1.1; }
-    void scaleMinus() { scaleFactor = scaleFactor / 1.1; }
+    void scalePlus() {
+        scaleFactor = scaleFactor * 1.1;
+    }
+    void scaleMinus() {
+        scaleFactor = scaleFactor / 1.1;
+    }
     void drawVectors();
 };
 

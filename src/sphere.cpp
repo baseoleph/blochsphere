@@ -23,6 +23,10 @@ Sphere::Sphere(QWidget *parent, const QString objName) : QGLWidget{parent} {
     this->setObjectName(objName);
 }
 
+void Sphere::deleteVector(Vector *v) {
+    vectors.removeOne(v);
+}
+
 void Sphere::initializeGL() {
     // TODO why I use it?
     qglClearColor(Qt::white);

@@ -36,7 +36,7 @@ Vector::Vector(complex a, complex b) : Qubit(a, b) {
     traceColor_ = generateRandomColor();
 }
 
-QVector3D Vector::getCurrentPos() const {
+inline QVector3D Vector::getCurrentPos() const {
     if (path_.empty()) {
         return toQVector3D();
     } else {
@@ -61,7 +61,7 @@ void Vector::changeVector(QVector<Qubit> path) {
 void Vector::printVector() const {
     qDebug() << "---------------";
     qDebug() << "xyz" << x() << y() << z();
-    qDebug() << "pt" << the() << phi();
+    qDebug() << "pt" << qRadiansToDegrees(the()) << qRadiansToDegrees(phi());
     qDebug() << "ab" << a().real() << a().imag() << b().real() << b().imag();
     qDebug() << "len" << sqrt(x() * x() + y() * y() + z() * z())
              << (sqrt(a() * a()) * sqrt(a() * a()) + sqrt(b() * b()) * sqrt(b() * b())).real()

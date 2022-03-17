@@ -21,6 +21,7 @@ QT += core opengl
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    operator.cpp \
     point.cpp \
     qubit.cpp \
     sphere.cpp \
@@ -28,6 +29,7 @@ SOURCES += \
 
 HEADERS += \
     mainwindow.h \
+    operator.h \
     point.h \
     qubit.h \
     sphere.h \
