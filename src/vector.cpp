@@ -36,7 +36,7 @@ Vector::Vector(complex a, complex b) : Qubit(a, b) {
     traceColor_ = generateRandomColor();
 }
 
-inline QVector3D Vector::getCurrentPos() const {
+QVector3D Vector::getCurrentPos() const {
     if (path_.empty()) {
         return toQVector3D();
     } else {

@@ -4,7 +4,7 @@
 #include "qubit.h"
 #include <QtMath>
 
-#define DURATION 100.
+#define DURATION 1000.
 
 typedef QVector<QVector<complex>> operator2d;
 class Operator {
@@ -19,6 +19,9 @@ public:
     static operator2d     getRY(double gamma);
     static operator2d     getRZ(double gamma);
     static void           printOperator(operator2d op);
+    static Qubit          rotateX(Qubit q, double gamma);
+    static Qubit          rotateY(Qubit q, double gamma);
+    static Qubit          rotateZ(Qubit q, double gamma);
 };
 
 #endif // OPERATOR_H

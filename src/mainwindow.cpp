@@ -63,7 +63,7 @@ void MainWindow::addVector() {
     //    v->changeVector(generatePath());
     spheres[0]->addVector(v);
     vectors[v].append(spheres[0]);
-    v->changeVector(Qubit(qDegreesToRadians(45.), qDegreesToRadians(45.)));
+    v->changeVector(Qubit(qDegreesToRadians(90.), qDegreesToRadians(0.)));
     v->printVector();
 
     //    for (int i = 0; i < 10; ++i) {

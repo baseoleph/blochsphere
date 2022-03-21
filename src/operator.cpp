@@ -11,15 +11,9 @@ Qubit Operator::actByOperator(operator2d op, Qubit q) {
 QVector<Qubit> Operator::rXRotate(Qubit q, double gamma) {
     QVector<Qubit> trace = {q};
     for (size_t i = 1; i < DURATION; ++i) {
-        operator2d op = getRX(i / DURATION * gamma);
-        trace.append(actByOperator(op, q));
+        trace.append(rotateX(q, i / DURATION * gamma));
     }
-
-    operator2d op = getRX(gamma);
-    trace.append(actByOperator(op, q));
-
-    qDebug() << "ab" << trace.last().a().real() << trace.last().a().imag()
-             << trace.last().b().real() << trace.last().b().imag();
+    trace.append(rotateX(q, gamma));
     std::reverse(trace.begin(), trace.end());
     return trace;
 }
@@ -27,15 +21,9 @@ QVector<Qubit> Operator::rXRotate(Qubit q, double gamma) {
 QVector<Qubit> Operator::rYRotate(Qubit q, double gamma) {
     QVector<Qubit> trace = {q};
     for (size_t i = 1; i < DURATION; ++i) {
-        operator2d op = getRY(i / DURATION * gamma);
-        trace.append(actByOperator(op, q));
+        trace.append(rotateY(q, i / DURATION * gamma));
     }
-
-    operator2d op = getRY(gamma);
-    trace.append(actByOperator(op, q));
-
-    qDebug() << "ab" << trace.last().a().real() << trace.last().a().imag()
-             << trace.last().b().real() << trace.last().b().imag();
+    trace.append(rotateY(q, gamma));
     std::reverse(trace.begin(), trace.end());
     return trace;
 }
@@ -43,15 +31,9 @@ QVector<Qubit> Operator::rYRotate(Qubit q, double gamma) {
 QVector<Qubit> Operator::rZRotate(Qubit q, double gamma) {
     QVector<Qubit> trace = {q};
     for (size_t i = 1; i < DURATION; ++i) {
-        operator2d op = getRZ(i / DURATION * gamma);
-        trace.append(actByOperator(op, q));
+        trace.append(rotateZ(q, i / DURATION * gamma));
     }
-
-    operator2d op = getRZ(gamma);
-    trace.append(actByOperator(op, q));
-
-    qDebug() << "ab" << trace.last().a().real() << trace.last().a().imag()
-             << trace.last().b().real() << trace.last().b().imag();
+    trace.append(rotateZ(q, gamma));
     std::reverse(trace.begin(), trace.end());
     return trace;
 }
@@ -125,4 +107,22 @@ void Operator::printOperator(operator2d op) {
              << op[0][1].imag() << ")";
     qDebug() << "(" << op[1][0].real() << op[1][0].imag() << ") (" << op[1][1].real()
              << op[1][1].imag() << ")";
+}
+
+Qubit Operator::rotateX(Qubit q, double gamma) {
+    q.changeQubit(q.x(), q.y() * cos(gamma) - q.z() * sin(gamma),
+                  q.y() * sin(gamma) + q.z() * cos(gamma));
+    return q;
+}
+
+Qubit Operator::rotateY(Qubit q, double gamma) {
+    q.changeQubit(q.x() * cos(gamma) + q.z() * sin(gamma), q.y(),
+                  -q.x() * sin(gamma) + q.z() * cos(gamma));
+    return q;
+}
+
+Qubit Operator::rotateZ(Qubit q, double gamma) {
+    q.changeQubit(q.x() * cos(gamma) - q.y() * sin(gamma), q.x() * sin(gamma) + q.y() * cos(gamma),
+                  q.z());
+    return q;
 }

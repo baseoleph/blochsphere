@@ -29,10 +29,13 @@ public:
     Qubit(double the, double phi);
     Qubit(complex a, complex b);
 
-    inline complex a() const { return a_; }
-    inline complex b() const { return b_; }
+    inline complex a() const {
+        return a_;
+    }
+    inline complex b() const {
+        return b_;
+    }
 
-protected:
     void changeQubit(double x, double y, double z);
     void changeQubit(double the, double phi);
     void changeQubit(complex a, complex b);

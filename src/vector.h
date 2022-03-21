@@ -59,7 +59,7 @@ public:
     inline QVector<Trace> const &getTrace() const {
         return trace_;
     }
-    inline QVector3D getCurrentPos() const;
+    QVector3D        getCurrentPos() const;
     inline QVector3D toQVector3D(Qubit const &q) const {
         return QVector3D(q.x(), q.y(), q.z());
     }
