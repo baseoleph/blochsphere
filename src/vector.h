@@ -21,13 +21,23 @@
 #include <QColor>
 #include <QDebug>
 #include <QObject>
+#include <QQuaternion>
 #include <QRandomGenerator>
+#include <QTimerEvent>
 #include <QVector3D>
 #include <QtMath>
 
 struct Trace {
     QVector3D first;
     QVector3D last;
+};
+
+struct Spike {
+    QVector3D point;
+    QVector3D arrow1;
+    QVector3D arrow2;
+    QVector3D arrow3;
+    QVector3D arrow4;
 };
 
 class Vector : public QObject, public Qubit {
@@ -59,7 +69,8 @@ public:
     inline QVector<Trace> const &getTrace() const {
         return trace_;
     }
-    QVector3D        getCurrentPos() const;
+    Spike getSpike() const;
+
     inline QVector3D toQVector3D(Qubit const &q) const {
         return QVector3D(q.x(), q.y(), q.z());
     }
@@ -73,24 +84,45 @@ public:
     // TODO when I should use inline?
     void popPath();
 
-    void changeVector(QVector<Qubit> path);
-    void changeVector(Qubit qbt) {
-        changeQubit(qbt.a(), qbt.b());
+    void changeVector(Spike s) {
+        path_.clear();
+        spike_ = s;
+    }
+
+    void changeVector(QVector<Spike> s) {
+        path_ = s;
+        spike_ = s.last();
+    }
+
+    static Spike actOperator(QQuaternion q, Spike s) {
+        s.point = q.rotatedVector(s.point);
+        s.arrow1 = q.rotatedVector(s.arrow1);
+        s.arrow2 = q.rotatedVector(s.arrow2);
+        s.arrow3 = q.rotatedVector(s.arrow3);
+        s.arrow4 = q.rotatedVector(s.arrow4);
+        return s;
     }
 
     void printVector() const;
 
     QColor generateRandomColor() const;
 
+    // TODO get set
+    bool isNowAnimate = false;
+
+protected:
+    void timerEvent(QTimerEvent *);
+
 private:
-    using Qubit::changeQubit;
-    QVector<Qubit> path_;
+    Spike          spike_;
+    QVector<Spike> path_;
     QVector<Trace> trace_;
     QColor         selfColor_ = Qt::red;
     QColor         traceColor_ = Qt::red;
     bool           traceEnabled_ = true;
 
     void tracePushBack();
+    void initialSpike();
 };
 
 #endif // VECTOR_H

@@ -1,27 +1,34 @@
+// The program helps to see a geometric representation of qubits
+// Copyright (C) 2022 Vasiliy Stephanov <baseoleph@gmail.com>
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 #ifndef OPERATOR_H
 #define OPERATOR_H
 
-#include "qubit.h"
+#include "vector.h"
 #include <QtMath>
 
-#define DURATION 1000.
+#define DURATION 100.
 
-typedef QVector<QVector<complex>> operator2d;
 class Operator {
 public:
     Operator();
-    static Qubit          actByOperator(operator2d op, Qubit q);
-    static QVector<Qubit> rXRotate(Qubit q, double gamma);
-    static QVector<Qubit> rYRotate(Qubit q, double gamma);
-    static QVector<Qubit> rZRotate(Qubit q, double gamma);
-    static QVector<Qubit> zxRotate(Qubit q, double a, double b, double g, double d);
-    static operator2d     getRX(double gamma);
-    static operator2d     getRY(double gamma);
-    static operator2d     getRZ(double gamma);
-    static void           printOperator(operator2d op);
-    static Qubit          rotateX(Qubit q, double gamma);
-    static Qubit          rotateY(Qubit q, double gamma);
-    static Qubit          rotateZ(Qubit q, double gamma);
+    static QVector<Spike> rotate(Spike s, QVector3D v, double gamma);
+    static QVector<Spike> rXRotate(Spike s, double gamma);
+    static QVector<Spike> rYRotate(Spike s, double gamma);
+    static QVector<Spike> rZRotate(Spike s, double gamma);
 };
 
 #endif // OPERATOR_H

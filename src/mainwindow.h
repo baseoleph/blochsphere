@@ -29,6 +29,7 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
     explicit MainWindow(QWidget *parent = nullptr);
+    void function();
 
 public slots:
     void addVector();
@@ -36,9 +37,11 @@ public slots:
     void removeAllVectors();
     void rotateVector();
 
+protected:
+    void timerEvent(QTimerEvent *);
+
 private:
-    QVector<Sphere *> spheres;
-    //    QVector<Vector *> vectors;
+    QVector<Sphere *>                 spheres;
     QMap<Vector *, QVector<Sphere *>> vectors;
 
     QWidget *controlWidget;

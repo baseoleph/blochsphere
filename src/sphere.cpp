@@ -21,6 +21,7 @@
 
 Sphere::Sphere(QWidget *parent, const QString objName) : QGLWidget{parent} {
     this->setObjectName(objName);
+    startTimer(10);
 }
 
 void Sphere::deleteVector(Vector *v) {
@@ -39,10 +40,11 @@ void Sphere::resizeGL(int w, int h) {
     GLfloat ratio = static_cast<GLfloat>(h) / w;
 
     // TODO check calculations
-    if (w >= h)
+    if (w >= h) {
         glOrtho(-2.0 / ratio, 2.0 / ratio, -2.0, 2.0, -10.0, 10.0);
-    else
+    } else {
         glOrtho(-2.0, 2.0, -2.0 * ratio, 2.0 * ratio, -10.0, 10.0);
+    }
     glViewport(0, 0, w, h);
 }
 
@@ -96,18 +98,6 @@ void Sphere::wheelEvent(QWheelEvent *pe) {
 }
 
 void Sphere::timerEvent(QTimerEvent *) {
-    isNowAnimate = false;
-    for (auto &e : vectors) {
-        if (e->hasPath()) {
-            e->popPath();
-            isNowAnimate = true;
-        }
-    }
-
-    if (not isNowAnimate) {
-        killTimer(0);
-    }
-
     update();
 }
 
@@ -247,10 +237,11 @@ void Sphere::drawVectors() {
         glBegin(GL_LINES);
         glVertex3f(0, 0, 0);
 
-        if (e->hasPath() && not isNowAnimate) {
-            startTimer(ANIMATION_INTERVAL);
+        if (e->hasPath() && not e->isNowAnimate) {
+            e->startTimer(ANIMATION_INTERVAL);
         }
-        QVector3D vertex = e->getCurrentPos();
+
+        QVector3D vertex = e->getSpike().point;
 
         glVertex3f(vertex.x(), vertex.y(), vertex.z());
 
@@ -258,27 +249,15 @@ void Sphere::drawVectors() {
 
         glBegin(GL_LINES);
 
-        QQuaternion        q = QQuaternion::rotationTo(QVector3D(0, 0, 1), vertex);
         QVector<QVector3D> arrowhead;
-        arrowhead.append(q.rotatedVector(QVector3D(0.02, 0.0, 0.9)));
-        arrowhead.append(q.rotatedVector(QVector3D(-0.02, 0.0, 0.9)));
-        arrowhead.append(q.rotatedVector(QVector3D(0.0, 0.02, 0.9)));
-        arrowhead.append(q.rotatedVector(QVector3D(0.0, -0.02, 0.9)));
+        arrowhead.append(e->getSpike().arrow1);
+        arrowhead.append(e->getSpike().arrow2);
+        arrowhead.append(e->getSpike().arrow3);
+        arrowhead.append(e->getSpike().arrow4);
         for (int i = 0; i < arrowhead.size(); i++) {
             glVertex3f(vertex.x(), vertex.y(), vertex.z());
             glVertex3f(arrowhead[i].x(), arrowhead[i].y(), arrowhead[i].z());
         }
         glEnd();
-
-        //        glBegin(GL_TRIANGLES);
-        //        for (int k = 0; k <= 360; k += 5) {
-        //            //        glColor3f(0.0, 0.0, 1.0);
-        //            glVertex3f(0, 0, 1);
-        //            //        glColor3f(0.0, 1.0, 1.0);
-        //            glVertex3f(cos(k) * 0.02, sin(k) * 0.02, 0.9);
-        //            //        glColor3f(1.0, 0.0, 0.0);
-        //            glVertex3f(cos(k + 5) * 0.02, sin(k + 5) * 0.02, 0.9);
-        //        }
-        //        glEnd();
     }
 }

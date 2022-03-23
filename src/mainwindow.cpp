@@ -24,7 +24,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
 }
 
 int r() {
-    return QRandomGenerator::global()->bounded(-100, 100);
+    //    return QRandomGenerator::global()->bounded(-100, 100);
+    return QRandomGenerator::global()->bounded(0, 360);
 }
 
 QVector<Qubit> generatePath() {
@@ -58,27 +59,10 @@ QVector<Qubit> generatePath() {
 }
 
 void MainWindow::addVector() {
-    Vector *v = new Vector;
+    Vector *v = new Vector(qDegreesToRadians(0.), qDegreesToRadians(0.));
     vectors.insert(v, QVector<Sphere *>());
-    //    v->changeVector(generatePath());
     spheres[0]->addVector(v);
     vectors[v].append(spheres[0]);
-    v->changeVector(Qubit(qDegreesToRadians(90.), qDegreesToRadians(0.)));
-    v->printVector();
-
-    //    for (int i = 0; i < 10; ++i) {
-    //        Vector *v = new Vector;
-    //        vectors.insert(v, QVector<Sphere *>());
-    //        v->changeVector(generatePath());
-
-    //        int ind = QRandomGenerator::global()->bounded(spheres.size());
-    //        spheres[ind]->addVector(v);
-    //        vectors[v].append(spheres[ind]);
-    //    }
-
-    for (auto &e : spheres) {
-        e->update();
-    }
 }
 
 void MainWindow::removeVector(Vector *v) {
@@ -96,19 +80,32 @@ void MainWindow::removeAllVectors() {
     }
 }
 
-void MainWindow::rotateVector() {
+QVector<Spike> wow(Spike ss) {
+    QVector<Spike> s;
+    s.append(Operator::rXRotate(ss, r()));
+    for (int i = 0; i < 100; ++i) {
+        s.append(Operator::rZRotate(s.last(), r()));
+        s.append(Operator::rYRotate(s.last(), r()));
+        s.append(Operator::rXRotate(s.last(), r()));
+    }
+    std::reverse(s.begin(), s.end());
+    return s;
+}
+void MainWindow::function() {
     for (auto &e : vectors.keys()) {
-        e->changeVector(
-            //            Operator::zxRotate(*e, qDegreesToRadians(90.), 0, qDegreesToRadians(180.),
-            //            0));
-            Operator::rXRotate(*e, qDegreesToRadians(180.)));
-        e->printVector();
-        Operator::printOperator(Operator::getRX(qDegreesToRadians(180.)));
+        if (not e->isNowAnimate) {
+            e->changeVector(wow(e->getSpike()));
+        }
     }
+}
+void MainWindow::rotateVector() {
+    function();
+    startTimer(3000);
+}
 
-    for (auto &e : spheres) {
-        e->update();
-    }
+void MainWindow::timerEvent(QTimerEvent *) {
+    addVector();
+    function();
 }
 
 void MainWindow::createScene() {
