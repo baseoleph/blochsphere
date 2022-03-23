@@ -29,6 +29,9 @@ public:
     static QVector<Spike> rXRotate(Spike s, double gamma);
     static QVector<Spike> rYRotate(Spike s, double gamma);
     static QVector<Spike> rZRotate(Spike s, double gamma);
+
+private:
+    void zxDecomposition(complex a, complex b, complex c, complex d);
 };
 
 #endif // OPERATOR_H
