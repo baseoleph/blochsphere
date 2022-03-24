@@ -65,9 +65,6 @@ QVector<Spike> Operator::applyOperator(Spike s, complex a, complex b, complex c,
     QQuaternion    qz2 = QQuaternion::fromAxisAndAngle(QVector3D(0, 0, 1), dec.delta);
     QQuaternion    q = qz1 * qx * qz2;
 
-    // TODO is a*b saves distance?
-    q.normalize();
-
     // TODO check algorithm. q.scalar < 0; q.scalar < eps + and -
     QVector3D v = q.vector().normalized();
     double    g = qFuzzyIsNull(v.length()) ? 0 : 2 * qAcos(q.scalar()) * 180 / M_PI;
