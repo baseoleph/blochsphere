@@ -237,7 +237,7 @@ void Sphere::drawVectors() {
         glBegin(GL_LINES);
         glVertex3f(0, 0, 0);
 
-        if (e->hasPath() && not e->isNowAnimate) {
+        if (e->hasPath() && not e->isNowAnimate()) {
             e->startTimer(ANIMATION_INTERVAL);
         }
 

@@ -40,7 +40,6 @@ void Point::changePoint(double the, double phi) {
     evalXYZ();
 }
 
-// TODO after all may be set it inline?
 void Point::evalPT() {
     the_ = acos(z() / sqrt(x() * x() + y() * y() + z() * z()));
     phi_ = atan2(y(), x());

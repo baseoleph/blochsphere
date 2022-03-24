@@ -109,8 +109,13 @@ public:
 
     QColor generateRandomColor() const;
 
-    // TODO get set
-    bool isNowAnimate = false;
+    bool isNowAnimate() const {
+        return isNowAnimate_;
+    }
+
+    void setAnimateState(bool animate) {
+        isNowAnimate_ = animate;
+    }
 
 protected:
     void timerEvent(QTimerEvent *);
@@ -122,6 +127,7 @@ private:
     QColor         selfColor_ = Qt::red;
     QColor         traceColor_ = Qt::red;
     bool           traceEnabled_ = true;
+    bool           isNowAnimate_ = false;
 
     void tracePushBack();
     void initialSpike();

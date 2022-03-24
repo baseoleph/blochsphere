@@ -50,13 +50,13 @@ Spike Vector::getSpike() const {
 }
 
 void Vector::timerEvent(QTimerEvent *t) {
-    isNowAnimate = false;
+    this->setAnimateState(false);
     if (hasPath()) {
         popPath();
-        isNowAnimate = true;
+        this->setAnimateState(true);
     }
 
-    if (not isNowAnimate) {
+    if (not isNowAnimate()) {
         this->killTimer(t->timerId());
     }
 }

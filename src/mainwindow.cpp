@@ -93,7 +93,7 @@ QVector<Spike> wow(Spike ss) {
 }
 void MainWindow::function() {
     for (auto &e : vectors.keys()) {
-        if (not e->isNowAnimate) {
+        if (not e->isNowAnimate()) {
             complex a = complex(0, 0);
             complex b = complex(1, 0);
             complex c = complex(1, 0);
