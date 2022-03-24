@@ -36,11 +36,13 @@ public:
         return b_;
     }
 
-private:
-    using Point::changePoint;
+protected:
     void changeQubit(double x, double y, double z);
     void changeQubit(double the, double phi);
     void changeQubit(complex a, complex b);
+
+private:
+    using Point::changePoint;
 
     complex a_;
     complex b_;

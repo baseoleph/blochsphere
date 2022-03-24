@@ -20,8 +20,17 @@
 #include "vector.h"
 #include <QtMath>
 
+// TODO change logic duration of animation
 #define DURATION 100.
 
+struct decomposition {
+    double alpha = 0;
+    double beta = 0;
+    double delta = 0;
+    double gamma = 0;
+};
+
+// TODO check for unitary
 class Operator {
 public:
     Operator();
@@ -29,9 +38,11 @@ public:
     static QVector<Spike> rXRotate(Spike s, double gamma);
     static QVector<Spike> rYRotate(Spike s, double gamma);
     static QVector<Spike> rZRotate(Spike s, double gamma);
+    static QVector<Spike> applyZXDecomposition(Spike s, complex a, complex b, complex c, complex d);
+    static QVector<Spike> applyOperator(Spike s, complex a, complex b, complex c, complex d);
 
 private:
-    void zxDecomposition(complex a, complex b, complex c, complex d);
+    static decomposition zxDecomposition(complex a, complex b, complex c, complex d);
 };
 
 #endif // OPERATOR_H

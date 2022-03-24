@@ -87,11 +87,13 @@ public:
     void changeVector(Spike s) {
         path_.clear();
         spike_ = s;
+        this->changeQubit(s.point.x(), s.point.y(), s.point.z());
     }
 
     void changeVector(QVector<Spike> s) {
         path_ = s;
         spike_ = s.last();
+        this->changeQubit(s.first().point.x(), s.first().point.y(), s.first().point.z());
     }
 
     static Spike actOperator(QQuaternion q, Spike s) {

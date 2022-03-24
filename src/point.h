@@ -18,7 +18,7 @@
 #define POINT_H
 
 #include <QDebug>
-#define EPSILON 0.0001
+#define EPSILON 0.000001
 
 class Point {
 public:

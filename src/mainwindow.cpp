@@ -94,13 +94,20 @@ QVector<Spike> wow(Spike ss) {
 void MainWindow::function() {
     for (auto &e : vectors.keys()) {
         if (not e->isNowAnimate) {
-            e->changeVector(wow(e->getSpike()));
+            complex a = complex(0, 0);
+            complex b = complex(1, 0);
+            complex c = complex(1, 0);
+            complex d = complex(0, 0);
+            //            e->changeVector(Operator::applyZXDecomposition(e->getSpike(), a, b, c,
+            //            d));
+            e->changeVector(Operator::applyOperator(e->getSpike(), a, b, c, d));
+            e->printVector();
         }
     }
 }
 void MainWindow::rotateVector() {
     function();
-    startTimer(3000);
+    //    startTimer(3000);
 }
 
 void MainWindow::timerEvent(QTimerEvent *) {
