@@ -86,8 +86,8 @@ QVector<Spike> Operator::applyOperator(Spike s, complex a, complex b, complex c,
 }
 
 QString getComplexStr(complex a) {
-    double real = abs(a.real()) < 1e-6 ? 0 : a.real();
-    double imag = abs(a.imag()) < 1e-6 ? 0 : a.imag();
+    double real = qFuzzyIsNull(a.real()) ? 0 : a.real();
+    double imag = qFuzzyIsNull(a.imag()) ? 0 : a.imag();
 
     QString str = "(" + QString::number(real) + ", " + QString::number(imag) + ")";
     return str;
