@@ -41,7 +41,7 @@ public:
     static QVector<Spike> applyZXDecomposition(Spike s, complex a, complex b, complex c, complex d);
     static QVector<Spike> applyOperator(Spike s, complex a, complex b, complex c, complex d);
 
-private:
+    // TODO it's private method
     static decomposition zxDecomposition(complex a, complex b, complex c, complex d);
 };
 
