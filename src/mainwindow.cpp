@@ -100,7 +100,8 @@ void MainWindow::function() {
             complex d = complex(0, 0);
             //            e->changeVector(Operator::applyZXDecomposition(e->getSpike(), a, b, c,
             //            d));
-            e->changeVector(Operator::applyOperator(e->getSpike(), a, b, c, d));
+            unitaryMatrix op{a, b, c, d};
+            e->changeVector(Operator::applyOperator(e->getSpike(), op));
             e->printVector();
         }
     }

@@ -42,9 +42,9 @@ QVector<Spike> Operator::rZRotate(Spike s, double gamma) {
     return rotate(s, QVector3D(0, 0, 1), gamma);
 }
 
-QVector<Spike> Operator::applyZXDecomposition(Spike s, complex a, complex b, complex c, complex d) {
+QVector<Spike> Operator::applyZXDecomposition(Spike s, unitaryMatrix op) {
     QVector<Spike> spike;
-    decomposition  dec = zxDecomposition(a, b, c, d);
+    decomposition  dec = zxDecomposition(op);
     qDebug() << "alpha" << dec.alpha;
     qDebug() << "beta" << dec.beta;
     qDebug() << "gamma" << dec.gamma;
@@ -57,9 +57,9 @@ QVector<Spike> Operator::applyZXDecomposition(Spike s, complex a, complex b, com
     return spike;
 }
 
-QVector<Spike> Operator::applyOperator(Spike s, complex a, complex b, complex c, complex d) {
+QVector<Spike> Operator::applyOperator(Spike s, unitaryMatrix op) {
     QVector<Spike> spike = {s};
-    decomposition  dec = zxDecomposition(a, b, c, d);
+    decomposition  dec = zxDecomposition(op);
     QQuaternion    qz1 = QQuaternion::fromAxisAndAngle(QVector3D(0, 0, 1), dec.beta);
     QQuaternion    qx = QQuaternion::fromAxisAndAngle(QVector3D(1, 0, 0), dec.gamma);
     QQuaternion    qz2 = QQuaternion::fromAxisAndAngle(QVector3D(0, 0, 1), dec.delta);
@@ -93,7 +93,7 @@ QString getComplexStr(complex a) {
     return str;
 }
 
-decomposition Operator::zxDecomposition(complex a, complex b, complex c, complex d) {
+decomposition Operator::zxDecomposition(unitaryMatrix op) {
     //  Author   : Швецкий Михаил Владимирович
     //  Original: ff22dd04382d02a839c56f27a80ad18064eb6595
 
@@ -102,6 +102,10 @@ decomposition Operator::zxDecomposition(complex a, complex b, complex c, complex
     double  beta = 0;
     double  delta = 0;
     double  gamma = 0;
+    complex a = op.a;
+    complex b = op.b;
+    complex c = op.c;
+    complex d = op.d;
 
     if (abs(a) > EPSILON && abs(b) > EPSILON) {
         alpha = 0.5 * arg(a * d - b * c);
@@ -135,12 +139,12 @@ decomposition Operator::zxDecomposition(complex a, complex b, complex c, complex
         alpha = M_PI + alpha;
     }
 
-    complex aa = exp(i * (alpha - beta / 2.0 - delta / 2.0)) * cos(v);
-    complex bb = -i * exp(i * (alpha - beta / 2.0 + delta / 2.0)) * sin(v);
-    complex cc = -i * exp(i * (alpha + beta / 2.0 - delta / 2.0)) * sin(v);
-    complex dd = exp(i * (alpha + beta / 2.0 + delta / 2.0)) * cos(v);
-    qDebug() << getComplexStr(aa) << getComplexStr(bb);
-    qDebug() << getComplexStr(cc) << getComplexStr(dd);
+    //    complex aa = exp(i * (alpha - beta / 2.0 - delta / 2.0)) * cos(v);
+    //    complex bb = -i * exp(i * (alpha - beta / 2.0 + delta / 2.0)) * sin(v);
+    //    complex cc = -i * exp(i * (alpha + beta / 2.0 - delta / 2.0)) * sin(v);
+    //    complex dd = exp(i * (alpha + beta / 2.0 + delta / 2.0)) * cos(v);
+    //    qDebug() << getComplexStr(aa) << getComplexStr(bb);
+    //    qDebug() << getComplexStr(cc) << getComplexStr(dd);
 
     return decomposition{alpha * (180 / M_PI), beta * (180 / M_PI), delta * (180 / M_PI),
                          gamma * (180 / M_PI)};

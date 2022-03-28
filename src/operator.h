@@ -23,6 +23,13 @@
 // TODO change logic duration of animation
 #define DURATION 100.
 
+struct unitaryMatrix {
+    complex a;
+    complex b;
+    complex c;
+    complex d;
+};
+
 struct decomposition {
     double alpha = 0;
     double beta = 0;
@@ -38,11 +45,11 @@ public:
     static QVector<Spike> rXRotate(Spike s, double gamma);
     static QVector<Spike> rYRotate(Spike s, double gamma);
     static QVector<Spike> rZRotate(Spike s, double gamma);
-    static QVector<Spike> applyZXDecomposition(Spike s, complex a, complex b, complex c, complex d);
-    static QVector<Spike> applyOperator(Spike s, complex a, complex b, complex c, complex d);
+    static QVector<Spike> applyZXDecomposition(Spike s, unitaryMatrix op);
+    static QVector<Spike> applyOperator(Spike s, unitaryMatrix op);
 
     // TODO it's private method
-    static decomposition zxDecomposition(complex a, complex b, complex c, complex d);
+    static decomposition zxDecomposition(unitaryMatrix op);
 };
 
 #endif // OPERATOR_H
