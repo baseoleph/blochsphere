@@ -1,11 +1,12 @@
 #include "unitaryOperators.hpp"
+#include <gtest/gtest.h>
 
-QVector<unitaryMatrix> unitaryOperators2x2() {
-    QVector<unitaryMatrix> ops;
-    complex                a, b, c, d;
-    complex                i = complex(0, 1);
-    quint64                seed = QRandomGenerator::global()->generate64();
-    QRandomGenerator64     rd(seed);
+QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
+    QVector<UnitaryMatrix2x2> ops;
+    complex                   a, b, c, d;
+    UnitaryMatrix2x2          op;
+    complex                   i = complex(0, 1);
+    QRandomGenerator          rd(SEED);
 
     // 00
     {
@@ -13,7 +14,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = sqrt(2.0 / 3.0);
         c = sqrt(2.0 / 3.0);
         d = -sqrt(1.0 / 3.0);
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 01
@@ -22,7 +24,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = -1.;
         c = 1.;
         d = 0;
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 02
@@ -31,16 +34,18 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = complex(0, 1);
         c = -complex(0, 1);
         d = 0;
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 03
     {
-        a = -1;
-        b = 0;
-        c = 0;
-        d = -complex(0, 1);
-        ops.append(unitaryMatrix{a, b, c, d});
+        // a = -1;
+        // b = 0;
+        // c = 0;
+        // d = -complex(0, 1);
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 04
@@ -51,29 +56,32 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = t1 / sqrt(6.0);
         c = -t1 / sqrt(6.0);
         d = t / sqrt(6.0);
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 05 gate G(q)
     {
-        rd.seed(seed);
+        rd.seed(SEED);
         double q = rd.generateDouble();
         a = sqrt(q);
         b = -sqrt(1.0 - q);
         c = sqrt(1.0 - q);
         d = sqrt(q);
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 06 gate G(p)
     {
-        rd.seed(seed);
+        rd.seed(SEED);
         int p = rd.bounded(1, 100);
         a = sqrt(1.0 / p);
         b = -sqrt(1.0 - 1.0 / p);
         c = sqrt(1.0 - 1.0 / p);
         d = sqrt(1.0 / p);
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 07 approximate Z-X-decomposition for X^(-1/4)
@@ -85,7 +93,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = complex(k2, k3);
         c = complex(k2, k3);
         d = complex(k1, -k3);
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 08 Z-X-decomposition for Z^(1/4)
@@ -94,7 +103,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = 0;
         c = 0;
         d = 1.0 / sqrt(2.0) * complex(1, 1);
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 09 approximate Z-X-decomposition for X^(1/4)
@@ -106,16 +116,18 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = complex(k2, -k3);
         c = complex(k2, -k3);
         d = complex(k1, k3);
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 10 approximate Z-X-decomposition for Y^(1/8)
     {
-        a = complex(0.9619, 0.1913);
-        b = complex(-0.1913, -0.0381);
-        c = complex(0.1913, 0.0381);
-        d = complex(0.9619, 0.1913);
-        ops.append(unitaryMatrix{a, b, c, d});
+        // a = complex(0.9619, 0.1913);
+        // b = complex(-0.1913, -0.0381);
+        // c = complex(0.1913, 0.0381);
+        // d = complex(0.9619, 0.1913);
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 11
@@ -124,7 +136,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = -1.0;
         c = 1.0;
         d = 0;
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 12
@@ -134,7 +147,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = -t;
         c = -t;
         d = t * i;
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 13
@@ -144,7 +158,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = -t;
         c = t;
         d = t * i;
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 14
@@ -154,7 +169,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = t * i;
         c = t * i;
         d = t;
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 15
@@ -164,7 +180,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = t;
         c = t;
         d = t * i;
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 16
@@ -173,7 +190,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = complex(1, 1) / 2.0;
         c = complex(-1, 1) / 2.0;
         d = complex(1, -1) / 2.0;
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 17
@@ -182,30 +200,33 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = complex(-1, -1) / 2.0;
         c = complex(1, -1) / 2.0;
         d = complex(1, -1) / 2.0;
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 18 Rk operator for quantum Fourier transform
     {
-        rd.seed(seed);
+        rd.seed(SEED);
         int k = rd.bounded(1, 9);
         a = 1;
         b = 0;
         c = 0;
         d = exp(i * M_PI / pow(2.0, k - 1));
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 19 Phase(g)
     {
-        rd.seed(seed);
+        rd.seed(SEED);
         double g = rd.bounded(360.);
         g *= M_PI / 180.0;
         a = 1.0;
         b = 0;
         c = 0;
         d = exp(i * g);
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 20 sqrt(H)
@@ -215,7 +236,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = (1 + sqrt(2.0)) / t1 + i * (1 - sqrt(2.0)) / t2;
         c = (1 + sqrt(2.0)) / t1 + i * (1 - sqrt(2.0)) / t2;
         d = 1.0 / t1 + i * 1.0 / t2;
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 21
@@ -224,7 +246,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = -sqrt(2) / 4.0 + i * sqrt(6) / 4.0;
         c = sqrt(2) / 4.0 + i * sqrt(6) / 4.0;
         d = sqrt(6) / 4.0 - i * sqrt(2) / 4.0;
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 22
@@ -235,7 +258,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = s;
         c = -s;
         d = t;
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 23
@@ -244,7 +268,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = 1.0 / sqrt(3.0);
         c = 1.0 / sqrt(3.0);
         d = -sqrt(2.0 / 3.0);
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 24
@@ -253,7 +278,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = 0.5;
         c = 0.5;
         d = -sqrt(3.0) / 2.0;
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 25
@@ -262,7 +288,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = -i * sqrt(2.0) / 2.0;
         c = i * sqrt(2.0) / 2.0;
         d = sqrt(2.0) / 2.0;
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 26
@@ -273,7 +300,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = -fi * t * i;
         c = -fi * t * i;
         d = fi * t;
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 27 quantum operator HTH
@@ -282,7 +310,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = 0.5 * (complex(1, 0) - exp(i * M_PI / 4.0));
         c = 0.5 * (complex(1, 0) - exp(i * M_PI / 4.0));
         d = 0.5 * (complex(1, 0) + exp(i * M_PI / 4.0));
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 28
@@ -291,7 +320,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = complex(1, 1) / 2.0;
         c = complex(1, 1) / 2.0;
         d = complex(1, -1) / 2.0;
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 29 quantum operator T(HTH)
@@ -301,7 +331,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = (1.0 - r) / 2.0;
         c = (r - i) / 2.0;
         d = (r + i) / 2.0;
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 30
@@ -310,16 +341,18 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = 0;
         c = 0;
         d = complex(1.0 / sqrt(2.0), 1.0 / sqrt(2.0));
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 31
     {
-        a = complex(0.98077, 0);
-        b = complex(0.138, -0.138);
-        c = complex(-0.138, -0.138);
-        d = complex(0.98077, 0);
-        ops.append(unitaryMatrix{a, b, c, d});
+        // a = complex(0.98077, 0);
+        // b = complex(0.138, -0.138);
+        // c = complex(-0.138, -0.138);
+        // d = complex(0.98077, 0);
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 32
@@ -329,7 +362,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = t * complex(1, -1);
         c = t * complex(-1, -1);
         d = t * complex(1, -1);
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 33
@@ -339,7 +373,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = t * complex(1, 1);
         c = t * complex(-1, 1);
         d = t * complex(-1, 1);
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 34
@@ -350,7 +385,8 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = (complex(1, 0) - i) * z2 * z1;
         c = (complex(1, 0) - i) * z2 * z1;
         d = z2 * z2 + i * z1 * z1;
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 35
@@ -361,12 +397,13 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = (complex(1, 0) + i) * z2 * z1;
         c = (complex(1, 0) + i) * z2 * z1;
         d = z2 * z2 - i * z1 * z1;
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 36 V(tetha, phi) from A. Barenco
     {
-        rd.seed(seed);
+        rd.seed(SEED);
         double teta = rd.bounded(360.);
         double phi0 = rd.bounded(360.);
         teta = teta * M_PI / 180.0;
@@ -375,12 +412,13 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = -i * exp(-i * phi0) * sin(teta / 2.0);
         c = -i * exp(i * phi0) * sin(teta / 2.0);
         d = cos(teta / 2.0);
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 37
     {
-        rd.seed(seed);
+        rd.seed(SEED);
         int    n = rd.bounded(0, 1000);
         double alpha;
         alpha = sqrt(n);
@@ -388,19 +426,21 @@ QVector<unitaryMatrix> unitaryOperators2x2() {
         b = sin(M_PI * alpha / 2.0);
         c = sin(M_PI * alpha / 2.0);
         d = i * cos(M_PI * alpha / 2.0);
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     // 38
     {
-        rd.seed(seed);
+        rd.seed(SEED);
         double theta = rd.bounded(360.);
         theta = theta * M_PI / 180.0;
         a = cos(theta);
         b = sin(theta);
         c = sin(theta);
         d = -cos(theta);
-        ops.append(unitaryMatrix{a, b, c, d});
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        ops.append(op);
     }
 
     return ops;

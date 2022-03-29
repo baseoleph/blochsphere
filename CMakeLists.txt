@@ -46,6 +46,8 @@ set(PROJECT_SOURCES
         src/sphere.h
         src/vector.cpp
         src/vector.h
+        src/unitaryMatrix2x2.cpp
+        src/unitaryMatrix2x2.hpp
 )
 
 add_executable(blochsphere ${PROJECT_SOURCES})
@@ -79,6 +81,7 @@ add_executable(
     test/testOperator.cpp
     test/unitaryOperators.cpp
     src/operator.cpp
+    src/unitaryMatrix2x2.cpp
 )
 
 target_include_directories(

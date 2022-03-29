@@ -1,3 +1,3 @@
-#include "operator.h"
+#include "unitaryMatrix2x2.hpp"
 
-QVector<unitaryMatrix> unitaryOperators2x2();
+QVector<UnitaryMatrix2x2> unitaryOperators2x2();

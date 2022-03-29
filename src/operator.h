@@ -17,18 +17,12 @@
 #ifndef OPERATOR_H
 #define OPERATOR_H
 
+#include "unitaryMatrix2x2.hpp"
 #include "vector.h"
 #include <QtMath>
 
 // TODO change logic duration of animation
 #define DURATION 100.
-
-struct unitaryMatrix {
-    complex a;
-    complex b;
-    complex c;
-    complex d;
-};
 
 struct decomposition {
     double alpha = 0;
@@ -45,11 +39,12 @@ public:
     static QVector<Spike> rXRotate(Spike s, double gamma);
     static QVector<Spike> rYRotate(Spike s, double gamma);
     static QVector<Spike> rZRotate(Spike s, double gamma);
-    static QVector<Spike> applyZXDecomposition(Spike s, unitaryMatrix op);
-    static QVector<Spike> applyOperator(Spike s, unitaryMatrix op);
+    static QVector<Spike> applyZXDecomposition(Spike s, UnitaryMatrix2x2 op);
+    static QVector<Spike> applyOperator(Spike s, UnitaryMatrix2x2 op);
 
     // TODO it's private method
-    static decomposition zxDecomposition(unitaryMatrix op);
+    static decomposition    zxDecomposition(UnitaryMatrix2x2 op);
+    static UnitaryMatrix2x2 genRandUnitaryMatrix(qint64 seed);
 };
 
 #endif // OPERATOR_H

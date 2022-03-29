@@ -42,7 +42,7 @@ QVector<Spike> Operator::rZRotate(Spike s, double gamma) {
     return rotate(s, QVector3D(0, 0, 1), gamma);
 }
 
-QVector<Spike> Operator::applyZXDecomposition(Spike s, unitaryMatrix op) {
+QVector<Spike> Operator::applyZXDecomposition(Spike s, UnitaryMatrix2x2 op) {
     QVector<Spike> spike;
     decomposition  dec = zxDecomposition(op);
     qDebug() << "alpha" << dec.alpha;
@@ -57,7 +57,7 @@ QVector<Spike> Operator::applyZXDecomposition(Spike s, unitaryMatrix op) {
     return spike;
 }
 
-QVector<Spike> Operator::applyOperator(Spike s, unitaryMatrix op) {
+QVector<Spike> Operator::applyOperator(Spike s, UnitaryMatrix2x2 op) {
     QVector<Spike> spike = {s};
     decomposition  dec = zxDecomposition(op);
     QQuaternion    qz1 = QQuaternion::fromAxisAndAngle(QVector3D(0, 0, 1), dec.beta);
@@ -93,7 +93,7 @@ QString getComplexStr(complex a) {
     return str;
 }
 
-decomposition Operator::zxDecomposition(unitaryMatrix op) {
+decomposition Operator::zxDecomposition(UnitaryMatrix2x2 op) {
     //  Author   : Швецкий Михаил Владимирович
     //  Original: ff22dd04382d02a839c56f27a80ad18064eb6595
 
@@ -102,10 +102,10 @@ decomposition Operator::zxDecomposition(unitaryMatrix op) {
     double  beta = 0;
     double  delta = 0;
     double  gamma = 0;
-    complex a = op.a;
-    complex b = op.b;
-    complex c = op.c;
-    complex d = op.d;
+    complex a = op.a();
+    complex b = op.b();
+    complex c = op.c();
+    complex d = op.d();
 
     if (abs(a) > EPSILON && abs(b) > EPSILON) {
         alpha = 0.5 * arg(a * d - b * c);
@@ -148,4 +148,24 @@ decomposition Operator::zxDecomposition(unitaryMatrix op) {
 
     return decomposition{alpha * (180 / M_PI), beta * (180 / M_PI), delta * (180 / M_PI),
                          gamma * (180 / M_PI)};
+}
+
+UnitaryMatrix2x2 Operator::genRandUnitaryMatrix(qint64 seed) {
+    UnitaryMatrix2x2   op;
+    complex            i{0, 1};
+    double             a1, a2, b1, b2, moda, modb, phi;
+    QRandomGenerator64 rd(seed);
+    moda = rd.generateDouble();
+    a1 = rd.generateDouble() * sqrt(moda);
+    a2 = sqrt(moda - a1 * a1);
+    b1 = rd.generateDouble() * sqrt(modb = 1 - a1 * a1 - a2 * a2);
+    b2 = sqrt(modb - b1 * b1);
+    phi = floor((2.0 * M_PI * rd.generateDouble() - M_PI) * 180.0 / M_PI);
+    complex a = exp(i * phi) * complex(a1, a2);
+    complex b = exp(i * phi) * complex(b1, b2);
+    complex c = -exp(i * phi) * conj(b);
+    complex d = exp(i * phi) * conj(a);
+
+    Q_ASSERT(op.updateMatrix(a, b, c, d));
+    return op;
 }
