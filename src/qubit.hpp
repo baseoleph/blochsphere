@@ -14,47 +14,41 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef POINT_H
-#define POINT_H
+#ifndef QUBIT_HPP
+#define QUBIT_HPP
 
-#include <QDebug>
-#define EPSILON 0.000001
+#include "point.hpp"
+#include <complex>
 
-class Point {
+typedef std::complex<double> complex;
+
+class Qubit : public Point {
 public:
-    Point();
-    Point(double x, double y, double z);
-    Point(double the, double phi);
+    Qubit();
+    Qubit(double x, double y, double z);
+    Qubit(double the, double phi);
+    Qubit(complex a, complex b);
 
-    inline double x() const {
-        return x_;
+    inline complex a() const {
+        return a_;
     }
-    inline double y() const {
-        return y_;
-    }
-    inline double z() const {
-        return z_;
-    }
-    inline double the() const {
-        return the_;
-    }
-    inline double phi() const {
-        return phi_;
+    inline complex b() const {
+        return b_;
     }
 
 protected:
-    void changePoint(double x, double y, double z);
-    void changePoint(double the, double phi);
+    void changeQubit(double x, double y, double z);
+    void changeQubit(double the, double phi);
+    void changeQubit(complex a, complex b);
 
 private:
-    double x_;
-    double y_;
-    double z_;
-    double the_; // radians
-    double phi_; // radians
+    using Point::changePoint;
 
-    void evalPT();
-    void evalXYZ();
+    complex a_;
+    complex b_;
+
+    void evalVertex();
+    void evalAB();
 };
 
-#endif // POINT_H
+#endif // QUBIT_HPP

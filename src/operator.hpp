@@ -14,11 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef OPERATOR_H
-#define OPERATOR_H
+#ifndef OPERATOR_HPP
+#define OPERATOR_HPP
 
 #include "unitaryMatrix2x2.hpp"
-#include "vector.h"
+#include "vector.hpp"
 #include <QtMath>
 
 // TODO change logic duration of animation
@@ -47,4 +47,4 @@ public:
     static UnitaryMatrix2x2 genRandUnitaryMatrix(qint64 seed);
 };
 
-#endif // OPERATOR_H
+#endif // OPERATOR_HPP

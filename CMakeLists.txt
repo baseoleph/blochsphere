@@ -35,17 +35,17 @@ find_package(Qt5 COMPONENTS Widgets OpenGL REQUIRED)
 set(PROJECT_SOURCES
         src/main.cpp
         src/mainwindow.cpp
-        src/mainwindow.h
+        src/mainwindow.hpp
         src/operator.cpp
-        src/operator.h
+        src/operator.hpp
         src/point.cpp
-        src/point.h
+        src/point.hpp
         src/qubit.cpp
-        src/qubit.h
+        src/qubit.hpp
         src/sphere.cpp
-        src/sphere.h
+        src/sphere.hpp
         src/vector.cpp
-        src/vector.h
+        src/vector.hpp
         src/unitaryMatrix2x2.cpp
         src/unitaryMatrix2x2.hpp
 )

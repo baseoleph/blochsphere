@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef VECTOR_H
-#define VECTOR_H
+#ifndef VECTOR_HPP
+#define VECTOR_HPP
 
-#include "qubit.h"
+#include "qubit.hpp"
 #include <QColor>
 #include <QDebug>
 #include <QObject>
@@ -133,4 +133,4 @@ private:
     void initialSpike();
 };
 
-#endif // VECTOR_H
+#endif // VECTOR_HPP

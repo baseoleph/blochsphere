@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef MAINWINDOW_HPP
+#define MAINWINDOW_HPP
 
-#include "operator.h"
-#include "qubit.h"
-#include "sphere.h"
+#include "operator.hpp"
+#include "qubit.hpp"
+#include "sphere.hpp"
 #include <QMainWindow>
 #include <QMap>
 #include <QVector>
@@ -49,4 +49,4 @@ private:
     void     setupControlBlock();
 };
 
-#endif // MAINWINDOW_H
+#endif // MAINWINDOW_HPP

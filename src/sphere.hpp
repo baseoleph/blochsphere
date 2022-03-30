@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef SPHERE_H
-#define SPHERE_H
+#ifndef SPHERE_HPP
+#define SPHERE_HPP
 
-#include "vector.h"
+#include "vector.hpp"
 #include <QDebug>
 #include <QGLWidget>
 
@@ -70,4 +70,4 @@ private:
     void drawVectors();
 };
 
-#endif // SPHERE_H
+#endif // SPHERE_HPP

@@ -17,7 +17,7 @@
 #ifndef UNITARYMATRIX2X2_HPP
 #define UNITARYMATRIX2X2_HPP
 
-#include "qubit.h"
+#include "qubit.hpp"
 #include <QRandomGenerator64>
 #include <iostream>
 #include <ostream>
