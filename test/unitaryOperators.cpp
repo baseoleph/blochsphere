@@ -14,7 +14,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = sqrt(2.0 / 3.0);
         c = sqrt(2.0 / 3.0);
         d = -sqrt(1.0 / 3.0);
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -24,7 +24,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = -1.;
         c = 1.;
         d = 0;
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -34,17 +34,17 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = complex(0, 1);
         c = -complex(0, 1);
         d = 0;
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
     // 03
     {
-        // a = -1;
-        // b = 0;
-        // c = 0;
-        // d = -complex(0, 1);
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        //        a = -1;
+        //        b = 0;
+        //        c = 0;
+        //        d = -complex(0, 1);
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -56,7 +56,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = t1 / sqrt(6.0);
         c = -t1 / sqrt(6.0);
         d = t / sqrt(6.0);
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -68,7 +68,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = -sqrt(1.0 - q);
         c = sqrt(1.0 - q);
         d = sqrt(q);
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -80,7 +80,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = -sqrt(1.0 - 1.0 / p);
         c = sqrt(1.0 - 1.0 / p);
         d = sqrt(1.0 / p);
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -93,7 +93,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = complex(k2, k3);
         c = complex(k2, k3);
         d = complex(k1, -k3);
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -103,7 +103,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = 0;
         c = 0;
         d = 1.0 / sqrt(2.0) * complex(1, 1);
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -116,17 +116,17 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = complex(k2, -k3);
         c = complex(k2, -k3);
         d = complex(k1, k3);
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
     // 10 approximate Z-X-decomposition for Y^(1/8)
     {
-        // a = complex(0.9619, 0.1913);
-        // b = complex(-0.1913, -0.0381);
-        // c = complex(0.1913, 0.0381);
-        // d = complex(0.9619, 0.1913);
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        a = complex(0.570364338882867, -0.140122339689182);
+        b = complex(0.7320210135325, 0.345246993611228);
+        c = complex(-0.251478818691494, 0.769291007746919);
+        d = complex(0.493436356158812, -0.318544049654007);
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -136,7 +136,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = -1.0;
         c = 1.0;
         d = 0;
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -147,7 +147,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = -t;
         c = -t;
         d = t * i;
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -158,7 +158,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = -t;
         c = t;
         d = t * i;
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -169,7 +169,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = t * i;
         c = t * i;
         d = t;
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -180,7 +180,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = t;
         c = t;
         d = t * i;
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -190,7 +190,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = complex(1, 1) / 2.0;
         c = complex(-1, 1) / 2.0;
         d = complex(1, -1) / 2.0;
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -200,7 +200,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = complex(-1, -1) / 2.0;
         c = complex(1, -1) / 2.0;
         d = complex(1, -1) / 2.0;
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -212,7 +212,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = 0;
         c = 0;
         d = exp(i * M_PI / pow(2.0, k - 1));
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -225,7 +225,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = 0;
         c = 0;
         d = exp(i * g);
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -236,7 +236,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = (1 + sqrt(2.0)) / t1 + i * (1 - sqrt(2.0)) / t2;
         c = (1 + sqrt(2.0)) / t1 + i * (1 - sqrt(2.0)) / t2;
         d = 1.0 / t1 + i * 1.0 / t2;
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -246,7 +246,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = -sqrt(2) / 4.0 + i * sqrt(6) / 4.0;
         c = sqrt(2) / 4.0 + i * sqrt(6) / 4.0;
         d = sqrt(6) / 4.0 - i * sqrt(2) / 4.0;
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -258,7 +258,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = s;
         c = -s;
         d = t;
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -268,7 +268,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = 1.0 / sqrt(3.0);
         c = 1.0 / sqrt(3.0);
         d = -sqrt(2.0 / 3.0);
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -278,7 +278,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = 0.5;
         c = 0.5;
         d = -sqrt(3.0) / 2.0;
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -288,7 +288,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = -i * sqrt(2.0) / 2.0;
         c = i * sqrt(2.0) / 2.0;
         d = sqrt(2.0) / 2.0;
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -300,7 +300,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = -fi * t * i;
         c = -fi * t * i;
         d = fi * t;
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -310,7 +310,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = 0.5 * (complex(1, 0) - exp(i * M_PI / 4.0));
         c = 0.5 * (complex(1, 0) - exp(i * M_PI / 4.0));
         d = 0.5 * (complex(1, 0) + exp(i * M_PI / 4.0));
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -320,7 +320,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = complex(1, 1) / 2.0;
         c = complex(1, 1) / 2.0;
         d = complex(1, -1) / 2.0;
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -331,7 +331,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = (1.0 - r) / 2.0;
         c = (r - i) / 2.0;
         d = (r + i) / 2.0;
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -341,17 +341,17 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = 0;
         c = 0;
         d = complex(1.0 / sqrt(2.0), 1.0 / sqrt(2.0));
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
     // 31
     {
-        // a = complex(0.98077, 0);
-        // b = complex(0.138, -0.138);
-        // c = complex(-0.138, -0.138);
-        // d = complex(0.98077, 0);
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        a = complex(0.342324444138781, -0.470196017743415);
+        b = complex(0.611739821124854, -0.536194061038949);
+        c = complex(-0.687696955655616, 0.434514185067998);
+        d = complex(0.547986875225991, -0.194886389306039);
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -362,7 +362,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = t * complex(1, -1);
         c = t * complex(-1, -1);
         d = t * complex(1, -1);
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -373,7 +373,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = t * complex(1, 1);
         c = t * complex(-1, 1);
         d = t * complex(-1, 1);
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -385,7 +385,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = (complex(1, 0) - i) * z2 * z1;
         c = (complex(1, 0) - i) * z2 * z1;
         d = z2 * z2 + i * z1 * z1;
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -397,7 +397,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = (complex(1, 0) + i) * z2 * z1;
         c = (complex(1, 0) + i) * z2 * z1;
         d = z2 * z2 - i * z1 * z1;
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -412,7 +412,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = -i * exp(-i * phi0) * sin(teta / 2.0);
         c = -i * exp(i * phi0) * sin(teta / 2.0);
         d = cos(teta / 2.0);
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -426,7 +426,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = sin(M_PI * alpha / 2.0);
         c = sin(M_PI * alpha / 2.0);
         d = i * cos(M_PI * alpha / 2.0);
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 
@@ -439,7 +439,7 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = sin(theta);
         c = sin(theta);
         d = -cos(theta);
-        EXPECT_TRUE(op.updateMatrix(a, b, c, d));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
 

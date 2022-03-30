@@ -61,6 +61,7 @@ void Vector::timerEvent(QTimerEvent *t) {
     }
 }
 
+// TODO Q_ASSERT works incorrect
 void Vector::popPath() {
     Q_ASSERT(not path_.isEmpty());
     if (path_.size() > 1) {

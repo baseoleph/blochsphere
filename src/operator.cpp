@@ -166,6 +166,7 @@ UnitaryMatrix2x2 Operator::genRandUnitaryMatrix(qint64 seed) {
     complex c = -exp(i * phi) * conj(b);
     complex d = exp(i * phi) * conj(a);
 
-    Q_ASSERT(op.updateMatrix(a, b, c, d));
+    // TODO check for expetion
+    op.updateMatrix(a, b, c, d);
     return op;
 }

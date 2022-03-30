@@ -25,10 +25,19 @@
 #define DURATION 100.
 
 struct decomposition {
-    double alpha = 0;
-    double beta = 0;
-    double delta = 0;
-    double gamma = 0;
+    double alpha = 0; // deg
+    double beta = 0;  // deg
+    double delta = 0; // deg
+    double gamma = 0; // deg
+
+    void print(std::ostream &out) {
+        out << "----------------------------------------------\n";
+        out << "alpha: " << alpha << "\n";
+        out << "beta: " << beta << "\n";
+        out << "delta: " << delta << "\n";
+        out << "gamma: " << gamma << "\n";
+        out << "----------------------------------------------\n";
+    }
 };
 
 // TODO check for unitary
