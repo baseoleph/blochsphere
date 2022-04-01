@@ -14,23 +14,39 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "mainwindow.hpp"
-#include <QApplication>
-#include <QDesktopWidget>
+#ifndef MAINWINDOW_HPP
+#define MAINWINDOW_HPP
 
-int main(int argc, char *argv[]) {
-    QApplication app(argc, argv);
+#include "operator.hpp"
+#include "qubit.hpp"
+#include "sphere.hpp"
+#include <QMainWindow>
+#include <QMap>
+#include <QVector>
+#include <QtMath>
 
-    // TODO add support old codecs
-    MainWindow w;
-    w.resize(1200, 1024);
+class MainWindow : public QMainWindow {
+    Q_OBJECT
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    void function();
 
-    QDesktopWidget *desktop = QApplication::desktop();
-    int             x = (desktop->width() - w.width()) / 2;
-    int             y = (desktop->height() - w.height()) / 3;
-    w.move(x, y);
+public slots:
+    void addVector();
+    void removeVector(Vector *v);
+    void removeAllVectors();
+    void rotateVector();
 
-    w.show();
+protected:
+    void timerEvent(QTimerEvent *);
 
-    return app.exec();
-}
+private:
+    QVector<Sphere *>                 spheres;
+    QMap<Vector *, QVector<Sphere *>> vectors;
+
+    QWidget *controlWidget;
+    void     createScene();
+    void     setupControlBlock();
+};
+
+#endif // MAINWINDOW_HPP

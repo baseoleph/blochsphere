@@ -14,23 +14,47 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "mainwindow.hpp"
-#include <QApplication>
-#include <QDesktopWidget>
+#ifndef POINT_HPP
+#define POINT_HPP
 
-int main(int argc, char *argv[]) {
-    QApplication app(argc, argv);
+#include <QDebug>
+#define EPSILON 0.000001
 
-    // TODO add support old codecs
-    MainWindow w;
-    w.resize(1200, 1024);
+class Point {
+public:
+    Point();
+    Point(double x, double y, double z);
+    Point(double the, double phi);
 
-    QDesktopWidget *desktop = QApplication::desktop();
-    int             x = (desktop->width() - w.width()) / 2;
-    int             y = (desktop->height() - w.height()) / 3;
-    w.move(x, y);
+    inline double x() const {
+        return x_;
+    }
+    inline double y() const {
+        return y_;
+    }
+    inline double z() const {
+        return z_;
+    }
+    inline double the() const {
+        return the_;
+    }
+    inline double phi() const {
+        return phi_;
+    }
 
-    w.show();
+protected:
+    void changePoint(double x, double y, double z);
+    void changePoint(double the, double phi);
 
-    return app.exec();
-}
+private:
+    double x_;
+    double y_;
+    double z_;
+    double the_; // radians
+    double phi_; // radians
+
+    void evalPT();
+    void evalXYZ();
+};
+
+#endif // POINT_HPP

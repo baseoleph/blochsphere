@@ -14,23 +14,41 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "mainwindow.hpp"
-#include <QApplication>
-#include <QDesktopWidget>
+#ifndef QUBIT_HPP
+#define QUBIT_HPP
 
-int main(int argc, char *argv[]) {
-    QApplication app(argc, argv);
+#include "point.hpp"
+#include <complex>
 
-    // TODO add support old codecs
-    MainWindow w;
-    w.resize(1200, 1024);
+typedef std::complex<double> complex;
 
-    QDesktopWidget *desktop = QApplication::desktop();
-    int             x = (desktop->width() - w.width()) / 2;
-    int             y = (desktop->height() - w.height()) / 3;
-    w.move(x, y);
+class Qubit : public Point {
+public:
+    Qubit();
+    Qubit(double x, double y, double z);
+    Qubit(double the, double phi);
+    Qubit(complex a, complex b);
 
-    w.show();
+    inline complex a() const {
+        return a_;
+    }
+    inline complex b() const {
+        return b_;
+    }
 
-    return app.exec();
-}
+protected:
+    void changeQubit(double x, double y, double z);
+    void changeQubit(double the, double phi);
+    void changeQubit(complex a, complex b);
+
+private:
+    using Point::changePoint;
+
+    complex a_;
+    complex b_;
+
+    void evalVertex();
+    void evalAB();
+};
+
+#endif // QUBIT_HPP

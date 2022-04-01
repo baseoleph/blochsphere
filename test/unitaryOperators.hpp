@@ -14,23 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "mainwindow.hpp"
-#include <QApplication>
-#include <QDesktopWidget>
+#include "unitaryMatrix2x2.hpp"
 
-int main(int argc, char *argv[]) {
-    QApplication app(argc, argv);
-
-    // TODO add support old codecs
-    MainWindow w;
-    w.resize(1200, 1024);
-
-    QDesktopWidget *desktop = QApplication::desktop();
-    int             x = (desktop->width() - w.width()) / 2;
-    int             y = (desktop->height() - w.height()) / 3;
-    w.move(x, y);
-
-    w.show();
-
-    return app.exec();
-}
+QVector<UnitaryMatrix2x2> unitaryOperators2x2();

@@ -14,23 +14,39 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "mainwindow.hpp"
-#include <QApplication>
-#include <QDesktopWidget>
+#include "point.hpp"
+#include <complex>
 
-int main(int argc, char *argv[]) {
-    QApplication app(argc, argv);
+Point::Point() {
+    evalPT();
+}
+Point::Point(double x, double y, double z) : x_(x), y_(y), z_(z) {
+    evalPT();
+}
+Point::Point(double the, double phi) : the_(the), phi_(phi) {
+    evalXYZ();
+}
 
-    // TODO add support old codecs
-    MainWindow w;
-    w.resize(1200, 1024);
+void Point::changePoint(double x, double y, double z) {
+    x_ = x;
+    y_ = y;
+    z_ = z;
+    evalPT();
+}
 
-    QDesktopWidget *desktop = QApplication::desktop();
-    int             x = (desktop->width() - w.width()) / 2;
-    int             y = (desktop->height() - w.height()) / 3;
-    w.move(x, y);
+void Point::changePoint(double the, double phi) {
+    the_ = the;
+    phi_ = phi;
+    evalXYZ();
+}
 
-    w.show();
+void Point::evalPT() {
+    the_ = acos(z() / sqrt(x() * x() + y() * y() + z() * z()));
+    phi_ = atan2(y(), x());
+}
 
-    return app.exec();
+void Point::evalXYZ() {
+    x_ = sin(the_) * cos(phi_);
+    y_ = sin(the_) * sin(phi_);
+    z_ = cos(the_);
 }
