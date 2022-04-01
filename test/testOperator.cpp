@@ -26,7 +26,7 @@ UnitaryMatrix2x2 checkMatrixZXDecomposition(UnitaryMatrix2x2 op) {
     decomposition dec = Operator::zxDecomposition(op);
 
     dec.alpha *= M_PI / 180;
-    dec.beta *= M_PI / 180;
+    dec.beta *=  M_PI / 180;
     dec.delta *= M_PI / 180;
     dec.gamma *= M_PI / 180;
 

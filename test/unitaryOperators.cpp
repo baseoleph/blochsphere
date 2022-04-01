@@ -56,10 +56,10 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
 
     // 03
     {
-        //        a = -1;
-        //        b = 0;
-        //        c = 0;
-        //        d = -complex(0, 1);
+        a = -1;
+        b = 0;
+        c = 0;
+        d = -complex(0, 1);
         EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
         ops.append(op);
     }
