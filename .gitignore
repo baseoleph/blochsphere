@@ -57,3 +57,5 @@ compile_commands.json
 build/*
 .cache/*
 .clangd
+
+.idea/*
