@@ -66,7 +66,8 @@ set_target_properties(blochsphere PROPERTIES
 
 target_compile_options(
     blochsphere PRIVATE
-    -Wall -Wextra -pedantic -Werror
+#    -Wall -Wextra -pedantic -Werror
+        -Wall -Wextra
 )
 
 # GTests
@@ -102,5 +103,6 @@ target_link_libraries(
 
 target_compile_options(
     test PRIVATE
-    -Wall -Wextra -pedantic -Werror
+#    -Wall -Wextra -pedantic -Werror
+        -Wall -Wextra
 )
