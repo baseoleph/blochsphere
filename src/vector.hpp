@@ -40,6 +40,7 @@ struct Spike {
     QVector3D arrow4;
 };
 
+// TODO move all definitions to cpp
 class Vector : public QObject, public Qubit {
     Q_OBJECT
 public:
@@ -116,6 +117,10 @@ public:
     void setAnimateState(bool animate) {
         isNowAnimate_ = animate;
     }
+
+    static Spike createSpike(double x, double y, double z);
+    static Spike createSpike(double the, double phi);
+    static Spike createSpike(double a, complex b);
 
 protected:
     void timerEvent(QTimerEvent *);

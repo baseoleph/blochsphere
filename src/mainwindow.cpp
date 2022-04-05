@@ -37,13 +37,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
     createSideWidget();
     createOpQueWidget();
     createSphere();
+    addVector();
 }
 
 void MainWindow::addVector() {
-    Vector *v = new Vector(qDegreesToRadians(0.), qDegreesToRadians(0.));
+    auto *v = new Vector(qDegreesToRadians(0.), qDegreesToRadians(0.));
     vectors.insert(v, QVector<Sphere *>());
-    spheres[0]->addVector(v);
-    vectors[v].append(spheres[0]);
+
+    for (auto &e : spheres) {
+        e->addVector(v);
+        vectors[v].append(e);
+    }
 }
 
 void MainWindow::removeVector(Vector *v) {
@@ -100,8 +104,7 @@ void MainWindow::setupOldControlBlock() {
 ///-----------------------------------------------------------------------------------------------
 
 // TODO move
-double okr(double a, double s)
-{
+double okr(double a, double s) {
     a *= s;
     if (a - floor(a) >= 0.5)
         return (floor(a) + 1) / s;
@@ -109,26 +112,35 @@ double okr(double a, double s)
         return floor(a) / s;
 }
 
-void MainWindow::createSphere()
-{
-    //    //scene = new Bloch();
-    //    //scene->setFocus();
-    //    this->setCentralWidget(//scene);
-    //    connect(//scene, SIGNAL(motionBegin(QString)), SLOT(slotMotionBegin(QString)));
-    //    connect(//scene, SIGNAL(motionEnd()), SLOT(slotMotionEnd()));
-    //
-    //    QBVector *qV = //scene->getQBV();
-    //    connect(qV, SIGNAL(phiTheChanged(float, float)), SLOT(slotPhiTheChanged(float, float)));
-    //    connect(qV, SIGNAL(alpBetChanged(float, complex)), SLOT(slotAlpBetChanged(float,
-    //    complex))); connect(qV, SIGNAL(xyzChanged(float, float, float)),
-    //    SLOT(slotXYZChanged(float, float, float))); connect(qV, SIGNAL(newOp(QUOperator &)),
-    //    SLOT(slotNewOp(QUOperator &))); qV->report();
+void MainWindow::createSphere() {
+
+    // TODO get rid of
+    // scene = new Bloch();
+    // scene->setFocus();
+    //        this->setCentralWidget(//scene);
+    //        connect(//scene, SIGNAL(motionBegin(QString)), SLOT(slotMotionBegin(QString)));
+    //        connect(//scene, SIGNAL(motionEnd()), SLOT(slotMotionEnd()));
+
+    //        QBVector *qV = //scene->getQBV();
+    //        connect(qV, SIGNAL(phiTheChanged(float, float)), SLOT(slotPhiTheChanged(float,
+    //        float))); connect(qV, SIGNAL(alpBetChanged(float, complex)),
+    //        SLOT(slotAlpBetChanged(float, complex))); connect(qV, SIGNAL(xyzChanged(float, float,
+    //        float)), SLOT(slotXYZChanged(float, float, float))); connect(qV,
+    //        SIGNAL(newOp(QUOperator &)), SLOT(slotNewOp(QUOperator &))); qV->report();
+    controlWidget = new QWidget(this);
+    setCentralWidget(controlWidget);
+    auto *layout = new QGridLayout(controlWidget);
+    for (int i = 0; i < 2; ++i) {
+        for (int j = 1; j < 3; ++j) {
+            spheres.append(new Sphere(controlWidget, QString::number(i + 10 * j)));
+            layout->addWidget(spheres.last(), i, j);
+        }
+    }
+    controlWidget->setFocus();
 }
 
-void MainWindow::createActions()
-{
+void MainWindow::createActions() {
     aboutAct = new QAction("About program", this);
-    //     connect(aboutAct, SIGNAL(triggered()), SLOT(slotAbout()));
     connect(aboutAct, &QAction::triggered, this, &MainWindow::slotAbout);
 
     //        saveState = new QAction("Save state", this);
@@ -175,7 +187,6 @@ void MainWindow::createMenu() {
 
     menuFile->addSeparator();
     menuFile->addAction(exitAct);
-
     menuInfo->addAction(aboutAct);
 
     // QMenu  *menuColor = new QMenu("Color");
@@ -187,8 +198,7 @@ void MainWindow::createMenu() {
     this->setMenuBar(mnuBar);
 }
 
-void MainWindow::createTopBar()
-{
+void MainWindow::createTopBar() {
     auto *qtb = new QToolBar("Tool bar");
     //    qtb->addAction(saveState);
     //    qtb->addAction(recallState);
@@ -198,8 +208,8 @@ void MainWindow::createTopBar()
     //    qtb->addAction(clearTAct);
 
     qcomb = new QComboBox(qtb);
-//    foreach (QAction *act, trColor->actions())
-//        qcomb->addItem(act->text());
+    //    foreach (QAction *act, trColor->actions())
+    //        qcomb->addItem(act->text());
     connect(qcomb, SIGNAL(currentIndexChanged(int)), SLOT(slotTraceColor(int)));
     qtb->addWidget(new QLabel("<center>Trace Color:"));
     qtb->addWidget(qcomb);
@@ -234,8 +244,7 @@ void MainWindow::createOpQueWidget() {
     this->addToolBar(Qt::BottomToolBarArea, qtb);
 }
 
-void MainWindow::createStatusBar()
-{
+void MainWindow::createStatusBar() {
     xyzStLab = new QLabel();
     svdStLab = new QLabel();
     mtnStLab = new QLabel();
@@ -249,8 +258,7 @@ void MainWindow::createStatusBar()
     statusBar()->addWidget(mtnStLab);
 }
 
-void MainWindow::createSideWidget()
-{
+void MainWindow::createSideWidget() {
     QWidget     *leftWid = new QWidget();
     QVBoxLayout *mainLay = new QVBoxLayout();
 
@@ -276,12 +284,11 @@ void MainWindow::createSideWidget()
     this->addToolBar(Qt::LeftToolBarArea, qtb);
 }
 
-QWidget *MainWindow::makeThePhiWid()
-{
+QWidget *MainWindow::makeThePhiWid() {
     theEd = new QLineEdit("0");
     phiEd = new QLineEdit("0");
-    QLabel *theLab = new QLabel("<font face=symbol size=5>q </font>");
-    QLabel *phiLab = new QLabel("<font face=symbol size=5>f </font>");
+    auto *theLab = new QLabel("<font face=symbol size=5>q</font>");
+    auto *phiLab = new QLabel("<font face=symbol size=5>f</font>");
 
     theEd->setMaximumWidth(55);
     theEd->setValidator(new QDoubleValidator);
@@ -289,24 +296,24 @@ QWidget *MainWindow::makeThePhiWid()
     phiEd->setMaximumWidth(55);
     phiEd->setValidator(new QDoubleValidator);
 
-    QPushButton *bPogna = new QPushButton("Set");
-    bPogna->setFixedWidth(55);
-    connect(bPogna, SIGNAL(clicked()), this, SLOT(slotThePhi()));
+    auto *thePhiButton = new QPushButton("Set");
+    thePhiButton->setFixedWidth(55);
+    connect(thePhiButton, &QPushButton::clicked, this, &MainWindow::slotThePhi);
 
-    QWidget *tpW = new QWidget();
+    auto *tpW = new QWidget();
     tpW->setFixedHeight(90);
 
-    QFrame *qfThePhi = new QFrame(tpW);
+    auto *qfThePhi = new QFrame(tpW);
     qfThePhi->setFrameStyle(QFrame::Panel | QFrame::Raised);
     qfThePhi->move(0, 0);
     qfThePhi->setFixedSize(tpW->size());
 
-    QGridLayout *tpLay = new QGridLayout();
+    auto *tpLay = new QGridLayout();
     tpLay->addWidget(theLab, 0, 0);
     tpLay->addWidget(theEd, 0, 1, 1, 3);
     tpLay->addWidget(phiLab, 1, 0);
     tpLay->addWidget(phiEd, 1, 1, 1, 3);
-    tpLay->addWidget(bPogna, 4, 1, 1, 2);
+    tpLay->addWidget(thePhiButton, 4, 1, 1, 2);
     tpLay->setSpacing(2);
     tpLay->setContentsMargins(5, 5, 5, 5);
     tpW->setLayout(tpLay);
@@ -314,8 +321,7 @@ QWidget *MainWindow::makeThePhiWid()
     return tpW;
 }
 
-QWidget *MainWindow::makeAlpBetWid()
-{
+QWidget *MainWindow::makeAlpBetWid() {
     alpEd = new QLineEdit();
     reBetEd = new QLineEdit();
     QLabel *alpLab = new QLabel("<font face=symbol size=5>a</font>");
@@ -358,8 +364,7 @@ QWidget *MainWindow::makeAlpBetWid()
     return abW;
 }
 
-QWidget *MainWindow::makeRXYZWid()
-{
+QWidget *MainWindow::makeRXYZWid() {
     rxyzTab = new QTabWidget;
     rxyzTab->insertTab(0, makeRZYWid(), "Z-Y");
     rxyzTab->insertTab(1, makeRZXWid(), "Z-X");
@@ -381,8 +386,7 @@ QWidget *MainWindow::makeRXYZWid()
     return rtW;
 }
 
-QWidget *MainWindow::makeRZYWid()
-{
+QWidget *MainWindow::makeRZYWid() {
     rZYAlpEd = new QLineEdit();
     rZYBetEd = new QLineEdit();
     rZYGamEd = new QLineEdit();
@@ -424,8 +428,7 @@ QWidget *MainWindow::makeRZYWid()
     return rzW;
 }
 
-QWidget *MainWindow::makeRZXWid()
-{
+QWidget *MainWindow::makeRZXWid() {
     rZXAlpEd = new QLineEdit();
     rZXBetEd = new QLineEdit();
     rZXGamEd = new QLineEdit();
@@ -467,8 +470,7 @@ QWidget *MainWindow::makeRZXWid()
     return rzW;
 }
 
-QWidget *MainWindow::makeRXYWid()
-{
+QWidget *MainWindow::makeRXYWid() {
     rXYAlpEd = new QLineEdit();
     rXYBetEd = new QLineEdit();
     rXYGamEd = new QLineEdit();
@@ -510,8 +512,7 @@ QWidget *MainWindow::makeRXYWid()
     return rzW;
 }
 
-QWidget *MainWindow::makeOpWid()
-{
+QWidget *MainWindow::makeOpWid() {
     QWidget *opW = new QWidget();
 
     QFrame *qfOpButtons = new QFrame(opW);
@@ -609,14 +610,12 @@ QWidget *MainWindow::makeOpWid()
     gbLay->setSpacing(5);
     qGb->setLayout(gbLay);
 
-
     QPushButton *appBut = new QPushButton("Apply operator");
     appBut->setFixedHeight(35);
     connect(appBut, SIGNAL(clicked()), SLOT(slotApplyOp()));
     QPushButton *addToQueBut = new QPushButton("Add to queue");
     addToQueBut->setFixedHeight(35);
     connect(addToQueBut, SIGNAL(clicked()), SLOT(slotAddToQue()));
-
 
     QHBoxLayout *horLay = new QHBoxLayout;
     horLay->addWidget(appBut);
@@ -635,21 +634,24 @@ QWidget *MainWindow::makeOpWid()
     return opW;
 }
 
-QPushButton *MainWindow::makeOpButton(QString str)
-{
+QPushButton *MainWindow::makeOpButton(QString str) {
     QPushButton *newBut = new QPushButton(str);
     newBut->setFixedHeight(26);
     connect(newBut, SIGNAL(clicked()), this, SLOT(slotButtonClicked()));
     return newBut;
 }
 
-void MainWindow::slotThePhi()
-{
-    //    //scene->setTP(theEd->text().toDouble(), phiEd->text().toDouble());
+// TODO add check ranges
+// DOTO push while animating
+void MainWindow::slotThePhi() {
+    foreach (auto &e, vectors.keys()) {
+        double the = qDegreesToRadians(theEd->text().toDouble());
+        double phi = qDegreesToRadians(phiEd->text().toDouble());
+        e->changeVector(Vector::createSpike(the, phi));
+    }
 }
 
-void MainWindow::slotAlpBet()
-{
+void MainWindow::slotAlpBet() {
     try {
         complex cf = parceC(reBetEd->text());
         ////scene->setAB(alpEd->text().toDouble(), cf);
@@ -658,35 +660,30 @@ void MainWindow::slotAlpBet()
     }
 }
 
-void MainWindow::slotSetRandomPsi()
-{
+void MainWindow::slotSetRandomPsi() {
     // scene->setRandomPsi();
 }
 
-void MainWindow::slotPhiTheChanged(float phi, float the)
-{
+void MainWindow::slotPhiTheChanged(float phi, float the) {
     QString t = QString("%1").arg(okr(the * DEG, 10)), p = QString("%1").arg(okr(phi * DEG, 10));
     theEd->setText(t);
     phiEd->setText(p);
 }
 
-void MainWindow::slotAlpBetChanged(float a, complex b)
-{
+void MainWindow::slotAlpBetChanged(float a, complex b) {
     QString alp = QString("%1").arg(okr(a, 1000.0f)), bet = deparceC(b, 1000);
     alpEd->setText(alp);
     reBetEd->setText(bet);
 }
 
-void MainWindow::slotXYZChanged(float x, float y, float z)
-{ // 4
+void MainWindow::slotXYZChanged(float x, float y, float z) { // 4
     xyzStLab->setText(QString("<font size=4>(%1;%2;%3)</font>")
                           .arg(okr(x, 100))
                           .arg(okr(y, 100))
                           .arg(okr(z, 100)));
 }
 
-void MainWindow::slotSaveState()
-{
+void MainWindow::slotSaveState() {
     //    savedAlp = //scene->getQBV()->_a();
     //    savedBet = //scene->getQBV()->_b();
     //    QString str = QString("<font size=4>Saved state: (%1, ").arg(okr(savedAlp, 100));
@@ -697,22 +694,17 @@ void MainWindow::slotSaveState()
     //        recallState->setEnabled(true);
 }
 
-void MainWindow::slotRecallState()
-{
+void MainWindow::slotRecallState() {
     // scene->setAB(savedAlp, savedBet);
     // scene->getQBV()->report();
 }
 
-void MainWindow::slotMotionBegin(QString msg)
-{
+void MainWindow::slotMotionBegin(QString msg) {
     mtnStLab->setText("<font size=4>" + msg + "</font>");
     mtnStLab->setVisible(true);
 }
 
-void MainWindow::slotMotionEnd()
-{
-    mtnStLab->setVisible(false);
-}
+void MainWindow::slotMotionEnd() { mtnStLab->setVisible(false); }
 
 void MainWindow::slotDrawTrace() { /*//scene->setDrawTrace(drawTAct->isChecked());*/
 }
@@ -721,20 +713,19 @@ void MainWindow::slotClearTrace() { /* scene->clearTrace();*/
 }
 
 void MainWindow::slotTraceColor(int n) {
-//    if (trColor->checkedAction() != trColor->actions()[n])
-//        trColor->actions()[n]->setChecked(true);
+    //    if (trColor->checkedAction() != trColor->actions()[n])
+    //        trColor->actions()[n]->setChecked(true);
 
     // scene->setTraceColor(n);
 }
 
 void MainWindow::slotTraceColor(QAction *act) {
-//    int i = trColor->actions().indexOf(act);
-//    if (qcomb->currentIndex() != i)
-//        qcomb->setCurrentIndex(i);
+    //    int i = trColor->actions().indexOf(act);
+    //    if (qcomb->currentIndex() != i)
+    //        qcomb->setCurrentIndex(i);
 }
 
-void MainWindow::slotButtonClicked()
-{
+void MainWindow::slotButtonClicked() {
     std::string str = ((QPushButton *)sender())->text().toStdString();
     QUOperator  op;
     AngInput   *aIn;
@@ -793,14 +784,12 @@ void MainWindow::slotButtonClicked()
     updateOp();
 }
 
-void MainWindow::slotNewOp(QUOperator &op)
-{
+void MainWindow::slotNewOp(QUOperator &op) {
     curOperator = op;
     updateOp();
 }
 
-void MainWindow::slotSetRXYZOp()
-{
+void MainWindow::slotSetRXYZOp() {
     double alpha, beta, gamma, delta, v;
     switch (rxyzTab->currentIndex()) {
     case 0:
@@ -846,8 +835,7 @@ void MainWindow::slotSetRXYZOp()
     updateOp();
 }
 
-void MainWindow::slotSetMatrixOp()
-{
+void MainWindow::slotSetMatrixOp() {
     QVector<complex> res;
     for (int i = 0; i < 2; i++)
         for (int j = 0; j < 2; j++) {
@@ -870,8 +858,7 @@ void MainWindow::slotSetMatrixOp()
     //        slotNewOp(op);
 }
 
-void MainWindow::slotSetNewAxOp()
-{
+void MainWindow::slotSetNewAxOp() {
     QRegExp rxp("^(-?[\\d]*\\.?[\\d]*e?[+-]?[\\d]*);(-?[\\d]*\\.?[\\d]*e?[+-]?[\\d]*);(-?[\\d]*\\.?"
                 "[\\d]*e?[+-]?[\\d]*)$");
     if (axRnEd->text().contains(rxp)) {
@@ -898,8 +885,7 @@ void MainWindow::slotSetNewAxOp()
     }
 }
 
-void MainWindow::updateOp()
-{
+void MainWindow::updateOp() {
     //        curOperator.toZXdec();
     //        rZXAlpEd->setText(QString("%1").arg(okr(curOperator._alp() * DEG, 10)));
     //        rZXBetEd->setText(QString("%1").arg(okr(curOperator._bet() * DEG, 10)));
@@ -950,8 +936,7 @@ void MainWindow::slotAddToQue() {
     opQueWid->insertItem(0, it);
 }
 
-void MainWindow::slotApplyOp()
-{
+void MainWindow::slotApplyOp() {
     //    if (rtRB->isChecked()) {
     //        curOperator.toZYdec();
     //        const QVector<double> &x = curOperator.findNVec();
@@ -1020,7 +1005,6 @@ AngInput::AngInput(QWidget *pwgt) : QDialog(pwgt, Qt::WindowTitleHint | Qt::Wind
 }
 QString AngInput::ang() const { return angEd->text(); }
 
-
 OpItem::OpItem(QString str, QUOperator op)
     : QListWidgetItem(str),
       oper(op){
@@ -1030,9 +1014,7 @@ OpItem::OpItem(QString str, QUOperator op)
 
 QUOperator OpItem::getOp() { return oper; }
 
-
-complex parceC(QString str)
-{
+complex parceC(QString str) {
     QRegExp rxp1("^([+-]?[0-9]+\\.?[0-9]*)([+-]?[0-9]*\\.?[0-9]*)i$");
     QRegExp rxp2("^([+-]?[\\d]+\\.?[\\d]*)$");
     QRegExp rxp3("^([+-]?[0-9]*\\.?[0-9]*)i$");
@@ -1057,8 +1039,7 @@ complex parceC(QString str)
     throw 1;
 }
 
-QString deparceC(complex c, int d)
-{
+QString deparceC(complex c, int d) {
     QString str;
     float   im = okr(imag(c), d), re = okr(real(c), d);
     if (abs(re) < EPS && abs(im) > EPS) {
@@ -1086,8 +1067,7 @@ QString deparceC(complex c, int d)
     }
 }
 
-QString decompString(double a, double b, double g, double d)
-{
+QString decompString(double a, double b, double g, double d) {
     QString res = "<font size=4><center>U=";
     if (abs(a) > 0.001) {
         res += "e<sup><font face=symbol size=5>i";

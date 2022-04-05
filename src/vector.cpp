@@ -90,16 +90,31 @@ void Vector::tracePushBack() {
 }
 
 void Vector::initialSpike() {
-    QQuaternion q = QQuaternion::rotationTo(QVector3D(0, 0, 1), QVector3D(x(), y(), z()));
-    spike_.point = QVector3D(x(), y(), z());
-    spike_.arrow1 = q.rotatedVector(QVector3D(0.02, 0.0, 0.9));
-    spike_.arrow2 = q.rotatedVector(QVector3D(-0.02, 0.0, 0.9));
-    spike_.arrow3 = q.rotatedVector(QVector3D(0.0, 0.02, 0.9));
-    spike_.arrow4 = q.rotatedVector(QVector3D(0.0, -0.02, 0.9));
+    spike_ = createSpike(x(), y(), z());
 }
 
 QColor Vector::generateRandomColor() const {
     return QColor(QRandomGenerator::global()->bounded(255),
                   QRandomGenerator::global()->bounded(255),
                   QRandomGenerator::global()->bounded(255));
+}
+Spike Vector::createSpike(double x, double y, double z) {
+    Spike s;
+    QQuaternion q = QQuaternion::rotationTo(QVector3D(0, 0, 1), QVector3D(x, y, z));
+    s.point = QVector3D(x, y, z);
+    s.arrow1 = q.rotatedVector(QVector3D(0.02, 0.0, 0.9));
+    s.arrow2 = q.rotatedVector(QVector3D(-0.02, 0.0, 0.9));
+    s.arrow3 = q.rotatedVector(QVector3D(0.0, 0.02, 0.9));
+    s.arrow4 = q.rotatedVector(QVector3D(0.0, -0.02, 0.9));
+    return s;
+}
+
+Spike Vector::createSpike(double the, double phi) {
+    Qubit q(the, phi);
+    return createSpike(q.x(), q.y(), q.z());
+}
+
+Spike Vector::createSpike(double a, complex b) {
+    Qubit q(a, b);
+    return createSpike(q.x(), q.y(), q.z());
 }
