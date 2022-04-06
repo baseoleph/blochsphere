@@ -26,6 +26,7 @@
 #include <QTimerEvent>
 #include <QVector3D>
 #include <QtMath>
+#include <utility>
 
 struct Trace {
     QVector3D first;
@@ -49,38 +50,18 @@ public:
     Vector(double the, double phi);
     Vector(complex a, complex b);
 
-    inline QColor getSelfColor() const {
-        return selfColor_;
-    }
-    inline void setSelfColor(QColor color) {
-        selfColor_ = color;
-    }
-    inline QColor getTraceColor() const {
-        return traceColor_;
-    }
-    inline void setTraceColor(QColor color) {
-        traceColor_ = color;
-    }
-    inline void setEnableTrace(bool b) {
-        traceEnabled_ = b;
-    }
-    inline bool isTraceEnabled() const {
-        return traceEnabled_;
-    }
-    inline QVector<Trace> const &getTrace() const {
-        return trace_;
-    }
-    Spike getSpike() const;
+    [[nodiscard]] inline QColor                getSelfColor() const { return selfColor_; }
+    inline void                  setSelfColor(QColor color) { selfColor_ = std::move(color); }
+    [[nodiscard]] inline QColor                getTraceColor() const { return traceColor_; }
+    inline void                  setTraceColor(QColor color) { traceColor_ = std::move(color); }
+    inline void                  setEnableTrace(bool b) { traceEnabled_ = b; }
+    [[nodiscard]] inline bool                  isTraceEnabled() const { return traceEnabled_; }
+    [[nodiscard]] inline QVector<Trace> const &getTrace() const { return trace_; }
+    [[nodiscard]] Spike                        getSpike() const;
 
-    inline QVector3D toQVector3D(Qubit const &q) const {
-        return QVector3D(q.x(), q.y(), q.z());
-    }
-    inline QVector3D toQVector3D() const {
-        return QVector3D(x(), y(), z());
-    }
-    inline bool hasPath() const {
-        return not path_.empty();
-    }
+    inline QVector3D toQVector3D(Qubit const &q) const { return QVector3D(q.x(), q.y(), q.z()); }
+    inline QVector3D toQVector3D() const { return QVector3D(x(), y(), z()); }
+    [[nodiscard]] inline bool      hasPath() const { return not path_.empty(); }
 
     // TODO when I should use inline?
     void popPath();
@@ -108,15 +89,11 @@ public:
 
     void printVector() const;
 
-    QColor generateRandomColor() const;
+    static QColor generateRandomColor() ;
 
-    bool isNowAnimate() const {
-        return isNowAnimate_;
-    }
+    [[nodiscard]] bool isNowAnimate() const { return isNowAnimate_; }
 
-    void setAnimateState(bool animate) {
-        isNowAnimate_ = animate;
-    }
+    void setAnimateState(bool animate) { isNowAnimate_ = animate; }
 
     static Spike createSpike(double x, double y, double z);
     static Spike createSpike(double the, double phi);

@@ -653,7 +653,7 @@ void MainWindow::slotThePhi() {
     v.changeVector(sp);
     // TODO maybe should create function that converts double to str
     alpEd->setText(QString::number(v.a().real(), 'f', 3));
-    reBetEd->setText(QString::number(v.b().real(), 'f', 3) + (v.b().imag() > 0 ? "+" : "") +
+    reBetEd->setText(QString::number(v.b().real(), 'f', 3) + (v.b().imag() >= 0 ? "+" : "") +
                      QString::number(v.b().imag(), 'f', 3) + "i");
 }
 
@@ -663,7 +663,7 @@ void MainWindow::slotAlpBet() {
     double  a = alpEd->text().toDouble();
     complex b = parseStrToComplex(reBetEd->text());
     Spike   sp = Vector::createSpike(a, b);
-    foreach (auto &e, vectors.keys()) { e->changeVector(Vector::createSpike(a, b)); }
+    foreach (auto &e, vectors.keys()) { e->changeVector(Vector::createSpike(a, b)); e->isNowAnimate();}
 
     Vector v;
     v.changeVector(sp);
@@ -681,7 +681,7 @@ void MainWindow::slotSetRandomPsi() {
     Vector v;
     v.changeVector(sp);
     alpEd->setText(QString::number(v.a().real(), 'f', 3));
-    reBetEd->setText(QString::number(v.b().real(), 'f', 3) + (v.b().imag() > 0 ? "+" : "") +
+    reBetEd->setText(QString::number(v.b().real(), 'f', 3) + (v.b().imag() >= 0 ? "+" : "") +
                      QString::number(v.b().imag(), 'f', 3) + "i");
 
     theEd->setText(QString::number(qRadiansToDegrees(v.the())));

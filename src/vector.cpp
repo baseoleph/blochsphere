@@ -89,17 +89,14 @@ void Vector::tracePushBack() {
               getSpike().point});
 }
 
-void Vector::initialSpike() {
-    spike_ = createSpike(x(), y(), z());
-}
+void Vector::initialSpike() { spike_ = createSpike(x(), y(), z()); }
 
-QColor Vector::generateRandomColor() const {
-    return QColor(QRandomGenerator::global()->bounded(255),
-                  QRandomGenerator::global()->bounded(255),
-                  QRandomGenerator::global()->bounded(255));
+QColor Vector::generateRandomColor() {
+    return {QRandomGenerator::global()->bounded(255), QRandomGenerator::global()->bounded(255),
+            QRandomGenerator::global()->bounded(255)};
 }
 Spike Vector::createSpike(double x, double y, double z) {
-    Spike s;
+    Spike       s;
     QQuaternion q = QQuaternion::rotationTo(QVector3D(0, 0, 1), QVector3D(x, y, z));
     s.point = QVector3D(x, y, z);
     s.arrow1 = q.rotatedVector(QVector3D(0.02, 0.0, 0.9));
