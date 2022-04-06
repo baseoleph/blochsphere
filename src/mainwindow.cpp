@@ -322,11 +322,11 @@ QWidget *MainWindow::makeThePhiWid() {
 }
 
 QWidget *MainWindow::makeAlpBetWid() {
-    alpEd = new QLineEdit();
-    reBetEd = new QLineEdit();
-    QLabel *alpLab = new QLabel("<font face=symbol size=5>a</font>");
-    QLabel *reBetLab = new QLabel("<font face=symbol size=5>b</font>");
-    QLabel *imBetLab = new QLabel("<font size=4>Im(<font face=symbol size=5>b</font>)</font>");
+    alpEd = new QLineEdit("1");
+    reBetEd = new QLineEdit("0");
+    auto *alpLab = new QLabel("<font face=symbol size=5>a</font>");
+    auto *reBetLab = new QLabel("<font face=symbol size=5>b</font>");
+    auto *imBetLab = new QLabel("<font size=4>Im(<font face=symbol size=5>b</font>)</font>");
 
     alpEd->setFixedWidth(90);
     alpEd->setValidator(new QDoubleValidator);
@@ -334,23 +334,23 @@ QWidget *MainWindow::makeAlpBetWid() {
     reBetEd->setFixedWidth(90);
     reBetEd->setValidator(&compValid);
 
-    QPushButton *bPsi = new QPushButton("Set");
+    auto *bPsi = new QPushButton("Set");
     bPsi->setFixedWidth(60);
-    connect(bPsi, SIGNAL(clicked()), this, SLOT(slotAlpBet()));
+    connect(bPsi, &QPushButton::clicked, this, &MainWindow::slotAlpBet);
 
-    QPushButton *bRandPsi = new QPushButton("Random");
+    auto *bRandPsi = new QPushButton("Random");
     bRandPsi->setFixedWidth(60);
-    connect(bRandPsi, SIGNAL(clicked()), this, SLOT(slotSetRandomPsi()));
+    connect(bRandPsi, &QPushButton::clicked, this, &MainWindow::slotSetRandomPsi);
 
-    QWidget *abW = new QWidget();
+    auto *abW = new QWidget();
     abW->setFixedHeight(90);
 
-    QFrame *qfAlpBet = new QFrame(abW);
+    auto *qfAlpBet = new QFrame(abW);
     qfAlpBet->setFrameStyle(QFrame::Panel | QFrame::Raised);
     qfAlpBet->move(0, 0);
     qfAlpBet->setFixedSize(abW->size());
 
-    QGridLayout *abLay = new QGridLayout();
+    auto *abLay = new QGridLayout();
     abLay->addWidget(alpLab, 1, 0);
     abLay->addWidget(alpEd, 1, 1, 1, 3);
     abLay->addWidget(reBetLab, 2, 0);
@@ -644,24 +644,48 @@ QPushButton *MainWindow::makeOpButton(QString str) {
 // TODO add check ranges
 // DOTO push while animating
 void MainWindow::slotThePhi() {
-    foreach (auto &e, vectors.keys()) {
-        double the = qDegreesToRadians(theEd->text().toDouble());
-        double phi = qDegreesToRadians(phiEd->text().toDouble());
-        e->changeVector(Vector::createSpike(the, phi));
-    }
+    double the = qDegreesToRadians(theEd->text().toDouble());
+    double phi = qDegreesToRadians(phiEd->text().toDouble());
+    Spike  sp = Vector::createSpike(the, phi);
+    foreach (auto &e, vectors.keys()) { e->changeVector(sp); }
+
+    Vector v;
+    v.changeVector(sp);
+    // TODO maybe should create function that converts double to str
+    alpEd->setText(QString::number(v.a().real(), 'f', 3));
+    reBetEd->setText(QString::number(v.b().real(), 'f', 3) + (v.b().imag() > 0 ? "+" : "") +
+                     QString::number(v.b().imag(), 'f', 3) + "i");
 }
 
+// TODO add check if normalized
+// DOTO push while animating
 void MainWindow::slotAlpBet() {
-    try {
-        complex cf = parceC(reBetEd->text());
-        ////scene->setAB(alpEd->text().toDouble(), cf);
-    } catch (int e) {
-        QMessageBox::warning(0, "Error", "Wrong input: Beta");
-    }
+    double  a = alpEd->text().toDouble();
+    complex b = parseStrToComplex(reBetEd->text());
+    Spike   sp = Vector::createSpike(a, b);
+    foreach (auto &e, vectors.keys()) { e->changeVector(Vector::createSpike(a, b)); }
+
+    Vector v;
+    v.changeVector(sp);
+    theEd->setText(QString::number(qRadiansToDegrees(v.the())));
+    phiEd->setText(QString::number(qRadiansToDegrees(v.phi())));
 }
 
 void MainWindow::slotSetRandomPsi() {
-    // scene->setRandomPsi();
+    double the = QRandomGenerator::global()->bounded(180.);
+    double phi = QRandomGenerator::global()->bounded(360.);
+
+    Spike sp = Vector::createSpike(the, phi);
+    foreach (auto &e, vectors.keys()) { e->changeVector(sp); }
+
+    Vector v;
+    v.changeVector(sp);
+    alpEd->setText(QString::number(v.a().real(), 'f', 3));
+    reBetEd->setText(QString::number(v.b().real(), 'f', 3) + (v.b().imag() > 0 ? "+" : "") +
+                     QString::number(v.b().imag(), 'f', 3) + "i");
+
+    theEd->setText(QString::number(qRadiansToDegrees(v.the())));
+    phiEd->setText(QString::number(qRadiansToDegrees(v.phi())));
 }
 
 void MainWindow::slotPhiTheChanged(float phi, float the) {
@@ -840,7 +864,7 @@ void MainWindow::slotSetMatrixOp() {
     for (int i = 0; i < 2; i++)
         for (int j = 0; j < 2; j++) {
             try {
-                res.push_back(parceC(mat[i][j]->text()));
+                res.push_back(parseStrToComplex(mat[i][j]->text()));
             } catch (int e) {
                 QMessageBox::warning(0, "Error",
                                      QString("Wrong input: Matrix(%1,%2)").arg(i).arg(j));
@@ -1014,7 +1038,7 @@ OpItem::OpItem(QString str, QUOperator op)
 
 QUOperator OpItem::getOp() { return oper; }
 
-complex parceC(QString str) {
+complex parseStrToComplex(const QString &str) {
     QRegExp rxp1("^([+-]?[0-9]+\\.?[0-9]*)([+-]?[0-9]*\\.?[0-9]*)i$");
     QRegExp rxp2("^([+-]?[\\d]+\\.?[\\d]*)$");
     QRegExp rxp3("^([+-]?[0-9]*\\.?[0-9]*)i$");
@@ -1036,6 +1060,7 @@ complex parceC(QString str) {
         else
             return complex(0.0, rxp3.capturedTexts()[1].toDouble());
     }
+    // DOTO nothing try to catch it
     throw 1;
 }
 
@@ -1065,6 +1090,8 @@ QString deparceC(complex c, int d) {
         }
         return str;
     }
+    // DOTO nothing try to catch it
+    throw 1;
 }
 
 QString decompString(double a, double b, double g, double d) {

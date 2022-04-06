@@ -210,7 +210,8 @@ public:
     QUOperator getOp();
 };
 
-complex parceC(QString str);
+// TODO may be should create another file with useful functions and constants
+complex parseStrToComplex(const QString &str);
 QString deparceC(complex c, int d = 10000);
 
 #endif // MAINWINDOW_HPP
