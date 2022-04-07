@@ -259,13 +259,14 @@ void MainWindow::createStatusBar() {
 }
 
 void MainWindow::createSideWidget() {
-    QWidget     *leftWid = new QWidget();
-    QVBoxLayout *mainLay = new QVBoxLayout();
+    auto *leftWid = new QWidget();
+    auto *mainLay = new QVBoxLayout();
 
-    QWidget     *topWid = new QWidget();
-    QHBoxLayout *topLay = new QHBoxLayout();
+    auto *topWid = new QWidget();
+    auto *topLay = new QHBoxLayout();
     topLay->addWidget(makeThePhiWid());
     topLay->addWidget(makeAlpBetWid());
+    topLay->addWidget(makeBloVecWid());
     topLay->setMargin(0);
     topLay->setSpacing(0);
     topWid->setLayout(topLay);
@@ -276,9 +277,9 @@ void MainWindow::createSideWidget() {
     mainLay->setSpacing(0);
     mainLay->setMargin(0);
     leftWid->setLayout(mainLay);
-    leftWid->setFixedWidth(240);
+    leftWid->setFixedWidth(400);
 
-    QToolBar *qtb = new QToolBar("Control panel");
+    auto *qtb = new QToolBar("Control panel");
     qtb->addWidget(leftWid);
     qtb->setAllowedAreas(Qt::LeftToolBarArea | Qt::RightToolBarArea);
     this->addToolBar(Qt::LeftToolBarArea, qtb);
@@ -362,6 +363,50 @@ QWidget *MainWindow::makeAlpBetWid() {
     abW->setLayout(abLay);
 
     return abW;
+}
+
+QWidget *MainWindow::makeBloVecWid() {
+    xEd = new QLineEdit("0");
+    yEd = new QLineEdit("0");
+    zEd = new QLineEdit("1");
+
+    auto *xLab = new QLabel("<font size=4>x</font>");
+    auto *yLab = new QLabel("<font size=4>y</font>");
+    auto *zLab = new QLabel("<font size=4>z</font>");
+
+    xEd->setFixedWidth(90);
+    xEd->setValidator(new QDoubleValidator);
+    yEd->setFixedWidth(90);
+    yEd->setValidator(new QDoubleValidator);
+    zEd->setFixedWidth(90);
+    zEd->setValidator(new QDoubleValidator);
+
+    auto *bPsi = new QPushButton("Set");
+    bPsi->setFixedWidth(60);
+    connect(bPsi, &QPushButton::clicked, this, &MainWindow::slotBloVec);
+
+    auto *xyzW = new QWidget();
+    xyzW->setFixedHeight(90);
+
+    auto *qfAlpBet = new QFrame(xyzW);
+    qfAlpBet->setFrameStyle(QFrame::Panel | QFrame::Raised);
+    qfAlpBet->move(0, 0);
+    qfAlpBet->setFixedSize(xyzW->size());
+
+    auto *abLay = new QGridLayout();
+    abLay->addWidget(xLab, 1, 0);
+    abLay->addWidget(xEd, 1, 1, 1, 3);
+    abLay->addWidget(yLab, 2, 0);
+    abLay->addWidget(yEd, 2, 1, 1, 3);
+    abLay->addWidget(zLab, 3, 0);
+    abLay->addWidget(zEd, 3, 1, 1, 3);
+    abLay->addWidget(bPsi, 4, 2);
+
+    abLay->setContentsMargins(10, 5, 5, 5);
+    abLay->setSpacing(2);
+    xyzW->setLayout(abLay);
+
+    return xyzW;
 }
 
 QWidget *MainWindow::makeRXYZWid() {
@@ -655,6 +700,10 @@ void MainWindow::slotThePhi() {
     alpEd->setText(QString::number(v.a().real(), 'f', 3));
     reBetEd->setText(QString::number(v.b().real(), 'f', 3) + (v.b().imag() >= 0 ? "+" : "") +
                      QString::number(v.b().imag(), 'f', 3) + "i");
+
+    xEd->setText(QString::number(v.x()));
+    yEd->setText(QString::number(v.y()));
+    zEd->setText(QString::number(v.z()));
 }
 
 // TODO add check if normalized
@@ -663,12 +712,33 @@ void MainWindow::slotAlpBet() {
     double  a = alpEd->text().toDouble();
     complex b = parseStrToComplex(reBetEd->text());
     Spike   sp = Vector::createSpike(a, b);
-    foreach (auto &e, vectors.keys()) { e->changeVector(Vector::createSpike(a, b)); e->isNowAnimate();}
+    foreach (auto &e, vectors.keys()) { e->changeVector(sp); }
 
     Vector v;
     v.changeVector(sp);
     theEd->setText(QString::number(qRadiansToDegrees(v.the())));
     phiEd->setText(QString::number(qRadiansToDegrees(v.phi())));
+
+    xEd->setText(QString::number(v.x()));
+    yEd->setText(QString::number(v.y()));
+    zEd->setText(QString::number(v.z()));
+}
+
+void MainWindow::slotBloVec() {
+    double x = xEd->text().toDouble();
+    double y = yEd->text().toDouble();
+    double z = zEd->text().toDouble();
+    Spike  sp = Vector::createSpike(x, y, z);
+    foreach (auto &e, vectors.keys()) { e->changeVector(sp); }
+
+    Vector v;
+    v.changeVector(sp);
+    theEd->setText(QString::number(qRadiansToDegrees(v.the())));
+    phiEd->setText(QString::number(qRadiansToDegrees(v.phi())));
+
+    alpEd->setText(QString::number(v.a().real(), 'f', 3));
+    reBetEd->setText(QString::number(v.b().real(), 'f', 3) + (v.b().imag() >= 0 ? "+" : "") +
+                     QString::number(v.b().imag(), 'f', 3) + "i");
 }
 
 void MainWindow::slotSetRandomPsi() {
@@ -686,6 +756,10 @@ void MainWindow::slotSetRandomPsi() {
 
     theEd->setText(QString::number(qRadiansToDegrees(v.the())));
     phiEd->setText(QString::number(qRadiansToDegrees(v.phi())));
+
+    xEd->setText(QString::number(v.x()));
+    yEd->setText(QString::number(v.y()));
+    zEd->setText(QString::number(v.z()));
 }
 
 void MainWindow::slotPhiTheChanged(float phi, float the) {

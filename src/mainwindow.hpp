@@ -69,6 +69,7 @@ public slots:
     // Ввод cостояния
     void slotThePhi();
     void slotAlpBet();
+    void slotBloVec();
     void slotSetRandomPsi();
     // Изменение состояния
     void slotPhiTheChanged(float phi, float the);
@@ -116,6 +117,7 @@ private:
 
     QWidget *makeThePhiWid();
     QWidget *makeAlpBetWid();
+    QWidget *makeBloVecWid();
     QWidget *makeRXYZWid();
     QWidget *makeRZYWid();
     QWidget *makeRZXWid();
@@ -125,15 +127,17 @@ private:
     QPushButton *makeOpButton(QString str); // Создание кнопки оператора
     double       phiFun(double the, double re, double im); // Вычисление угла фи
     void         updateOp();
-    //--------------
-    Bloch *scene; // Виджет со сферой Блоха
-    // phi the
-    QLineEdit *theEd; // Поле ввода угла тэта
-    QLineEdit *phiEd; // Поле ввода угла фи
-    // alpha beta
-    QLineEdit *alpEd;   // Поле ввода alpha
-    QLineEdit *reBetEd; // Поле ввода Re(beta)
-    // ----------------------------------------
+
+    QLineEdit *theEd;
+    QLineEdit *phiEd;
+
+    QLineEdit *alpEd;
+    QLineEdit *reBetEd;
+
+    QLineEdit *xEd;
+    QLineEdit *yEd;
+    QLineEdit *zEd;
+
     QTabWidget *rxyzTab;
     // rotZY
     QLineEdit *rZYAlpEd; // Поле ввода угла alpha
