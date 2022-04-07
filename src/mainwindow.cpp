@@ -23,6 +23,7 @@
 #include <QPushButton>
 #include <QStatusBar>
 #include <QString>
+#include <QTime>
 #include <QToolBar>
 
 // TODO move to another place
@@ -65,7 +66,20 @@ void MainWindow::removeAllVectors() {
     }
 }
 
-void MainWindow::timerEvent(QTimerEvent *) {}
+void MainWindow::timerEvent(QTimerEvent *timerEvent) {
+    bool isNowAnimate = false;
+    foreach (auto &e, vectors.keys()) {
+        isNowAnimate |= e->isNowAnimate();
+        statusBar()->showMessage(QString::number(e->isNowAnimate()) +
+                                 QString::number(isNowAnimate) + QTime::currentTime().toString());
+        fillFieldsOfVector(e->getSpike());
+    }
+
+    if (not isNowAnimate) {
+        this->killTimer(timerEvent->timerId());
+        appBut->setEnabled(true);
+    }
+}
 
 void MainWindow::createOldScene() {
     controlWidget = new QWidget(this);
@@ -126,12 +140,12 @@ void MainWindow::createSphere() {
     //        float))); connect(qV, SIGNAL(alpBetChanged(float, complex)),
     //        SLOT(slotAlpBetChanged(float, complex))); connect(qV, SIGNAL(xyzChanged(float, float,
     //        float)), SLOT(slotXYZChanged(float, float, float))); connect(qV,
-    //        SIGNAL(newOp(QUOperator &)), SLOT(slotNewOp(QUOperator &))); qV->report();
+    //        SIGNAL(newOp(Operator &)), SLOT(slotNewOp(Operator &))); qV->report();
     controlWidget = new QWidget(this);
     setCentralWidget(controlWidget);
     auto *layout = new QGridLayout(controlWidget);
-    for (int i = 0; i < 2; ++i) {
-        for (int j = 1; j < 3; ++j) {
+    for (int i = 0; i < 1; ++i) {
+        for (int j = 1; j < 2; ++j) {
             spheres.append(new Sphere(controlWidget, QString::number(i + 10 * j)));
             layout->addWidget(spheres.last(), i, j);
         }
@@ -655,7 +669,7 @@ QWidget *MainWindow::makeOpWid() {
     gbLay->setSpacing(5);
     qGb->setLayout(gbLay);
 
-    QPushButton *appBut = new QPushButton("Apply operator");
+    appBut = new QPushButton("Apply operator");
     appBut->setFixedHeight(35);
     connect(appBut, SIGNAL(clicked()), SLOT(slotApplyOp()));
     QPushButton *addToQueBut = new QPushButton("Add to queue");
@@ -694,16 +708,7 @@ void MainWindow::slotThePhi() {
     Spike  sp = Vector::createSpike(the, phi);
     foreach (auto &e, vectors.keys()) { e->changeVector(sp); }
 
-    Vector v;
-    v.changeVector(sp);
-    // TODO maybe should create function that converts double to str
-    alpEd->setText(QString::number(v.a().real(), 'f', 3));
-    reBetEd->setText(QString::number(v.b().real(), 'f', 3) + (v.b().imag() >= 0 ? "+" : "") +
-                     QString::number(v.b().imag(), 'f', 3) + "i");
-
-    xEd->setText(QString::number(v.x()));
-    yEd->setText(QString::number(v.y()));
-    zEd->setText(QString::number(v.z()));
+    fillFieldsOfVector(sp, FIELD::THEPHI);
 }
 
 // TODO add check if normalized
@@ -714,14 +719,7 @@ void MainWindow::slotAlpBet() {
     Spike   sp = Vector::createSpike(a, b);
     foreach (auto &e, vectors.keys()) { e->changeVector(sp); }
 
-    Vector v;
-    v.changeVector(sp);
-    theEd->setText(QString::number(qRadiansToDegrees(v.the())));
-    phiEd->setText(QString::number(qRadiansToDegrees(v.phi())));
-
-    xEd->setText(QString::number(v.x()));
-    yEd->setText(QString::number(v.y()));
-    zEd->setText(QString::number(v.z()));
+    fillFieldsOfVector(sp, FIELD::ALPBET);
 }
 
 void MainWindow::slotBloVec() {
@@ -731,14 +729,7 @@ void MainWindow::slotBloVec() {
     Spike  sp = Vector::createSpike(x, y, z);
     foreach (auto &e, vectors.keys()) { e->changeVector(sp); }
 
-    Vector v;
-    v.changeVector(sp);
-    theEd->setText(QString::number(qRadiansToDegrees(v.the())));
-    phiEd->setText(QString::number(qRadiansToDegrees(v.phi())));
-
-    alpEd->setText(QString::number(v.a().real(), 'f', 3));
-    reBetEd->setText(QString::number(v.b().real(), 'f', 3) + (v.b().imag() >= 0 ? "+" : "") +
-                     QString::number(v.b().imag(), 'f', 3) + "i");
+    fillFieldsOfVector(sp, FIELD::BLOVEC);
 }
 
 void MainWindow::slotSetRandomPsi() {
@@ -748,18 +739,7 @@ void MainWindow::slotSetRandomPsi() {
     Spike sp = Vector::createSpike(the, phi);
     foreach (auto &e, vectors.keys()) { e->changeVector(sp); }
 
-    Vector v;
-    v.changeVector(sp);
-    alpEd->setText(QString::number(v.a().real(), 'f', 3));
-    reBetEd->setText(QString::number(v.b().real(), 'f', 3) + (v.b().imag() >= 0 ? "+" : "") +
-                     QString::number(v.b().imag(), 'f', 3) + "i");
-
-    theEd->setText(QString::number(qRadiansToDegrees(v.the())));
-    phiEd->setText(QString::number(qRadiansToDegrees(v.phi())));
-
-    xEd->setText(QString::number(v.x()));
-    yEd->setText(QString::number(v.y()));
-    zEd->setText(QString::number(v.z()));
+    fillFieldsOfVector(sp);
 }
 
 void MainWindow::slotPhiTheChanged(float phi, float the) {
@@ -825,7 +805,7 @@ void MainWindow::slotTraceColor(QAction *act) {
 
 void MainWindow::slotButtonClicked() {
     std::string str = ((QPushButton *)sender())->text().toStdString();
-    QUOperator  op;
+    Operator    op;
     AngInput   *aIn;
     QString     axSt = axRnEd->text();
     bool        rzyCond = rzyRB->isChecked();
@@ -882,7 +862,7 @@ void MainWindow::slotButtonClicked() {
     updateOp();
 }
 
-void MainWindow::slotNewOp(QUOperator &op) {
+void MainWindow::slotNewOp(Operator &op) {
     curOperator = op;
     updateOp();
 }
@@ -896,7 +876,7 @@ void MainWindow::slotSetRXYZOp() {
         gamma = rZYAlpEd->text().toDouble() * RAD;
         delta = rZYDelEd->text().toDouble() * RAD;
         v = gamma / 2.0;
-        //            curOperator = QUOperator(exp(C_I * (alpha - beta / 2.0 - delta / 2.0)) *
+        //            curOperator = Operator(exp(C_I * (alpha - beta / 2.0 - delta / 2.0)) *
         //            cos(v),
         //                                     exp(C_I * (alpha - beta / 2.0 + delta / 2.0)) *
         //                                     sin(v), exp(C_I * (alpha + beta / 2.0 - delta / 2.0))
@@ -910,7 +890,7 @@ void MainWindow::slotSetRXYZOp() {
         delta = rZXDelEd->text().toDouble() * RAD;
         v = gamma / 2.0;
         //            curOperator =
-        //                QUOperator(exp(C_I * (alpha - beta / 2.0 - delta / 2.0)) * cos(v),
+        //                Operator(exp(C_I * (alpha - beta / 2.0 - delta / 2.0)) * cos(v),
         //                           -C_I * exp(C_I * (alpha - beta / 2.0 + delta / 2.0)) * sin(v),
         //                           -C_I * exp(C_I * (alpha + beta / 2.0 - delta / 2.0)) * sin(v),
         //                           exp(C_I * (alpha + beta / 2.0 + delta / 2.0)) * cos(v));
@@ -923,7 +903,7 @@ void MainWindow::slotSetRXYZOp() {
         v = gamma / 2.0;
         double w = beta / 2.0 + delta / 2.0, u = beta / 2.0 - delta / 2.0;
         //            curOperator =
-        //                QUOperator(exp(C_I * alpha) * (cos(v) * cos(w) - C_I * sin(v) * sin(u)),
+        //                Operator(exp(C_I * alpha) * (cos(v) * cos(w) - C_I * sin(v) * sin(u)),
         //                           exp(C_I * alpha) * (-sin(v) * cos(u) - C_I * cos(v) * sin(w)),
         //                           exp(C_I * alpha) * (sin(v) * cos(u) - C_I * cos(v) * sin(w)),
         //                           exp(C_I * alpha) * (cos(v) * cos(w) + C_I * sin(v) * sin(u)));
@@ -945,7 +925,7 @@ void MainWindow::slotSetMatrixOp() {
                 return;
             }
         }
-    //        QUOperator op(res[0], res[1], res[2], res[3]); // 4
+    //        Operator op(res[0], res[1], res[2], res[3]); // 4
 
     //        if (!op.isUnitary()) {
     //            QMessageBox::warning(0, "Error", "Matrix must be unitary");
@@ -1035,24 +1015,35 @@ void MainWindow::slotAddToQue() {
 }
 
 void MainWindow::slotApplyOp() {
-    //    if (rtRB->isChecked()) {
-    //        curOperator.toZYdec();
-    //        const QVector<double> &x = curOperator.findNVec();
-    //        //scene->setNewAxis(x[0], x[1], x[2]);   // 4
-    //        //scene->rotateN(x[3] * DEG, curOpName); // 4
-    //    } else if (rzyRB->isChecked()) {
-    //        curOperator.toZYdec();
-    //        //scene->rotateZY(curOperator._del() * DEG, curOperator._gam() * DEG,
-    //                        curOperator._bet() * DEG, curOpName);
-    //    } else if (rzxRB->isChecked()) {
-    //        curOperator.toZXdec();
-    //        //scene->rotateZX(curOperator._del() * DEG, curOperator._gam() * DEG,
-    //                        curOperator._bet() * DEG, curOpName);
-    //    } else if (rxyRB->isChecked()) {
-    //        curOperator.toXYdec();
-    //        //scene->rotateXY(curOperator._del() * DEG, curOperator._gam() * DEG,
-    //                        curOperator._bet() * DEG, curOpName);
-    //    }
+    if (rtRB->isChecked()) {
+        statusBar()->showMessage("rb");
+        //            curOperator.toZYdec();
+        //            const QVector<double> &x = curOperator.findNVec();
+        //            //scene->setNewAxis(x[0], x[1], x[2]);   // 4
+        //            //scene->rotateN(x[3] * DEG, curOpName); // 4
+    } else if (rzyRB->isChecked()) {
+        statusBar()->showMessage("rzy");
+        //            curOperator.toZYdec();
+        //            //scene->rotateZY(curOperator._del() * DEG, curOperator._gam() * DEG,
+        //                            curOperator._bet() * DEG, curOpName);
+    } else if (rzxRB->isChecked()) {
+        statusBar()->showMessage("rzx");
+        foreach (auto &e, vectors.keys()) {
+            UnitaryMatrix2x2 newOp;
+            newOp.updateMatrix(0, 1, 1, 0);
+            curOperator.setOperator(newOp);
+            e->changeVector(curOperator.applyOperator(e->getSpike()));
+        }
+
+    } else if (rxyRB->isChecked()) {
+        statusBar()->showMessage("rxy");
+        //            curOperator.toXYdec();
+        //            //scene->rotateXY(curOperator._del() * DEG, curOperator._gam() * DEG,
+        //                            curOperator._bet() * DEG, curOpName);
+    }
+
+    appBut->setEnabled(false);
+    this->startTimer(50);
 }
 
 void MainWindow::slotApplyQue() {
@@ -1075,6 +1066,29 @@ void MainWindow::slotAbout() {
         "eu, pretium luctus purus. Praesent quam quam, mattis ut euismod a, volutpat ut quam. "
         "Etiam faucibus nec lacus eu tempor. Donec eu ligula tempus, aliquam diam a, dignissim "
         "nibh. Sed id lorem sit amet arcu egestas pulvinar.");
+}
+
+void MainWindow::fillFieldsOfVector(Spike sp, FIELD exclude) {
+    Vector v;
+    v.changeVector(sp);
+
+    if (exclude != FIELD::THEPHI) {
+        theEd->setText(QString::number(qRadiansToDegrees(v.the())));
+        phiEd->setText(QString::number(qRadiansToDegrees(v.phi())));
+    }
+
+    if (exclude != FIELD::ALPBET) {
+        // TODO maybe should create function that converts double to str
+        alpEd->setText(QString::number(v.a().real(), 'f', 3));
+        reBetEd->setText(QString::number(v.b().real(), 'f', 3) + (v.b().imag() >= 0 ? "+" : "") +
+                         QString::number(v.b().imag(), 'f', 3) + "i");
+    }
+
+    if (exclude != FIELD::BLOVEC){
+        xEd->setText(QString::number(v.x()));
+        yEd->setText(QString::number(v.y()));
+        zEd->setText(QString::number(v.z()));
+    }
 }
 
 AngInput::AngInput(QWidget *pwgt) : QDialog(pwgt, Qt::WindowTitleHint | Qt::WindowSystemMenuHint) {
@@ -1103,14 +1117,14 @@ AngInput::AngInput(QWidget *pwgt) : QDialog(pwgt, Qt::WindowTitleHint | Qt::Wind
 }
 QString AngInput::ang() const { return angEd->text(); }
 
-OpItem::OpItem(QString str, QUOperator op)
+OpItem::OpItem(QString str, Operator op)
     : QListWidgetItem(str),
       oper(op){
           //        this->setToolTip(deparceC(op._a()) + "\t" + deparceC(op._b()) + "\n" +
           //                         deparceC(op._c()) + "\t" + deparceC(op._d()));
       };
 
-QUOperator OpItem::getOp() { return oper; }
+Operator OpItem::getOp() { return oper; }
 
 complex parseStrToComplex(const QString &str) {
     QRegExp rxp1("^([+-]?[0-9]+\\.?[0-9]*)([+-]?[0-9]*\\.?[0-9]*)i$");

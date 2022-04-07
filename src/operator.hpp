@@ -22,7 +22,7 @@
 #include <QtMath>
 
 // TODO change logic duration of animation
-#define DURATION 100.
+#define DURATION 1000.
 
 struct decomposition {
     double alpha = 0; // deg
@@ -30,7 +30,7 @@ struct decomposition {
     double delta = 0; // deg
     double gamma = 0; // deg
 
-    void print(std::ostream &out) {
+    void print(std::ostream &out) const {
         out << "----------------------------------------------\n";
         out << "alpha: " << alpha << "\n";
         out << "beta: " << beta << "\n";
@@ -44,16 +44,20 @@ struct decomposition {
 class Operator {
 public:
     Operator();
-    static QVector<Spike> rotate(Spike s, QVector3D v, double gamma);
-    static QVector<Spike> rXRotate(Spike s, double gamma);
-    static QVector<Spike> rYRotate(Spike s, double gamma);
-    static QVector<Spike> rZRotate(Spike s, double gamma);
-    static QVector<Spike> applyZXDecomposition(Spike s, UnitaryMatrix2x2 op);
-    static QVector<Spike> applyOperator(Spike s, UnitaryMatrix2x2 op);
-
-    // TODO it's private method
+    static QVector<Spike>   rotate(Spike s, QVector3D v, double gamma);
+    static QVector<Spike>   rXRotate(Spike s, double gamma);
+    static QVector<Spike>   rYRotate(Spike s, double gamma);
+    static QVector<Spike>   rZRotate(Spike s, double gamma);
+    static QVector<Spike>   applyZXDecomposition(Spike s, UnitaryMatrix2x2 op);
+    static QVector<Spike>   applyOperator(Spike s, UnitaryMatrix2x2 op);
+    QVector<Spike>          applyOperator(Spike s);
     static decomposition    zxDecomposition(UnitaryMatrix2x2 op);
+    decomposition           zxDecomposition();
     static UnitaryMatrix2x2 genRandUnitaryMatrix(qint64 seed);
+    void                    setOperator(UnitaryMatrix2x2 op);
+
+private:
+    UnitaryMatrix2x2 _op;
 };
 
 #endif // OPERATOR_HPP

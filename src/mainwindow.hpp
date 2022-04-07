@@ -38,7 +38,8 @@
 #define EPS 0.001
 #define C_I complex(0, 1)
 
-class QUOperator {};
+enum FIELD { NOTHIN = 0, THEPHI, ALPBET, BLOVEC };
+
 struct Bloch {
     void hideNewAx();
     void reset();
@@ -55,7 +56,7 @@ public slots:
     void removeAllVectors();
 
 protected:
-    void timerEvent(QTimerEvent *);
+    void timerEvent(QTimerEvent *) override;
 
 private:
     QVector<Sphere *>                 spheres;
@@ -83,7 +84,7 @@ public slots:
     //    void slotHideNewAx() {
     //        sceneOld->hideNewAx();
     //    }
-    void slotNewOp(QUOperator &op);
+    void slotNewOp(Operator &op);
     void slotQueItemClicked(QListWidgetItem *it);
     void slotOpItemDelete();
     // Применение оператора
@@ -114,6 +115,7 @@ private:
     void createStatusBar();
     void createTopBar();
     void createOpQueWidget();
+    void fillFieldsOfVector(Spike sp, FIELD exclude = FIELD::NOTHIN);
 
     QWidget *makeThePhiWid();
     QWidget *makeAlpBetWid();
@@ -124,8 +126,9 @@ private:
     QWidget *makeRXYWid();
     QWidget *makeOpWid();
     // ------------------
-    QPushButton *makeOpButton(QString str); // Создание кнопки оператора
-    double       phiFun(double the, double re, double im); // Вычисление угла фи
+    QPushButton *makeOpButton(QString str);
+    QPushButton *appBut;
+    double       phiFun(double the, double re, double im);
     void         updateOp();
 
     QLineEdit *theEd;
@@ -160,8 +163,8 @@ private:
     // --------------
     QTabWidget *stackW;
     // ----------------
-    QUOperator curOperator;
-    QString    curOpName;
+    Operator curOperator;
+    QString  curOpName;
     // matrix
     QLineEdit *mat[2][2];
     // Rn
@@ -207,11 +210,11 @@ public:
 };
 
 class OpItem : public QListWidgetItem {
-    QUOperator oper;
+    Operator oper;
 
 public:
-    OpItem(QString str, QUOperator op);
-    QUOperator getOp();
+    OpItem(QString str, Operator op);
+    Operator getOp();
 };
 
 // TODO may be should create another file with useful functions and constants

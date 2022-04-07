@@ -16,8 +16,7 @@
 
 #include "operator.hpp"
 
-Operator::Operator() {
-}
+Operator::Operator() {}
 
 QVector<Spike> Operator::rotate(Spike s, QVector3D v, double gamma) {
     QVector<Spike> trace = {s};
@@ -152,6 +151,8 @@ decomposition Operator::zxDecomposition(UnitaryMatrix2x2 op) {
                          gamma * (180 / M_PI)};
 }
 
+decomposition Operator::zxDecomposition() { return zxDecomposition(_op); }
+
 UnitaryMatrix2x2 Operator::genRandUnitaryMatrix(qint64 seed) {
     UnitaryMatrix2x2   op;
     complex            i{0, 1};
@@ -172,3 +173,5 @@ UnitaryMatrix2x2 Operator::genRandUnitaryMatrix(qint64 seed) {
     op.updateMatrix(a, b, c, d);
     return op;
 }
+void           Operator::setOperator(UnitaryMatrix2x2 op) { _op = op; }
+QVector<Spike> Operator::applyOperator(Spike s) { return applyOperator(s, _op); }
