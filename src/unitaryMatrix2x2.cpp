@@ -38,9 +38,7 @@ bool UnitaryMatrix2x2::isUnitaryMatrix(complex a, complex b, complex c, complex 
     return isUnitaryMatrix(UnitaryMatrix2x2(a, b, c, d));
 }
 
-bool UnitaryMatrix2x2::fuzzyCompare(double a, double b) {
-    return qAbs(a - b) <= EPSILON;
-}
+bool UnitaryMatrix2x2::fuzzyCompare(double a, double b) { return qAbs(a - b) <= EPSILON; }
 
 void UnitaryMatrix2x2::print(std::ostream &out) {
     out << "----------------------------------------------\n";
@@ -93,4 +91,19 @@ UnitaryMatrix2x2 UnitaryMatrix2x2::operator*(const UnitaryMatrix2x2 &op) {
     complex c = _c * op.a() + _d * op.c();
     complex d = _c * op.b() + _d * op.d();
     return UnitaryMatrix2x2(a, b, c, d);
+}
+
+// TODO why I use curly braces?
+UnitaryMatrix2x2 UnitaryMatrix2x2::getX() { return UnitaryMatrix2x2{0, 1, 1, 0}; }
+UnitaryMatrix2x2 UnitaryMatrix2x2::getY() {
+    return UnitaryMatrix2x2{0, -complex(0, 1), complex(0, 1), 0};
+}
+UnitaryMatrix2x2 UnitaryMatrix2x2::getZ() { return UnitaryMatrix2x2{1, 0, 0, -1}; }
+UnitaryMatrix2x2 UnitaryMatrix2x2::getH() {
+    double h = 1 / sqrt(2);
+    return UnitaryMatrix2x2{h, h, h, -h};
+}
+UnitaryMatrix2x2 UnitaryMatrix2x2::getS() { return UnitaryMatrix2x2{1, 0, 0, complex(0, 1)}; }
+UnitaryMatrix2x2 UnitaryMatrix2x2::getT() {
+    return UnitaryMatrix2x2{1, 0, 0, exp(complex(0, 1) * (M_PI / 4))};
 }

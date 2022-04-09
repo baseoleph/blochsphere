@@ -49,12 +49,20 @@ public:
     static QVector<Spike>   rYRotate(Spike s, double gamma);
     static QVector<Spike>   rZRotate(Spike s, double gamma);
     static QVector<Spike>   applyZXDecomposition(Spike s, UnitaryMatrix2x2 op);
+    QVector<Spike>          applyZXDecomposition(Spike s);
     static QVector<Spike>   applyOperator(Spike s, UnitaryMatrix2x2 op);
     QVector<Spike>          applyOperator(Spike s);
     static decomposition    zxDecomposition(UnitaryMatrix2x2 op);
     decomposition           zxDecomposition();
     static UnitaryMatrix2x2 genRandUnitaryMatrix(qint64 seed);
     void                    setOperator(UnitaryMatrix2x2 op);
+
+    void toX();
+    void toY();
+    void toZ();
+    void toH();
+    void toS();
+    void toT();
 
 private:
     UnitaryMatrix2x2 _op;

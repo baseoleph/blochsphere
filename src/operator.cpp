@@ -42,15 +42,17 @@ QVector<Spike> Operator::rZRotate(Spike s, double gamma) {
 }
 
 QVector<Spike> Operator::applyZXDecomposition(Spike s, UnitaryMatrix2x2 op) {
-    QVector<Spike> spike;
+    QVector<Spike> spike = {s};
     decomposition  dec = zxDecomposition(op);
-    qDebug() << "alpha" << dec.alpha;
-    qDebug() << "beta" << dec.beta;
-    qDebug() << "gamma" << dec.gamma;
-    qDebug() << "delta" << dec.delta;
-    spike.append(rZRotate(s, dec.beta));
-    spike.append(rXRotate(spike.last(), dec.gamma));
-    spike.append(rZRotate(spike.last(), dec.delta));
+    if (dec.beta != 0) {
+        spike.append(rZRotate(spike.last(), dec.beta));
+    }
+    if (dec.gamma != 0) {
+        spike.append(rXRotate(spike.last(), dec.gamma));
+    }
+    if (dec.delta != 0) {
+        spike.append(rZRotate(spike.last(), dec.delta));
+    }
 
     std::reverse(spike.begin(), spike.end());
     return spike;
@@ -59,9 +61,11 @@ QVector<Spike> Operator::applyZXDecomposition(Spike s, UnitaryMatrix2x2 op) {
 QVector<Spike> Operator::applyOperator(Spike s, UnitaryMatrix2x2 op) {
     QVector<Spike> spike = {s};
     decomposition  dec = zxDecomposition(op);
-    QQuaternion    qz1 = QQuaternion::fromAxisAndAngle(QVector3D(0, 0, 1), dec.beta);
-    QQuaternion    qx = QQuaternion::fromAxisAndAngle(QVector3D(1, 0, 0), dec.gamma);
-    QQuaternion    qz2 = QQuaternion::fromAxisAndAngle(QVector3D(0, 0, 1), dec.delta);
+    QVector3D      zVector = QVector3D(0, 0, 1);
+    QVector3D      xVector = QVector3D(1, 0, 0);
+    QQuaternion    qz1 = QQuaternion::fromAxisAndAngle(zVector, static_cast<float>(dec.beta));
+    QQuaternion    qx = QQuaternion::fromAxisAndAngle(xVector, static_cast<float>(dec.gamma));
+    QQuaternion    qz2 = QQuaternion::fromAxisAndAngle(zVector, static_cast<float>(dec.delta));
     QQuaternion    q = qz1 * qx * qz2;
 
     // TODO check algorithm. q.scalar < 0; q.scalar < eps + and -
@@ -173,5 +177,16 @@ UnitaryMatrix2x2 Operator::genRandUnitaryMatrix(qint64 seed) {
     op.updateMatrix(a, b, c, d);
     return op;
 }
-void           Operator::setOperator(UnitaryMatrix2x2 op) { _op = op; }
+
+void Operator::setOperator(UnitaryMatrix2x2 op) { _op = op; }
+
 QVector<Spike> Operator::applyOperator(Spike s) { return applyOperator(s, _op); }
+
+void Operator::toX() { _op = UnitaryMatrix2x2::getX(); }
+void Operator::toY() { _op = UnitaryMatrix2x2::getY(); }
+void Operator::toZ() { _op = UnitaryMatrix2x2::getZ(); }
+void Operator::toH() { _op = UnitaryMatrix2x2::getH(); }
+void Operator::toS() { _op = UnitaryMatrix2x2::getS(); }
+void Operator::toT() { _op = UnitaryMatrix2x2::getT(); }
+
+QVector<Spike> Operator::applyZXDecomposition(Spike s) { return applyZXDecomposition(s, _op); }

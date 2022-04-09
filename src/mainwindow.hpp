@@ -105,7 +105,7 @@ public slots:
     void slotTraceColor(QAction *);
 
     // TODO change about window
-    void slotAbout();
+    static void slotAbout();
 
 private:
     void createSideWidget();

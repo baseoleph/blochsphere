@@ -805,61 +805,59 @@ void MainWindow::slotTraceColor(QAction *act) {
 
 void MainWindow::slotButtonClicked() {
     std::string str = ((QPushButton *)sender())->text().toStdString();
-    Operator    op;
-    AngInput   *aIn;
-    QString     axSt = axRnEd->text();
-    bool        rzyCond = rzyRB->isChecked();
+    //    AngInput   *aIn;
+    //    QString     axSt = axRnEd->text();
+    //    bool        rzyCond = rzyRB->isChecked();
 
-    //        switch (str[0]) {
-    //        case 'X':
-    //            op = Xop;
-    //            break;
-    //        case 'Y':
-    //            op = Yop;
-    //            break;
-    //        case 'Z':
-    //            op = Zop;
-    //            break;
-    //        case 'H':
-    //            op = Hop;
-    //            break;
-    //        case 'S':
-    //            op = Sop;
-    //            break;
-    //        case 'T':
-    //            op = Top;
-    //            break;
-    //        case 'P':
-    //            aIn = new AngInput((QWidget *)sender());
-    //            if (aIn->exec() == QDialog::Accepted)
-    //                op = PHIop(aIn->ang().toFloat() * RAD);
-    //            else {
-    //                delete aIn;
-    //                return;
-    //            }
-    //            delete aIn;
-    //            break;
-    //        case 'R':
-    //            aIn = new AngInput((QWidget *)sender());
-    //            if (aIn->exec() == QDialog::Accepted) {
-    //                float the = (aIn->ang().toFloat()) * RAD;
-    //                if (str[1] == 'x')
-    //                    op = RXop(the);
-    //                else if (str[1] == 'y')
-    //                    op = RYop(the);
-    //                else if (str[1] == 'z')
-    //                    op = RZop(the);
-    //
-    //            } else {
-    //                delete aIn;
-    //                return;
-    //            }
-    //            delete aIn;
-    //            break;
-    //        }
-    curOperator = op;
+    switch (str[0]) {
+    case 'X':
+        curOperator.toX();
+        break;
+    case 'Y':
+        curOperator.toY();
+        break;
+    case 'Z':
+        curOperator.toZ();
+        break;
+    case 'H':
+        curOperator.toH();
+        break;
+    case 'S':
+        curOperator.toS();
+        break;
+    case 'T':
+        curOperator.toT();
+        break;
+        //            case 'P':
+        //                aIn = new AngInput((QWidget *)sender());
+        //                if (aIn->exec() == QDialog::Accepted)
+        //                    op = PHIop(aIn->ang().toFloat() * RAD);
+        //                else {
+        //                    delete aIn;
+        //                    return;
+        //                }
+        //                delete aIn;
+        //                break;
+        //            case 'R':
+        //                aIn = new AngInput((QWidget *)sender());
+        //                if (aIn->exec() == QDialog::Accepted) {
+        //                    float the = (aIn->ang().toFloat()) * RAD;
+        //                    if (str[1] == 'x')
+        //                        op = RXop(the);
+        //                    else if (str[1] == 'y')
+        //                        op = RYop(the);
+        //                    else if (str[1] == 'z')
+        //                        op = RZop(the);
+        //
+        //                } else {
+        //                    delete aIn;
+        //                    return;
+        //                }
+        //                delete aIn;
+        //                break;
+    }
     curOpName = str.c_str();
-    updateOp();
+    //    updateOp();
 }
 
 void MainWindow::slotNewOp(Operator &op) {
@@ -1029,10 +1027,7 @@ void MainWindow::slotApplyOp() {
     } else if (rzxRB->isChecked()) {
         statusBar()->showMessage("rzx");
         foreach (auto &e, vectors.keys()) {
-            UnitaryMatrix2x2 newOp;
-            newOp.updateMatrix(0, 1, 1, 0);
-            curOperator.setOperator(newOp);
-            e->changeVector(curOperator.applyOperator(e->getSpike()));
+            e->changeVector(curOperator.applyZXDecomposition(e->getSpike()));
         }
 
     } else if (rxyRB->isChecked()) {
@@ -1084,7 +1079,7 @@ void MainWindow::fillFieldsOfVector(Spike sp, FIELD exclude) {
                          QString::number(v.b().imag(), 'f', 3) + "i");
     }
 
-    if (exclude != FIELD::BLOVEC){
+    if (exclude != FIELD::BLOVEC) {
         xEd->setText(QString::number(v.x()));
         yEd->setText(QString::number(v.y()));
         zEd->setText(QString::number(v.z()));

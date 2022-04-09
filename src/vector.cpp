@@ -115,3 +115,12 @@ Spike Vector::createSpike(double a, complex b) {
     Qubit q(a, b);
     return createSpike(q.x(), q.y(), q.z());
 }
+QVector<Spike> Vector::normalizePath(const QVector<Spike> &s) {
+    QVector<Spike> newS;
+    int            dur = 1000;
+    int            step = s.size() / dur;
+    for (int i = 0; i < dur; ++i) {
+        newS.append(s[i * step]);
+    }
+    return newS;
+}
