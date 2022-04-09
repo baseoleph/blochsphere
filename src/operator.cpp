@@ -20,11 +20,11 @@ Operator::Operator() {}
 
 QVector<Spike> Operator::rotate(Spike s, QVector3D v, double gamma) {
     QVector<Spike> trace = {s};
-    for (size_t i = 1; i < DURATION; ++i) {
-        QQuaternion q = QQuaternion::fromAxisAndAngle(v, i / DURATION * gamma);
+    for (uint i = 1; i < DURATION; ++i) {
+        QQuaternion q = QQuaternion::fromAxisAndAngle(v, static_cast<float>(i / DURATION * gamma));
         trace.append(Vector::actOperator(q, s));
     }
-    QQuaternion q = QQuaternion::fromAxisAndAngle(v, gamma);
+    QQuaternion q = QQuaternion::fromAxisAndAngle(v, static_cast<float>(gamma));
     trace.append(Vector::actOperator(q, s));
     return trace;
 }
@@ -77,8 +77,8 @@ QVector<Spike> Operator::applyOperator(Spike s, UnitaryMatrix2x2 op) {
     }
 
     if (not qFuzzyIsNull(g)) {
-        for (int i = 1; i < DURATION; ++i) {
-            QQuaternion qq = QQuaternion::fromAxisAndAngle(v, i / DURATION * g);
+        for (uint i = 1; i < DURATION; ++i) {
+            QQuaternion qq = QQuaternion::fromAxisAndAngle(v, static_cast<float>(i / DURATION * g));
             spike.append(Vector::actOperator(qq, s));
         }
     }
@@ -122,11 +122,11 @@ decomposition Operator::zxDecomposition(UnitaryMatrix2x2 op) {
     } else if (abs(b) < EPSILON && abs(c) < EPSILON) {
         alpha = arg(a * d) / 2.0;
         gamma = 0;
-        delta = 0; // delta - любое из R
+        delta = 0;
         beta = -delta + arg(d / a);
     } else if (abs(a) < EPSILON && abs(d) < EPSILON) {
         alpha = arg(-b * c) / 2.0;
-        beta = 0; // beta - любое из R
+        beta = 0;
         delta = beta + arg(b / c);
         complex z = exp(-i * (M_PI / 2.0 + alpha - beta / 2.0 + delta / 2.0));
         if (real(-b * z) > 0)
@@ -173,7 +173,7 @@ UnitaryMatrix2x2 Operator::genRandUnitaryMatrix(qint64 seed) {
     complex c = -exp(i * phi) * conj(b);
     complex d = exp(i * phi) * conj(a);
 
-    // TODO check for expetion
+    // TODO check for exception
     op.updateMatrix(a, b, c, d);
     return op;
 }
