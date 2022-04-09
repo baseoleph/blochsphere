@@ -459,5 +459,65 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         ops.append(op);
     }
 
+    // 39 X
+    {
+        a = 0;
+        b = 1;
+        c = 1;
+        d = 0;
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
+        ops.append(op);
+    }
+
+    // 40 Y
+    {
+        a = 0;
+        b = -i;
+        c = i;
+        d = 0;
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
+        ops.append(op);
+    }
+
+    // 41 Z
+    {
+        a = 1;
+        b = 0;
+        c = 0;
+        d = -1;
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
+        ops.append(op);
+    }
+
+    // 42 H
+    {
+        a = 1 / sqrt(2);
+        b = 1 / sqrt(2);
+        c = 1 / sqrt(2);
+        d = -1 / sqrt(2);
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
+        ops.append(op);
+    }
+
+    // 43 S
+    {
+        a = 1;
+        b = 0;
+        c = 0;
+        d = i;
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
+        ops.append(op);
+    }
+
+    // 44 T
+    {
+        a = 1;
+        b = 0;
+        c = 0;
+        d = exp(i * (M_PI / 4));
+        EXPECT_TRUE(op.updateMatrix(a, b, c, d)) << "Not Unitary!";
+        ops.append(op);
+    }
+
     return ops;
 }
