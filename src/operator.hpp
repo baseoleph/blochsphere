@@ -56,6 +56,7 @@ public:
     decomposition           zxDecomposition();
     static UnitaryMatrix2x2 genRandUnitaryMatrix(qint64 seed);
     void                    setOperator(UnitaryMatrix2x2 op);
+    bool                    setOperatorByZXDecomposition(decomposition dec);
 
     UnitaryMatrix2x2 getOperator() { return _op; }
     void             toX();
@@ -64,6 +65,11 @@ public:
     void             toH();
     void             toS();
     void             toT();
+    void             toId();
+    complex          a() { return _op.a(); }
+    complex          b() { return _op.b(); }
+    complex          c() { return _op.c(); }
+    complex          d() { return _op.d(); }
 
 private:
     UnitaryMatrix2x2 _op;

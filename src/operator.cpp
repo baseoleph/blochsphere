@@ -190,3 +190,24 @@ void Operator::toS() { _op = UnitaryMatrix2x2::getS(); }
 void Operator::toT() { _op = UnitaryMatrix2x2::getT(); }
 
 QVector<Spike> Operator::applyZXDecomposition(Spike s) { return applyZXDecomposition(s, _op); }
+bool           Operator::setOperatorByZXDecomposition(decomposition dec) {
+    double alpha = dec.alpha * M_PI / 180;
+    double beta = dec.beta * M_PI / 180;
+    double delta = dec.delta * M_PI / 180;
+    double v = dec.gamma * M_PI / 360;
+
+    complex i = complex(0, 1);
+    complex a = exp(i * (alpha - beta / 2.0 - delta / 2.0)) * cos(v);
+    complex b = -i * exp(i * (alpha - beta / 2.0 + delta / 2.0)) * sin(v);
+    complex c = -i * exp(i * (alpha + beta / 2.0 - delta / 2.0)) * sin(v);
+    complex d = exp(i * (alpha + beta / 2.0 + delta / 2.0)) * cos(v);
+
+    UnitaryMatrix2x2 matrixOp;
+    if (not matrixOp.updateMatrix(a, b, c, d)) {
+        return false;
+    }
+
+    setOperator(matrixOp);
+    return true;
+}
+void Operator::toId() { _op = UnitaryMatrix2x2(); }

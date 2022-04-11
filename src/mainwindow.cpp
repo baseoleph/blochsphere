@@ -38,31 +38,30 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
     createSideWidget();
     createOpQueWidget();
     createSphere();
-    addVector();
+    addVector(new Vector(0., 0.), vectors);
 }
 
-void MainWindow::addVector() {
-    auto *v = new Vector(qDegreesToRadians(0.), qDegreesToRadians(0.));
-    vectors.insert(v, QVector<Sphere *>());
+void MainWindow::addVector(Vector *v, MapVectors &mp) {
+    mp.insert(v, QVector<Sphere *>());
 
     for (auto &e : spheres) {
         e->addVector(v);
-        vectors[v].append(e);
+        mp[v].append(e);
     }
 }
 
-void MainWindow::removeVector(Vector *v) {
-    for (auto &e : vectors[v]) {
+void MainWindow::removeVector(Vector *v, MapVectors &mp) {
+    for (auto &e : mp[v]) {
         e->deleteVector(v);
         e->update();
     }
-    vectors.remove(v);
+    mp.remove(v);
     v->~Vector();
 }
 
-void MainWindow::removeAllVectors() {
-    while (not vectors.isEmpty()) {
-        removeVector(vectors.lastKey());
+void MainWindow::removeAllVectors(MapVectors &mp) {
+    while (not mp.isEmpty()) {
+        removeVector(mp.lastKey(), mp);
     }
 }
 
@@ -82,36 +81,36 @@ void MainWindow::timerEvent(QTimerEvent *timerEvent) {
 }
 
 void MainWindow::createOldScene() {
-    controlWidget = new QWidget(this);
-
-    QWidget *w = new QWidget(this);
-    setCentralWidget(w);
-    QGridLayout *layout = new QGridLayout(w);
-    w->setLayout(layout);
-    for (int i = 0; i < 1; ++i) {
-        for (int j = 1; j < 2; ++j) {
-            spheres.append(new Sphere(w, QString::number(i + 10 * j)));
-            layout->addWidget(spheres.last(), i, j);
-        }
-    }
-    layout->addWidget(controlWidget, 0, 0);
+    //    controlWidget = new QWidget(this);
+    //
+    //    QWidget *w = new QWidget(this);
+    //    setCentralWidget(w);
+    //    QGridLayout *layout = new QGridLayout(w);
+    //    w->setLayout(layout);
+    //    for (int i = 0; i < 1; ++i) {
+    //        for (int j = 1; j < 2; ++j) {
+    //            spheres.append(new Sphere(w, QString::number(i + 10 * j)));
+    //            layout->addWidget(spheres.last(), i, j);
+    //        }
+    //    }
+    //    layout->addWidget(controlWidget, 0, 0);
 }
 
 void MainWindow::setupOldControlBlock() {
-    controlWidget->setMaximumWidth(200);
-    QGridLayout *layout = new QGridLayout(controlWidget);
-    controlWidget->setLayout(layout);
-    QPushButton *bAddVector = new QPushButton("Add vector", this);
-    QPushButton *bResetVectors = new QPushButton("Reset vector", this);
-    QPushButton *bRotateVectors = new QPushButton("Rotate vector", this);
-    layout->addWidget(bAddVector, 0, 0);
-    layout->addWidget(bResetVectors, 0, 1);
-    layout->addWidget(bRotateVectors, 0, 2);
-    bAddVector->show();
-    bResetVectors->show();
-    bRotateVectors->show();
-    connect(bAddVector, &QPushButton::clicked, this, &MainWindow::addVector);
-    connect(bResetVectors, &QPushButton::clicked, this, &MainWindow::removeAllVectors);
+    //    controlWidget->setMaximumWidth(200);
+    //    QGridLayout *layout = new QGridLayout(controlWidget);
+    //    controlWidget->setLayout(layout);
+    //    QPushButton *bAddVector = new QPushButton("Add vector", this);
+    //    QPushButton *bResetVectors = new QPushButton("Reset vector", this);
+    //    QPushButton *bRotateVectors = new QPushButton("Rotate vector", this);
+    //    layout->addWidget(bAddVector, 0, 0);
+    //    layout->addWidget(bResetVectors, 0, 1);
+    //    layout->addWidget(bRotateVectors, 0, 2);
+    //    bAddVector->show();
+    //    bResetVectors->show();
+    //    bRotateVectors->show();
+    //    connect(bAddVector, &QPushButton::clicked, this, &MainWindow::addVector);
+    //    connect(bResetVectors, &QPushButton::clicked, this, &MainWindow::removeAllVectors);
 }
 
 //////
@@ -157,16 +156,16 @@ void MainWindow::createActions() {
     aboutAct = new QAction("About program", this);
     connect(aboutAct, &QAction::triggered, this, &MainWindow::slotAbout);
 
-    //        saveState = new QAction("Save state", this);
-    //        connect(saveState, SIGNAL(triggered()), SLOT(slotSaveState()));
-    //
-    //        recallState = new QAction("Recall state", this);
-    //        recallState->setEnabled(false);
-    //        connect(recallState, SIGNAL(triggered()), SLOT(slotRecallState()));
-    //
-    //        resetAct = new QAction("Reset", this);
-    //        connect(resetAct, SIGNAL(triggered()), SLOT(slotReset()));
-    //
+    saveState = new QAction("Save state", this);
+    connect(saveState, &QAction::triggered, this, &MainWindow::slotSaveState);
+
+    recallState = new QAction("Recall state", this);
+    recallState->setEnabled(false);
+    connect(recallState, &QAction::triggered, this, &MainWindow::slotRecallState);
+
+    resetAct = new QAction("Reset", this);
+    connect(resetAct, &QAction::triggered, this, &MainWindow::slotReset);
+
     //     QAction *applyAct;
     //     QAction *addToQueAct;
     //
@@ -214,9 +213,9 @@ void MainWindow::createMenu() {
 
 void MainWindow::createTopBar() {
     auto *qtb = new QToolBar("Tool bar");
-    //    qtb->addAction(saveState);
-    //    qtb->addAction(recallState);
-    //    qtb->addAction(resetAct);
+    qtb->addAction(saveState);
+    qtb->addAction(recallState);
+    qtb->addAction(resetAct);
     qtb->addSeparator();
     //    qtb->addAction(drawTAct);
     //    qtb->addAction(clearTAct);
@@ -428,17 +427,18 @@ QWidget *MainWindow::makeRXYZWid() {
     rxyzTab->insertTab(0, makeRZYWid(), "Z-Y");
     rxyzTab->insertTab(1, makeRZXWid(), "Z-X");
     rxyzTab->insertTab(2, makeRXYWid(), "X-Y");
+    rxyzTab->setCurrentIndex(1);
 
-    QPushButton *bRotXYZ = new QPushButton("Set");
+    auto *bRotXYZ = new QPushButton("Set");
     bRotXYZ->setFixedWidth(60);
-    connect(bRotXYZ, SIGNAL(clicked()), SLOT(slotSetRXYZOp()));
+    connect(bRotXYZ, &QPushButton::clicked, this, &MainWindow::slotSetRXYZOp);
 
-    QVBoxLayout *qwb = new QVBoxLayout;
+    auto *qwb = new QVBoxLayout;
     qwb->addWidget(rxyzTab);
-    // qwb->addWidget(bRotXYZ);
+    qwb->addWidget(bRotXYZ);
     qwb->setSpacing(0);
     qwb->setMargin(1);
-    QWidget *rtW = new QWidget;
+    auto *rtW = new QWidget;
     rtW->setLayout(qwb);
     rtW->setFixedHeight(140);
 
@@ -492,28 +492,20 @@ QWidget *MainWindow::makeRZXWid() {
     rZXBetEd = new QLineEdit();
     rZXGamEd = new QLineEdit();
     rZXDelEd = new QLineEdit();
-    QString a;
 
-    QLabel *rZXALab = new QLabel("Alpha");
-    QLabel *rZXBLab = new QLabel("Rz(Beta)");
-    QLabel *rZXGLab = new QLabel("Rx(Gamma)");
-    QLabel *rZXDLab = new QLabel("Rz(Delta)");
+    auto *rZXALab = new QLabel("Alpha");
+    auto *rZXBLab = new QLabel("Rz(Beta)");
+    auto *rZXGLab = new QLabel("Rx(Gamma)");
+    auto *rZXDLab = new QLabel("Rz(Delta)");
 
     rZXAlpEd->setMaximumWidth(60);
-    rZXAlpEd->setReadOnly(true);
-
     rZXBetEd->setMaximumWidth(60);
-    rZXBetEd->setReadOnly(true);
-
     rZXGamEd->setMaximumWidth(60);
-    rZXGamEd->setReadOnly(true);
-
     rZXDelEd->setMaximumWidth(60);
-    rZXDelEd->setReadOnly(true);
 
-    QWidget *rzW = new QWidget();
+    auto *rzW = new QWidget();
 
-    QGridLayout *rzLay = new QGridLayout();
+    auto *rzLay = new QGridLayout();
     rzLay->addWidget(rZXALab, 1, 2);
     rzLay->addWidget(rZXAlpEd, 1, 3);
     rzLay->addWidget(rZXBLab, 2, 2);
@@ -758,19 +750,16 @@ void MainWindow::slotXYZChanged(float x, float y, float z) { // 4
 }
 
 void MainWindow::slotSaveState() {
-    //    savedAlp = //scene->getQBV()->_a();
-    //    savedBet = //scene->getQBV()->_b();
-    //    QString str = QString("<font size=4>Saved state: (%1, ").arg(okr(savedAlp, 100));
-    //    str += parseComplexToStr(savedBet, 100) + ")</font>";
-    //    svdStLab->setText(str);
-    //    svdStLab->show();
-    //    if (!recallState->isEnabled())
-    //        recallState->setEnabled(true);
+    removeAllVectors(savedVectors);
+    foreach (auto &e, vectors.keys()) { savedVectors.insert(e->getCopyState(), vectors[e]); }
+    recallState->setEnabled(true);
 }
 
 void MainWindow::slotRecallState() {
-    // scene->setAB(savedAlp, savedBet);
-    // scene->getQBV()->report();
+    removeAllVectors(vectors);
+    vectors.clear();
+    foreach (auto &e, savedVectors.keys()) { addVector(e->getCopyState(), vectors); }
+    fillFieldsOfVector(vectors.lastKey()->getSpike());
 }
 
 void MainWindow::slotMotionBegin(QString msg) {
@@ -862,14 +851,14 @@ void MainWindow::slotNewOp(Operator &op) {
 }
 
 void MainWindow::slotSetRXYZOp() {
-    double alpha, beta, gamma, delta, v;
+    double alpha, beta, gamma, delta;
     switch (rxyzTab->currentIndex()) {
     case 0:
-        alpha = rZYAlpEd->text().toDouble() * RAD;
-        beta = rZYBetEd->text().toDouble() * RAD;
-        gamma = rZYAlpEd->text().toDouble() * RAD;
-        delta = rZYDelEd->text().toDouble() * RAD;
-        v = gamma / 2.0;
+        //        alpha = rZYAlpEd->text().toDouble() * RAD;
+        //        beta = rZYBetEd->text().toDouble() * RAD;
+        //        gamma = rZYAlpEd->text().toDouble() * RAD;
+        //        delta = rZYDelEd->text().toDouble() * RAD;
+        //        v = gamma / 2.0;
         //            curOperator = Operator(exp(C_I * (alpha - beta / 2.0 - delta / 2.0)) *
         //            cos(v),
         //                                     exp(C_I * (alpha - beta / 2.0 + delta / 2.0)) *
@@ -878,24 +867,23 @@ void MainWindow::slotSetRXYZOp() {
         //                                     / 2.0)) * cos(v));
         break;
     case 1:
-        alpha = rZXAlpEd->text().toDouble() * RAD;
-        beta = rZXBetEd->text().toDouble() * RAD;
-        gamma = rZXAlpEd->text().toDouble() * RAD;
-        delta = rZXDelEd->text().toDouble() * RAD;
-        v = gamma / 2.0;
-        //            curOperator =
-        //                Operator(exp(C_I * (alpha - beta / 2.0 - delta / 2.0)) * cos(v),
-        //                           -C_I * exp(C_I * (alpha - beta / 2.0 + delta / 2.0)) * sin(v),
-        //                           -C_I * exp(C_I * (alpha + beta / 2.0 - delta / 2.0)) * sin(v),
-        //                           exp(C_I * (alpha + beta / 2.0 + delta / 2.0)) * cos(v));
+        alpha = rZXAlpEd->text().toDouble();
+        beta = rZXBetEd->text().toDouble();
+        gamma = rZXGamEd->text().toDouble();
+        delta = rZXDelEd->text().toDouble();
+        if (not curOperator.setOperatorByZXDecomposition({alpha, beta, delta, gamma})) {
+            // TODO it's impossible; inspect
+            QMessageBox::warning(0, "Error", "error");
+            return;
+        }
         break;
     case 2:
-        alpha = rXYAlpEd->text().toDouble() * RAD;
-        beta = rXYBetEd->text().toDouble() * RAD;
-        gamma = rXYAlpEd->text().toDouble() * RAD;
-        delta = rXYDelEd->text().toDouble() * RAD;
-        v = gamma / 2.0;
-        double w = beta / 2.0 + delta / 2.0, u = beta / 2.0 - delta / 2.0;
+        //        alpha = rXYAlpEd->text().toDouble() * RAD;
+        //        beta = rXYBetEd->text().toDouble() * RAD;
+        //        gamma = rXYAlpEd->text().toDouble() * RAD;
+        //        delta = rXYDelEd->text().toDouble() * RAD;
+        //        v = gamma / 2.0;
+        //        double w = beta / 2.0 + delta / 2.0, u = beta / 2.0 - delta / 2.0;
         //            curOperator =
         //                Operator(exp(C_I * alpha) * (cos(v) * cos(w) - C_I * sin(v) * sin(u)),
         //                           exp(C_I * alpha) * (-sin(v) * cos(u) - C_I * cos(v) * sin(w)),
@@ -966,11 +954,16 @@ void MainWindow::updateOp() {
     //        rZXGamEd->setText(QString("%1").arg(okr(curOperator._gam() * DEG, 10)));
     //        rZXDelEd->setText(QString("%1").arg(okr(curOperator._del() * DEG, 10)));
     //
-    //        curOperator.toXYdec();
-    //        rXYAlpEd->setText(QString("%1").arg(okr(curOperator._alp() * DEG, 10)));
-    //        rXYBetEd->setText(QString("%1").arg(okr(curOperator._bet() * DEG, 10)));
-    //        rXYGamEd->setText(QString("%1").arg(okr(curOperator._gam() * DEG, 10)));
-    //        rXYDelEd->setText(QString("%1").arg(okr(curOperator._del() * DEG, 10)));
+    decomposition zxDec = curOperator.zxDecomposition();
+    rZXAlpEd->setText(QString::number(zxDec.alpha));
+    rZXBetEd->setText(QString::number(zxDec.beta));
+    rZXGamEd->setText(QString::number(zxDec.gamma));
+    rZXDelEd->setText(QString::number(zxDec.delta));
+
+    //    rXYAlpEd->setText(QString::number(zxDec.alpha));
+    //    rXYBetEd->setText(QString::number(zxDec.beta));
+    //    rXYGamEd->setText(QString::number(zxDec.gamma));
+    //    rXYDelEd->setText(QString::number(zxDec.delta));
     //
     //        curOperator.toZYdec();
     //        rZYAlpEd->setText(QString("%1").arg(okr(curOperator._alp() * DEG, 10)));
@@ -1004,9 +997,10 @@ void MainWindow::slotOpItemDelete() {
 }
 
 void MainWindow::slotAddToQue() {
-    if (curOpName == "")
-        return;
-    OpItem *it = new OpItem(curOpName, curOperator);
+    if (curOpName == "") {
+        curOpName = "U";
+    }
+    auto *it = new OpItem(curOpName, curOperator);
     opQueWid->insertItem(0, it);
 }
 
@@ -1084,6 +1078,15 @@ void MainWindow::fillFieldsOfVector(Spike sp, FIELD exclude) {
     }
 }
 
+void MainWindow::slotReset() {
+    removeAllVectors(vectors);
+    addVector(new Vector(0., 0.), vectors);
+    fillFieldsOfVector(vectors.lastKey()->getSpike());
+    curOperator.toId();
+    updateOp();
+    // TODO clear queue
+}
+
 AngInput::AngInput(QWidget *pwgt) : QDialog(pwgt, Qt::WindowTitleHint | Qt::WindowSystemMenuHint) {
     angEd = new QLineEdit;
     QLabel *angLab = new QLabel("Введите угол в градусах:");
@@ -1110,12 +1113,10 @@ AngInput::AngInput(QWidget *pwgt) : QDialog(pwgt, Qt::WindowTitleHint | Qt::Wind
 }
 QString AngInput::ang() const { return angEd->text(); }
 
-OpItem::OpItem(QString str, Operator op)
-    : QListWidgetItem(str),
-      oper(op){
-          //        this->setToolTip(deparceC(op._a()) + "\t" + parseComplexToStr(op._b()) + "\n" +
-          //                         deparceC(op._c()) + "\t" + parseComplexToStr(op._d()));
-      };
+OpItem::OpItem(QString str, Operator op) : QListWidgetItem(str), oper(op) {
+    this->setToolTip(parseComplexToStr(op.a()) + "\t" + parseComplexToStr(op.b()) + "\n" +
+                     parseComplexToStr(op.c()) + "\t" + parseComplexToStr(op.d()));
+};
 
 Operator OpItem::getOp() { return oper; }
 

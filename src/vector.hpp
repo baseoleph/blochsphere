@@ -87,6 +87,8 @@ public:
         return s;
     }
 
+    Vector* getCopyState();
+
     void printVector() const;
 
     static QColor generateRandomColor();

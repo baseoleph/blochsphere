@@ -38,6 +38,8 @@
 #define EPS 0.001
 #define C_I complex(0, 1)
 
+typedef QMap<Vector *, QVector<Sphere *>> MapVectors;
+
 enum FIELD { NOTHIN = 0, THEPHI, ALPBET, BLOVEC };
 
 struct Bloch {
@@ -48,35 +50,34 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
     explicit MainWindow(QWidget *parent = nullptr);
-    void function();
 
 public slots:
-    void addVector();
-    void removeVector(Vector *v);
-    void removeAllVectors();
+    void addVector(Vector *v, MapVectors &mp);
+    void removeVector(Vector *v, MapVectors &mp);
+    void removeAllVectors(MapVectors &mp);
 
 protected:
     void timerEvent(QTimerEvent *) override;
 
 private:
-    QVector<Sphere *>                 spheres;
-    QMap<Vector *, QVector<Sphere *>> vectors;
+    QVector<Sphere *> spheres;
+    MapVectors        vectors;
+    MapVectors        savedVectors;
 
     QWidget *controlWidget;
     void     createOldScene();
     void     setupOldControlBlock();
 
 public slots:
-    // Ввод cостояния
     void slotThePhi();
     void slotAlpBet();
     void slotBloVec();
     void slotSetRandomPsi();
-    // Изменение состояния
+
     void slotPhiTheChanged(float phi, float the);
     void slotAlpBetChanged(float a, complex b);
     void slotXYZChanged(float x, float y, float z);
-    // Ввод оператора
+
     void slotButtonClicked();
     void slotSetMatrixOp();
     void slotSetRXYZOp();
@@ -87,14 +88,12 @@ public slots:
     void slotNewOp(Operator &op);
     void slotQueItemClicked(QListWidgetItem *it);
     void slotOpItemDelete();
-    // Применение оператора
+
     void slotApplyOp();
     void slotAddToQue();
     void slotApplyQue();
-    // -------------------
-    //    void slotReset() {
-    //        sceneOld->reset();
-    //    }
+
+    void slotReset();
     void slotSaveState();
     void slotRecallState();
     void slotMotionBegin(QString);

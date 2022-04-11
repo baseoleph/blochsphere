@@ -124,3 +124,16 @@ QVector<Spike> Vector::normalizePath(const QVector<Spike> &s) {
     }
     return newS;
 }
+Vector *Vector::getCopyState() {
+    auto v = new Vector();
+
+    v->spike_ = spike_;
+    v->path_ = path_;
+    v->trace_ = trace_;
+    v->selfColor_ = selfColor_;
+    v->traceColor_ = traceColor_;
+    v->traceEnabled_ = traceEnabled_;
+    v->isNowAnimate_ = isNowAnimate_;
+
+    return v;
+}
