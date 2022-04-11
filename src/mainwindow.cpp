@@ -571,10 +571,11 @@ QWidget *MainWindow::makeRXYWid() {
     return rzW;
 }
 
+// TODO split function
 QWidget *MainWindow::makeOpWid() {
-    QWidget *opW = new QWidget();
+    auto *opW = new QWidget();
 
-    QFrame *qfOpButtons = new QFrame(opW);
+    auto *qfOpButtons = new QFrame(opW);
     qfOpButtons->setFrameStyle(QFrame::Panel | QFrame::Raised);
     qfOpButtons->move(0, 0);
     qfOpButtons->setFixedSize(opW->size());
@@ -582,8 +583,8 @@ QWidget *MainWindow::makeOpWid() {
     stackW = new QTabWidget();
     stackW->setFixedHeight(120);
 
-    QWidget     *bOp = new QWidget();
-    QGridLayout *bOpLay = new QGridLayout();
+    auto *bOp = new QWidget();
+    auto *bOpLay = new QGridLayout();
     bOpLay->addWidget(makeOpButton("X"), 0, 0, 1, 4);
     bOpLay->addWidget(makeOpButton("Y"), 0, 4, 1, 4);
     bOpLay->addWidget(makeOpButton("Z"), 0, 8, 1, 4);
@@ -600,17 +601,18 @@ QWidget *MainWindow::makeOpWid() {
 
     stackW->addTab(bOp, "Gates");
 
-    QWidget     *mOp = new QWidget();
-    QGridLayout *mOpLay = new QGridLayout();
+    auto *mOp = new QWidget();
+    auto *mOpLay = new QGridLayout();
 
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < 2; i++) {
         for (int j = 0; j < 2; j++) {
-            mat[i][j] = new QLineEdit();
+            mat[i][j] = new QLineEdit(QString::number(i == j));
             mat[i][j]->setValidator(&compValid);
         }
+    }
 
-    QPushButton *applyMat = new QPushButton("Ok");
-    connect(applyMat, SIGNAL(clicked()), SLOT(slotSetMatrixOp()));
+    auto *applyMat = new QPushButton("Ok");
+    connect(applyMat, &QPushButton::clicked, this, &MainWindow::slotSetMatrixOp);
 
     mOpLay->addWidget(mat[0][0], 1, 0);
     mOpLay->addWidget(mat[0][1], 1, 5);
@@ -622,16 +624,16 @@ QWidget *MainWindow::makeOpWid() {
 
     stackW->addTab(mOp, "Matrix");
 
-    QWidget *rNw = new QWidget();
+    auto *rNw = new QWidget();
     axRnEd = new QLineEdit();
     axRnEd->setValidator(&axisValid);
     ngRnEd = new QLineEdit();
     ngRnEd->setValidator(new QDoubleValidator);
 
-    QPushButton *axOpBut = new QPushButton("Ok");
-    connect(axOpBut, SIGNAL(clicked()), SLOT(slotSetNewAxOp()));
+    auto *axOpBut = new QPushButton("Ok");
+    connect(axOpBut, &QPushButton::clicked, this, &MainWindow::slotSetNewAxOp);
 
-    QGridLayout *rNwLay = new QGridLayout();
+    auto *rNwLay = new QGridLayout();
     rNwLay->addWidget(new QLabel("Vector"), 0, 0);
     rNwLay->addWidget(axRnEd, 0, 1, 1, 3);
     rNwLay->addWidget(new QLabel("Angle"), 1, 0);
@@ -642,25 +644,19 @@ QWidget *MainWindow::makeOpWid() {
     rNw->setLayout(rNwLay);
 
     stackW->addTab(rNw, "Rn");
-    // ----------------------
 
-    // Выбор режима вращения
-    // ---------------------
-    QGroupBox *qGb = new QGroupBox("Rotation");
+    auto *qGb = new QGroupBox("Rotation");
 
     rzyRB = new QRadioButton("ZY-decomposition");
-    rzyRB->toggle();
-    connect(rzyRB, SIGNAL(clicked()), SLOT(slotHideNewAx()));
 
     rzxRB = new QRadioButton("ZX-decomposition");
-    connect(rzyRB, SIGNAL(clicked()), SLOT(slotHideNewAx()));
+    rzxRB->toggle();
 
     rxyRB = new QRadioButton("XY-decomposition");
-    connect(rzyRB, SIGNAL(clicked()), SLOT(slotHideNewAx()));
 
     rtRB = new QRadioButton("Rotation about vector");
 
-    QVBoxLayout *gbLay = new QVBoxLayout();
+    auto *gbLay = new QVBoxLayout();
     qGb->setFixedHeight(120);
     gbLay->addWidget(rzyRB);
     gbLay->addWidget(rzxRB);
@@ -671,16 +667,16 @@ QWidget *MainWindow::makeOpWid() {
 
     appBut = new QPushButton("Apply operator");
     appBut->setFixedHeight(35);
-    connect(appBut, SIGNAL(clicked()), SLOT(slotApplyOp()));
-    QPushButton *addToQueBut = new QPushButton("Add to queue");
+    connect(appBut, &QPushButton::clicked, this, &MainWindow::slotApplyOp);
+    auto *addToQueBut = new QPushButton("Add to queue");
     addToQueBut->setFixedHeight(35);
-    connect(addToQueBut, SIGNAL(clicked()), SLOT(slotAddToQue()));
+    connect(addToQueBut, &QPushButton::clicked, this, &MainWindow::slotAddToQue);
 
-    QHBoxLayout *horLay = new QHBoxLayout;
+    auto *horLay = new QHBoxLayout;
     horLay->addWidget(appBut);
     horLay->addWidget(addToQueBut);
 
-    QVBoxLayout *pLay = new QVBoxLayout();
+    auto *pLay = new QVBoxLayout();
     pLay->addWidget(stackW);
     pLay->addWidget(qGb);
     pLay->addStretch();
@@ -749,7 +745,7 @@ void MainWindow::slotPhiTheChanged(float phi, float the) {
 }
 
 void MainWindow::slotAlpBetChanged(float a, complex b) {
-    QString alp = QString("%1").arg(okr(a, 1000.0f)), bet = deparceC(b, 1000);
+    QString alp = QString("%1").arg(okr(a, 1000.0f)), bet = parseComplexToStr(b, 1000);
     alpEd->setText(alp);
     reBetEd->setText(bet);
 }
@@ -765,7 +761,7 @@ void MainWindow::slotSaveState() {
     //    savedAlp = //scene->getQBV()->_a();
     //    savedBet = //scene->getQBV()->_b();
     //    QString str = QString("<font size=4>Saved state: (%1, ").arg(okr(savedAlp, 100));
-    //    str += deparceC(savedBet, 100) + ")</font>";
+    //    str += parseComplexToStr(savedBet, 100) + ")</font>";
     //    svdStLab->setText(str);
     //    svdStLab->show();
     //    if (!recallState->isEnabled())
@@ -857,7 +853,7 @@ void MainWindow::slotButtonClicked() {
         //                break;
     }
     curOpName = str.c_str();
-    //    updateOp();
+    updateOp();
 }
 
 void MainWindow::slotNewOp(Operator &op) {
@@ -923,15 +919,17 @@ void MainWindow::slotSetMatrixOp() {
                 return;
             }
         }
-    //        Operator op(res[0], res[1], res[2], res[3]); // 4
+    UnitaryMatrix2x2 matrixOp;
+    if (not matrixOp.updateMatrix(res[0], res[1], res[2], res[3])) {
+        QMessageBox::warning(0, "Error", "Matrix must be unitary");
+        return;
+    }
+    curOpName = "U";
+    curOperator.setOperator(matrixOp);
 
-    //        if (!op.isUnitary()) {
-    //            QMessageBox::warning(0, "Error", "Matrix must be unitary");
-    //            return;
-    //        }
-    //
-    //        curOpName = "U";
-    //        slotNewOp(op);
+    // TODO may change matrix fields
+    updateOp();
+    //    slotNewOp(op);
 }
 
 void MainWindow::slotSetNewAxOp() {
@@ -980,10 +978,10 @@ void MainWindow::updateOp() {
     //        rZYGamEd->setText(QString("%1").arg(okr(curOperator._gam() * DEG, 10)));
     //        rZYDelEd->setText(QString("%1").arg(okr(curOperator._del() * DEG, 10)));
     //
-    //        mat[0][0]->setText(deparceC(curOperator._a()));
-    //        mat[0][1]->setText(deparceC(curOperator._b()));
-    //        mat[1][0]->setText(deparceC(curOperator._c()));
-    //        mat[1][1]->setText(deparceC(curOperator._d()));
+    mat[0][0]->setText(parseComplexToStr(curOperator.getOperator().a()));
+    mat[0][1]->setText(parseComplexToStr(curOperator.getOperator().b()));
+    mat[1][0]->setText(parseComplexToStr(curOperator.getOperator().c()));
+    mat[1][1]->setText(parseComplexToStr(curOperator.getOperator().d()));
     //
     //        QVector<double> x = curOperator.findNVec();
     //        axRnEd->setText(QString("%1;%2;%3")
@@ -1115,8 +1113,8 @@ QString AngInput::ang() const { return angEd->text(); }
 OpItem::OpItem(QString str, Operator op)
     : QListWidgetItem(str),
       oper(op){
-          //        this->setToolTip(deparceC(op._a()) + "\t" + deparceC(op._b()) + "\n" +
-          //                         deparceC(op._c()) + "\t" + deparceC(op._d()));
+          //        this->setToolTip(deparceC(op._a()) + "\t" + parseComplexToStr(op._b()) + "\n" +
+          //                         deparceC(op._c()) + "\t" + parseComplexToStr(op._d()));
       };
 
 Operator OpItem::getOp() { return oper; }
@@ -1147,7 +1145,7 @@ complex parseStrToComplex(const QString &str) {
     throw 1;
 }
 
-QString deparceC(complex c, int d) {
+QString parseComplexToStr(complex c, int d) {
     QString str;
     float   im = okr(imag(c), d), re = okr(real(c), d);
     if (abs(re) < EPS && abs(im) > EPS) {

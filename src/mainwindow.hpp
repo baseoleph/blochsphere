@@ -218,7 +218,8 @@ public:
 };
 
 // TODO may be should create another file with useful functions and constants
+// DOTO improve functions; increase accuracy
 complex parseStrToComplex(const QString &str);
-QString deparceC(complex c, int d = 10000);
+QString parseComplexToStr(complex c, int d = 10000);
 
 #endif // MAINWINDOW_HPP

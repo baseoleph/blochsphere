@@ -57,12 +57,13 @@ public:
     static UnitaryMatrix2x2 genRandUnitaryMatrix(qint64 seed);
     void                    setOperator(UnitaryMatrix2x2 op);
 
-    void toX();
-    void toY();
-    void toZ();
-    void toH();
-    void toS();
-    void toT();
+    UnitaryMatrix2x2 getOperator() { return _op; }
+    void             toX();
+    void             toY();
+    void             toZ();
+    void             toH();
+    void             toS();
+    void             toT();
 
 private:
     UnitaryMatrix2x2 _op;
