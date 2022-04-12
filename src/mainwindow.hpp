@@ -98,10 +98,9 @@ public slots:
     void slotRecallState();
     void slotMotionBegin(QString);
     void slotMotionEnd();
-    void slotDrawTrace();
+    void slotShowTrace();
     void slotClearTrace();
-    void slotTraceColor(int);
-    void slotTraceColor(QAction *);
+    void slotTraceColor(int index);
 
     // TODO change about window
     static void slotAbout();
@@ -185,17 +184,13 @@ private:
     // --------------
     QListWidget *opQueWid;
     // ------------------
-    QAction      *aboutAct;
-    QAction      *saveState;
-    QAction      *recallState;
-    QAction      *resetAct;
-    QAction      *exitAct;
-    QAction      *applyAct;
-    QAction      *addToQueAct;
-    QAction      *drawTAct;
-    QAction      *clearTAct;
-    QActionGroup *rotMode;
-    QActionGroup *trColor;
+    QAction *aboutAct;
+    QAction *saveState;
+    QAction *recallState;
+    QAction *resetAct;
+    QAction *exitAct;
+    QAction *showTAct;
+    QAction *clearTAct;
 };
 
 class AngInput : public QDialog {

@@ -166,28 +166,13 @@ void MainWindow::createActions() {
     resetAct = new QAction("Reset", this);
     connect(resetAct, &QAction::triggered, this, &MainWindow::slotReset);
 
-    //     QAction *applyAct;
-    //     QAction *addToQueAct;
-    //
-    //        drawTAct = new QAction("Draw trace", this);
-    //        drawTAct->setCheckable(true);
-    //        drawTAct->setChecked(true);
-    //        connect(drawTAct, SIGNAL(triggered()), SLOT(slotDrawTrace()));
-    //
-    //        clearTAct = new QAction("Clear trace", this);
-    //        connect(clearTAct, SIGNAL(triggered()), SLOT(slotClearTrace()));
-    //
-    //        trColor = new QActionGroup(this);
-    //        trColor->addAction("Red")->setChecked(true);
-    //        trColor->addAction("Green");
-    //        trColor->addAction("Blue");
-    //        trColor->addAction("Grey");
-    //        trColor->addAction("Yellow");
-    //        foreach (QAction *act, trColor->actions())
-    //            act->setCheckable(true);
-    //        connect(trColor, SIGNAL(triggered(QAction *)), SLOT(slotTraceColor(QAction *)));
-    //
-    //     QActionGroup *rotMode;
+    showTAct = new QAction("Show trace", this);
+    showTAct->setCheckable(true);
+    showTAct->setChecked(true);
+    connect(showTAct, &QAction::triggered, this, &MainWindow::slotShowTrace);
+
+    clearTAct = new QAction("Clear trace", this);
+    connect(clearTAct, &QAction::triggered, this, &MainWindow::slotClearTrace);
 
     exitAct = new QAction("Exit", this);
     connect(exitAct, &QAction::triggered, this, &MainWindow::close);
@@ -202,9 +187,6 @@ void MainWindow::createMenu() {
     menuFile->addAction(exitAct);
     menuInfo->addAction(aboutAct);
 
-    // QMenu  *menuColor = new QMenu("Color");
-    // menuColor->addActions(trColor->actions());
-
     mnuBar->addMenu(menuFile);
     mnuBar->addMenu(menuInfo);
 
@@ -217,13 +199,20 @@ void MainWindow::createTopBar() {
     qtb->addAction(recallState);
     qtb->addAction(resetAct);
     qtb->addSeparator();
-    //    qtb->addAction(drawTAct);
-    //    qtb->addAction(clearTAct);
+    qtb->addAction(showTAct);
+    qtb->addAction(clearTAct);
 
     qcomb = new QComboBox(qtb);
-    //    foreach (QAction *act, trColor->actions())
-    //        qcomb->addItem(act->text());
-    connect(qcomb, SIGNAL(currentIndexChanged(int)), SLOT(slotTraceColor(int)));
+    qcomb->addItem("Red");
+    qcomb->addItem("Green");
+    qcomb->addItem("Blue");
+    qcomb->addItem("Grey");
+    qcomb->addItem("Yellow");
+    qcomb->setCurrentIndex(0);
+
+    connect(qcomb, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+            &MainWindow::slotTraceColor);
+
     qtb->addWidget(new QLabel("<center>Trace Color:"));
     qtb->addWidget(qcomb);
 
@@ -488,10 +477,10 @@ QWidget *MainWindow::makeRZYWid() {
 }
 
 QWidget *MainWindow::makeRZXWid() {
-    rZXAlpEd = new QLineEdit();
-    rZXBetEd = new QLineEdit();
-    rZXGamEd = new QLineEdit();
-    rZXDelEd = new QLineEdit();
+    rZXAlpEd = new QLineEdit("0");
+    rZXBetEd = new QLineEdit("0");
+    rZXGamEd = new QLineEdit("0");
+    rZXDelEd = new QLineEdit("0");
 
     auto *rZXALab = new QLabel("Alpha");
     auto *rZXBLab = new QLabel("Rz(Beta)");
@@ -769,23 +758,36 @@ void MainWindow::slotMotionBegin(QString msg) {
 
 void MainWindow::slotMotionEnd() { mtnStLab->setVisible(false); }
 
-void MainWindow::slotDrawTrace() { /*//scene->setDrawTrace(drawTAct->isChecked());*/
+void MainWindow::slotShowTrace() {
+    foreach (auto &e, vectors.keys()) { e->setEnableTrace(showTAct->isChecked()); }
 }
 
-void MainWindow::slotClearTrace() { /* scene->clearTrace();*/
+void MainWindow::slotClearTrace() {
+    foreach (auto &e, vectors.keys()) { e->clearTrace(); }
 }
 
-void MainWindow::slotTraceColor(int n) {
-    //    if (trColor->checkedAction() != trColor->actions()[n])
-    //        trColor->actions()[n]->setChecked(true);
-
-    // scene->setTraceColor(n);
-}
-
-void MainWindow::slotTraceColor(QAction *act) {
-    //    int i = trColor->actions().indexOf(act);
-    //    if (qcomb->currentIndex() != i)
-    //        qcomb->setCurrentIndex(i);
+void MainWindow::slotTraceColor(int index) {
+    QColor clr;
+    switch (index) {
+    case 0:
+        clr = QColorConstants::Red;
+        break;
+    case 1:
+        clr = QColorConstants::Green;
+        break;
+    case 2:
+        clr = QColorConstants::Blue;
+        break;
+    case 3:
+        clr = QColorConstants::Gray;
+        break;
+    case 4:
+        clr = QColorConstants::Yellow;
+        break;
+    default:
+        clr = QColorConstants::Black;
+    }
+    foreach (auto &e, vectors.keys()) { e->setTraceColor(clr); }
 }
 
 void MainWindow::slotButtonClicked() {
@@ -1082,9 +1084,6 @@ void MainWindow::slotReset() {
     removeAllVectors(vectors);
     addVector(new Vector(0., 0.), vectors);
     fillFieldsOfVector(vectors.lastKey()->getSpike());
-    curOperator.toId();
-    updateOp();
-    // TODO clear queue
 }
 
 AngInput::AngInput(QWidget *pwgt) : QDialog(pwgt, Qt::WindowTitleHint | Qt::WindowSystemMenuHint) {

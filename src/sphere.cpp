@@ -221,15 +221,17 @@ void Sphere::drawAxis() {
 void Sphere::drawVectors() {
     for (auto &e : vectors) {
         if (e->isTraceEnabled()) {
-            glColor3f(e->getTraceColor().redF(), e->getTraceColor().greenF(),
-                      e->getTraceColor().blueF());
-            glLineWidth(2.5f);
-            glBegin(GL_LINES);
             for (auto &segment : e->getTrace()) {
+                glColor3f(segment.color.redF(), segment.color.greenF(),
+                          segment.color.blueF());
+                glLineWidth(2.5f);
+                glBegin(GL_LINES);
+
                 glVertex3f(segment.first.x(), segment.first.y(), segment.first.z());
                 glVertex3f(segment.last.x(), segment.last.y(), segment.last.z());
+
+                glEnd();
             }
-            glEnd();
         }
         glColor3f(e->getSelfColor().redF(), e->getSelfColor().greenF(), e->getSelfColor().blueF());
         glLineWidth(2.5f);

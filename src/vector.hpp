@@ -31,6 +31,7 @@
 struct Trace {
     QVector3D first;
     QVector3D last;
+    QColor color;
 };
 
 struct Spike {
@@ -58,6 +59,7 @@ public:
     [[nodiscard]] inline bool   isTraceEnabled() const { return traceEnabled_; }
     [[nodiscard]] inline QVector<Trace> const &getTrace() const { return trace_; }
     [[nodiscard]] Spike                        getSpike() const;
+    inline void                                clearTrace() { trace_.clear(); }
 
     inline QVector3D toQVector3D(Qubit const &q) const { return QVector3D(q.x(), q.y(), q.z()); }
     inline QVector3D toQVector3D() const { return QVector3D(x(), y(), z()); }
@@ -87,7 +89,7 @@ public:
         return s;
     }
 
-    Vector* getCopyState();
+    Vector *getCopyState();
 
     void printVector() const;
 

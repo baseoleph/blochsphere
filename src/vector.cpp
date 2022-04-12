@@ -17,29 +17,13 @@
 #include "vector.hpp"
 
 // TODO test this case
-Vector::Vector() {
-    selfColor_ = generateRandomColor();
-    traceColor_ = generateRandomColor();
-    initialSpike();
-}
+Vector::Vector() { initialSpike(); }
 
-Vector::Vector(double x, double y, double z) : Qubit(x, y, z) {
-    selfColor_ = generateRandomColor();
-    traceColor_ = generateRandomColor();
-    initialSpike();
-}
+Vector::Vector(double x, double y, double z) : Qubit(x, y, z) { initialSpike(); }
 
-Vector::Vector(double the, double phi) : Qubit(the, phi) {
-    selfColor_ = generateRandomColor();
-    traceColor_ = generateRandomColor();
-    initialSpike();
-}
+Vector::Vector(double the, double phi) : Qubit(the, phi) { initialSpike(); }
 
-Vector::Vector(complex a, complex b) : Qubit(a, b) {
-    selfColor_ = generateRandomColor();
-    traceColor_ = generateRandomColor();
-    initialSpike();
-}
+Vector::Vector(complex a, complex b) : Qubit(a, b) { initialSpike(); }
 
 Spike Vector::getSpike() const {
     if (path_.empty()) {
@@ -86,7 +70,7 @@ void Vector::tracePushBack() {
     trace_.append(
         Trace{QVector3D(path_[path_.size() - 2].point.x(), path_[path_.size() - 2].point.y(),
                         path_[path_.size() - 2].point.z()),
-              getSpike().point});
+              getSpike().point, traceColor_});
 }
 
 void Vector::initialSpike() { spike_ = createSpike(x(), y(), z()); }
@@ -95,6 +79,7 @@ QColor Vector::generateRandomColor() {
     return {QRandomGenerator::global()->bounded(255), QRandomGenerator::global()->bounded(255),
             QRandomGenerator::global()->bounded(255)};
 }
+
 Spike Vector::createSpike(double x, double y, double z) {
     Spike       s;
     QQuaternion q = QQuaternion::rotationTo(QVector3D(0, 0, 1), QVector3D(x, y, z));
