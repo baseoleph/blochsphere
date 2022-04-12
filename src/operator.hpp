@@ -55,6 +55,8 @@ public:
     decomposition        zxDecomposition();
     static decomposition zyDecomposition(UnitaryMatrix2x2 op);
     decomposition        zyDecomposition();
+    static decomposition xyDecomposition(UnitaryMatrix2x2 op);
+    decomposition        xyDecomposition();
 
     static matrix2x2 getMatrixByZxDec(decomposition dec);
     static matrix2x2 getMatrixByZyDec(decomposition dec);
