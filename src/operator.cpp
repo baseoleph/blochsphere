@@ -97,7 +97,7 @@ QString getComplexStr(complex a) {
 }
 
 decomposition Operator::zxDecomposition(UnitaryMatrix2x2 op) {
-    //  Author   : Швецкий Михаил Владимирович
+    //  Author  : Швецкий Михаил Владимирович
     //  Original: ff22dd04382d02a839c56f27a80ad18064eb6595
 
     complex i = complex(0, 1);
@@ -158,86 +158,55 @@ decomposition Operator::zxDecomposition(UnitaryMatrix2x2 op) {
 decomposition Operator::zxDecomposition() { return zxDecomposition(_op); }
 
 decomposition Operator::zyDecomposition(UnitaryMatrix2x2 op) {
-    // clang-format off
-    //
-    //  Compiler: Borland C++ 3.1
-    //  Autor   : Швецкий Михаил Владимирович (09.10.2014, 15:05-15:42;
-    //                                        17:23-17:38;
-    //                                        01.04-09.05.2018)
-    // *************************
-    // Вычисление Z-Y-разложения
-    // --------------------------
-    if (abs(a)>EPS && abs(b)>EPS)           // |a|!=0, |b|!=0
-    {
-        alpha=        arg(a*d-b*c)/2.0;
-        beta =(arg(d/a)+arg(-c/b))/2.0;
-        delta=(arg(d/a)-arg(-c/b))/2.0;
-        // ----------------------------
-        // П е р в ы й  способ.
-        // Вычисление значения gamma в зависимости от знака
-        // значения cos(gamma), т.е. решение уравнения
-        //
-        //                    -i*(2*alpha-beta)
-        // sin(gamma)=-2*a*b*e
-        //
-        // с учётом знака правой части уравнения
-        //
-        //             -i*2*alpha
-        // cos(gamma)=e          *(a*d-b*c)
-        // --------------------------------
-        complex z=exp(-i*(2.0*alpha-beta));
-        if (real(exp(-i*2.0*alpha)*(a*d+b*c)) > 0)
-            gamma=real(asin(-2.0*a*b*z));
-        else gamma=M_PI-real(asin(-2.0*a*b*z));
-        // ------------------------------------
-        // В т о р о й  способ.
-        // Вычисление значения gamma в зависимости от знака
-        // значения sin(gamma), т.е. решение уравнения
-        //
-        //             -i*2*alpha
-        // cos(gamma)=e          *(a*d-b*c)
-        //
-        // с учётом знака правой части уравнения
-        //
-        //                    -i*(2*alpha-beta)
-        // sin(gamma)=-2*a*b*e
-        // ----------------------------
-        // complex z=exp(-i*2.0*alpha);
-        // if (real(-2.0*a*b*exp(-i*(2.0*alpha-beta))) > 0)
-        //   gamma=real(acos((a*d+b*c)*z));
-        // else gamma=-real(acos((a*d+b*c)*z));
+    //  Author  : Швецкий Михаил Владимирович
+    //  Original: 690dca3e8dcc32e4b4eed0fcfc65c5bdf8dd06b0
+
+    complex i = complex(0, 1);
+    double  alpha = 0;
+    double  beta = 0;
+    double  delta = 0;
+    double  gamma = 0;
+    complex a = op.a();
+    complex b = op.b();
+    complex c = op.c();
+    complex d = op.d();
+
+    if (abs(a) > EPSILON && abs(b) > EPSILON) {
+        alpha = arg(a * d - b * c) / 2.0;
+        beta = (arg(d / a) + arg(-c / b)) / 2.0;
+        delta = (arg(d / a) - arg(-c / b)) / 2.0;
+
+        complex z = exp(-i * (2.0 * alpha - beta));
+        if (real(exp(-i * 2.0 * alpha) * (a * d + b * c)) > 0)
+            gamma = real(asin(-2.0 * a * b * z));
+        else
+            gamma = M_PI - real(asin(-2.0 * a * b * z));
+    } else if (abs(b) < EPSILON && abs(c) < EPSILON) {
+        alpha = arg(a * d) / 2.0;
+        delta = 0;
+        beta = -delta + arg(d / a);
+        gamma = 0;
+    } else if (abs(a) < EPSILON && abs(d) < EPSILON) {
+        alpha = arg(-b * c) / 2.0;
+        beta = 0;
+        delta = beta + arg(-b / c);
+        if (real(c * exp(-i * (alpha + beta / 2.0 - delta / 2.0))) > 0)
+            gamma = M_PI;
+        else
+            gamma = -M_PI;
     }
-    else if (abs(b)<EPS && abs(c)<EPS)      // |b|=0, |c|=0
-    {
-        alpha=arg(a*d)/2.0;
-        delta=0;                         // delta - любое из R
-        beta =-delta+arg(d/a);
-        gamma=0;
+
+    double v = gamma / 2.0;
+    if ((abs(a - exp(i * (alpha - beta / 2.0 - delta / 2.0)) * cos(v)) > EPSILON) ||
+        (abs(b + exp(i * (alpha - beta / 2.0 + delta / 2.0)) * sin(v)) > EPSILON)) {
+        alpha = M_PI + alpha;
     }
-    else if (abs(a)<EPS && abs(d)<EPS) // |a|=0, |d|=0
-    {
-        alpha=arg(-b*c)/2.0;
-        beta=0;
-        delta=beta+arg(-b/c);
-        if (real(c*exp(-i*(alpha+beta/2.0-delta/2.0)))>0)
-            gamma=M_PI;
-        else gamma=-M_PI;
-    }
-    else;
-    // ------------------------------------------------
-    // Корректировка значения alpha при изменении знака
-    // элементов a и b матрицы U, вычисленного  по най-
-    // денным значениям alpha, beta, gamma, delta
-    // ------------------------------------------
-    double v=gamma/2.0;
-    if (
-        (abs(a-exp(i*(alpha-beta/2.0-delta/2.0))*cos(v)) > EPS) ||
-        (abs(b+exp(i*(alpha-beta/2.0+delta/2.0))*sin(v)) > EPS)
-    )
-        alpha=M_PI+alpha;
-    else alpha=alpha;
-    // clang-format on
+
+    return decomposition{alpha * (180 / M_PI), beta * (180 / M_PI), delta * (180 / M_PI),
+                         gamma * (180 / M_PI)};
 }
+
+decomposition Operator::zyDecomposition() { return zxDecomposition(_op); }
 
 UnitaryMatrix2x2 Operator::genRandUnitaryMatrix(qint64 seed) {
     UnitaryMatrix2x2   op;

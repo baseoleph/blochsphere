@@ -54,6 +54,10 @@ public:
     static decomposition zxDecomposition(UnitaryMatrix2x2 op);
     decomposition        zxDecomposition();
     static decomposition zyDecomposition(UnitaryMatrix2x2 op);
+    decomposition        zyDecomposition();
+
+    static matrix2x2 getMatrixByZxDec(decomposition dec);
+    static matrix2x2 getMatrixByZyDec(decomposition dec);
 
     bool setOperatorByZXDecomposition(decomposition dec);
     void setOperator(UnitaryMatrix2x2 op);
