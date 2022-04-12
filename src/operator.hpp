@@ -48,6 +48,10 @@ public:
 
     static QVector<Spike> applyZXDecomposition(Spike s, UnitaryMatrix2x2 op);
     QVector<Spike>        applyZXDecomposition(Spike s);
+    static QVector<Spike> applyZYDecomposition(Spike s, UnitaryMatrix2x2 op);
+    QVector<Spike>        applyZYDecomposition(Spike s);
+    static QVector<Spike> applyXYDecomposition(Spike s, UnitaryMatrix2x2 op);
+    QVector<Spike>        applyXYDecomposition(Spike s);
     static QVector<Spike> applyOperator(Spike s, UnitaryMatrix2x2 op);
     QVector<Spike>        applyOperator(Spike s);
 
@@ -56,6 +60,7 @@ public:
     static decomposition zyDecomposition(UnitaryMatrix2x2 op);
     decomposition        zyDecomposition();
     static decomposition xyDecomposition(UnitaryMatrix2x2 op);
+    static decomposition xyDecomposition2(UnitaryMatrix2x2 op);
     decomposition        xyDecomposition();
 
     static matrix2x2 getMatrixByZxDec(decomposition dec);
@@ -63,6 +68,8 @@ public:
     static matrix2x2 getMatrixByXyDec(decomposition dec);
 
     bool setOperatorByZXDecomposition(decomposition dec);
+    bool setOperatorByZYDecomposition(decomposition dec);
+    bool setOperatorByXYDecomposition(decomposition dec);
     void setOperator(UnitaryMatrix2x2 op);
 
     static UnitaryMatrix2x2 genRandUnitaryMatrix(qint64 seed);

@@ -58,6 +58,40 @@ QVector<Spike> Operator::applyZXDecomposition(Spike s, UnitaryMatrix2x2 op) {
     return spike;
 }
 
+QVector<Spike> Operator::applyZYDecomposition(Spike s, UnitaryMatrix2x2 op) {
+    QVector<Spike> spike = {s};
+    decomposition  dec = zyDecomposition(op);
+    if (dec.beta != 0) {
+        spike.append(rZRotate(spike.last(), dec.beta));
+    }
+    if (dec.gamma != 0) {
+        spike.append(rYRotate(spike.last(), dec.gamma));
+    }
+    if (dec.delta != 0) {
+        spike.append(rZRotate(spike.last(), dec.delta));
+    }
+
+    std::reverse(spike.begin(), spike.end());
+    return spike;
+}
+
+QVector<Spike> Operator::applyXYDecomposition(Spike s, UnitaryMatrix2x2 op) {
+    QVector<Spike> spike = {s};
+    decomposition  dec = xyDecomposition(op);
+    if (dec.beta != 0) {
+        spike.append(rXRotate(spike.last(), dec.beta));
+    }
+    if (dec.gamma != 0) {
+        spike.append(rYRotate(spike.last(), dec.gamma));
+    }
+    if (dec.delta != 0) {
+        spike.append(rZRotate(spike.last(), dec.delta));
+    }
+
+    std::reverse(spike.begin(), spike.end());
+    return spike;
+}
+
 QVector<Spike> Operator::applyOperator(Spike s, UnitaryMatrix2x2 op) {
     QVector<Spike> spike = {s};
     decomposition  dec = zxDecomposition(op);
@@ -328,6 +362,87 @@ decomposition Operator::xyDecomposition(UnitaryMatrix2x2 op) {
 
 decomposition Operator::xyDecomposition() { return xyDecomposition(_op); }
 
+decomposition Operator::xyDecomposition2(UnitaryMatrix2x2 op) {
+    complex i = complex(0, 1);
+    double  alpha = 0;
+    double  beta = 0;
+    double  delta = 0;
+    double  gamma = 0;
+    complex mA = op.a();
+    complex mB = op.b();
+    complex mC = op.c();
+    complex mD = op.d();
+
+    if (abs(mD) > EPSILON)
+        if (abs(1.0 + mA / conj(mD)) < EPSILON)
+            alpha = M_PI / 2.0;
+        else
+            alpha = arg(mA / conj(mD)) / 2.0;
+    else if (abs(mC) > EPSILON)
+        if (abs(1.0 - mB / conj(mC)) < EPSILON)
+            alpha = M_PI / 2.0;
+        else
+            alpha = arg(-mB / conj(mC)) / 2.0;
+    // -----------------------------------
+    complex A, B;
+    A = (exp(-C_I * alpha) * (mA + mB) + exp(C_I * alpha) * (conj(mC) + conj(mD))) / 2.0;
+    B = (exp(-C_I * alpha) * (mA + mB) - exp(C_I * alpha) * (conj(mC) + conj(mD))) / 2.0;
+    double a1, a2, b1, b2;
+    a1 = real(A);
+    a2 = imag(A);
+    b1 = real(B);
+    b2 = imag(B);
+    // --------------------------------------
+    if (fabs(a1) < EPSILON && fabs(b2) < EPSILON)
+        if (fabs(b1) > EPSILON) {
+            beta = 2.0 * atan(a2 / b1);
+            gamma = M_PI;
+            delta = 0; // delta - любое вещественное число
+        } else if (fabs(a2) > EPSILON) {
+            beta = M_PI - 2.0 * atan(b1 / a2);
+            gamma = M_PI;
+            delta = 0; // delta - любое вещественное число
+        }
+    // ----------------------------
+    if (fabs(a2) < EPSILON && fabs(b1) < EPSILON)
+        if (abs(a1) > EPSILON) {
+            beta = 2.0 * atan(-b2 / a1);
+            gamma = 0;
+            delta = 0; // delta - любое вещественное число
+        } else if (fabs(b2) > EPSILON) {
+            beta = M_PI - 2.0 * atan(-a1 / b2);
+            gamma = 0;
+            delta = 0; // delta - любое вещественное число
+        }
+    // --------------------------------------------------------
+    if (fabs(a1) < EPSILON && fabs(b1) < EPSILON && fabs(a2) > EPSILON && fabs(b2) > EPSILON) {
+        beta = M_PI;
+        gamma = -2.0 * asin(a2);
+        delta = 0;
+    }
+    // --------------------------------------------------------
+    if (fabs(a1) > EPSILON && fabs(b1) > EPSILON && fabs(a2) < EPSILON && fabs(b2) < EPSILON) {
+        beta = 0;
+        gamma = -2.0 * asin(b1);
+        delta = 0;
+    }
+    // --------------------------------------------------------
+    if (fabs(a1) > EPSILON && fabs(a2) > EPSILON && fabs(b1) < EPSILON && fabs(b2) < EPSILON) {
+        beta = M_PI / 2.0;
+        gamma = 2.0 * asin(-a2);
+        delta = -M_PI / 2.0;
+    }
+    // --------------------------------------------------------
+    if (fabs(a1) > EPSILON && fabs(a2) > EPSILON && fabs(b1) > EPSILON && fabs(b2) > EPSILON) {
+        beta = atan(-b2 / a1) + atan(a2 / b1);
+        delta = atan(-b2 / a1) - atan(a2 / b1);
+        gamma = 2.0 * asin(-a2 / sin(beta / 2.0 - delta / 2.0));
+    }
+
+    return decomposition{alpha * (180 / M_PI), beta * (180 / M_PI), delta * (180 / M_PI),
+                         gamma * (180 / M_PI)};
+}
+
 UnitaryMatrix2x2 Operator::genRandUnitaryMatrix(qint64 seed) {
     UnitaryMatrix2x2   op;
     complex            i{0, 1};
@@ -361,24 +476,32 @@ void Operator::toS() { _op = UnitaryMatrix2x2::getS(); }
 void Operator::toT() { _op = UnitaryMatrix2x2::getT(); }
 
 QVector<Spike> Operator::applyZXDecomposition(Spike s) { return applyZXDecomposition(s, _op); }
-bool           Operator::setOperatorByZXDecomposition(decomposition dec) {
-    // TODO use getMatrixBy functions
-    double alpha = dec.alpha * M_PI / 180;
-    double beta = dec.beta * M_PI / 180;
-    double delta = dec.delta * M_PI / 180;
-    double v = dec.gamma * M_PI / 360;
+QVector<Spike> Operator::applyZYDecomposition(Spike s) { return applyZYDecomposition(s, _op); }
+QVector<Spike> Operator::applyXYDecomposition(Spike s) { return applyXYDecomposition(s, _op); }
 
-    complex i = complex(0, 1);
-    complex a = exp(i * (alpha - beta / 2.0 - delta / 2.0)) * cos(v);
-    complex b = -i * exp(i * (alpha - beta / 2.0 + delta / 2.0)) * sin(v);
-    complex c = -i * exp(i * (alpha + beta / 2.0 - delta / 2.0)) * sin(v);
-    complex d = exp(i * (alpha + beta / 2.0 + delta / 2.0)) * cos(v);
-
+bool Operator::setOperatorByZXDecomposition(decomposition dec) {
     UnitaryMatrix2x2 matrixOp;
-    if (not matrixOp.updateMatrix({a, b, c, d})) {
+    if (not matrixOp.updateMatrix(getMatrixByZxDec(dec))) {
         return false;
     }
+    setOperator(matrixOp);
+    return true;
+}
 
+bool Operator::setOperatorByZYDecomposition(decomposition dec) {
+    UnitaryMatrix2x2 matrixOp;
+    if (not matrixOp.updateMatrix(getMatrixByZyDec(dec))) {
+        return false;
+    }
+    setOperator(matrixOp);
+    return true;
+}
+
+bool Operator::setOperatorByXYDecomposition(decomposition dec) {
+    UnitaryMatrix2x2 matrixOp;
+    if (not matrixOp.updateMatrix(getMatrixByXyDec(dec))) {
+        return false;
+    }
     setOperator(matrixOp);
     return true;
 }

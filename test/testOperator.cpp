@@ -71,10 +71,13 @@ TEST(Operator, zyDecompositionRandom) {
 }
 
 TEST(Operator, xyDecompositionStatic) {
-    staticTestDecomposition(Operator::zxDecomposition, Operator::getMatrixByXyDec);
+    staticTestDecomposition(Operator::xyDecomposition, Operator::getMatrixByXyDec);
+}
+TEST(Operator, xyDecompositionStatic2) {
+    staticTestDecomposition(Operator::xyDecomposition2, Operator::getMatrixByXyDec);
 }
 // TEST(Operator, xyDecompositionRandom) {
-//     randomTestDecomposition(Operator::zxDecomposition, Operator::getMatrixByXyDec);
+//     randomTestDecomposition(Operator::xyDecomposition, Operator::getMatrixByXyDec);
 // }
 
 int main(int argc, char **argv) {

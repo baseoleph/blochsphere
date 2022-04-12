@@ -357,7 +357,7 @@ QWidget *MainWindow::makeRXYZWid() {
     rxyzTab->insertTab(0, makeRZYWid(), "Z-Y");
     rxyzTab->insertTab(1, makeRZXWid(), "Z-X");
     rxyzTab->insertTab(2, makeRXYWid(), "X-Y");
-    rxyzTab->setCurrentIndex(1);
+    rxyzTab->setCurrentIndex(0);
 
     auto *bRotXYZ = new QPushButton("Set");
     bRotXYZ->setFixedWidth(60);
@@ -376,32 +376,24 @@ QWidget *MainWindow::makeRXYZWid() {
 }
 
 QWidget *MainWindow::makeRZYWid() {
-    rZYAlpEd = new QLineEdit();
-    rZYBetEd = new QLineEdit();
-    rZYGamEd = new QLineEdit();
-    rZYDelEd = new QLineEdit();
-    QString a;
+    rZYAlpEd = new QLineEdit("0");
+    rZYBetEd = new QLineEdit("0");
+    rZYGamEd = new QLineEdit("0");
+    rZYDelEd = new QLineEdit("0");
 
-    QLabel *rZYALab = new QLabel("Alpha");
-    QLabel *rZYBLab = new QLabel("Rz(Beta)");
-    QLabel *rZYGLab = new QLabel("Ry(Gamma)");
-    QLabel *rZYDLab = new QLabel("Ry(Delta)");
+    auto *rZYALab = new QLabel("Alpha");
+    auto *rZYBLab = new QLabel("Rz(Beta)");
+    auto *rZYGLab = new QLabel("Ry(Gamma)");
+    auto *rZYDLab = new QLabel("Ry(Delta)");
 
     rZYAlpEd->setMaximumWidth(60);
-    rZYAlpEd->setReadOnly(true);
-
     rZYBetEd->setMaximumWidth(60);
-    rZYBetEd->setReadOnly(true);
-
     rZYGamEd->setMaximumWidth(60);
-    rZYGamEd->setReadOnly(true);
-
     rZYDelEd->setMaximumWidth(60);
-    rZYDelEd->setReadOnly(true);
 
-    QWidget *rzW = new QWidget();
+    auto *rzW = new QWidget();
 
-    QGridLayout *rzLay = new QGridLayout();
+    auto *rzLay = new QGridLayout();
     rzLay->addWidget(rZYALab, 1, 2);
     rzLay->addWidget(rZYAlpEd, 1, 3);
     rzLay->addWidget(rZYBLab, 2, 2);
@@ -452,32 +444,24 @@ QWidget *MainWindow::makeRZXWid() {
 }
 
 QWidget *MainWindow::makeRXYWid() {
-    rXYAlpEd = new QLineEdit();
-    rXYBetEd = new QLineEdit();
-    rXYGamEd = new QLineEdit();
-    rXYDelEd = new QLineEdit();
-    QString a;
+    rXYAlpEd = new QLineEdit("0");
+    rXYBetEd = new QLineEdit("0");
+    rXYGamEd = new QLineEdit("0");
+    rXYDelEd = new QLineEdit("0");
 
-    QLabel *rXYALab = new QLabel("Alpha");
-    QLabel *rXYBLab = new QLabel("Rx(Beta)");
-    QLabel *rXYGLab = new QLabel("Ry(Gamma)");
-    QLabel *rXYDLab = new QLabel("Rx(Delta)");
+    auto *rXYALab = new QLabel("Alpha");
+    auto *rXYBLab = new QLabel("Rx(Beta)");
+    auto *rXYGLab = new QLabel("Ry(Gamma)");
+    auto *rXYDLab = new QLabel("Rx(Delta)");
 
     rXYAlpEd->setMaximumWidth(60);
-    rXYAlpEd->setReadOnly(true);
-
     rXYBetEd->setMaximumWidth(60);
-    rXYBetEd->setReadOnly(true);
-
     rXYGamEd->setMaximumWidth(60);
-    rXYGamEd->setReadOnly(true);
-
     rXYDelEd->setMaximumWidth(60);
-    rXYDelEd->setReadOnly(true);
 
-    QWidget *rzW = new QWidget();
+    auto *rzW = new QWidget();
 
-    QGridLayout *rzLay = new QGridLayout();
+    auto *rzLay = new QGridLayout();
     rzLay->addWidget(rXYALab, 1, 2);
     rzLay->addWidget(rXYAlpEd, 1, 3);
     rzLay->addWidget(rXYBLab, 2, 2);
@@ -570,9 +554,9 @@ QWidget *MainWindow::makeOpWid() {
     auto *qGb = new QGroupBox("Rotation");
 
     rzyRB = new QRadioButton("ZY-decomposition");
+    rzyRB->toggle();
 
     rzxRB = new QRadioButton("ZX-decomposition");
-    rzxRB->toggle();
 
     rxyRB = new QRadioButton("XY-decomposition");
 
@@ -778,17 +762,15 @@ void MainWindow::slotSetRXYZOp() {
     double alpha, beta, gamma, delta;
     switch (rxyzTab->currentIndex()) {
     case 0:
-        //        alpha = rZYAlpEd->text().toDouble() * RAD;
-        //        beta = rZYBetEd->text().toDouble() * RAD;
-        //        gamma = rZYAlpEd->text().toDouble() * RAD;
-        //        delta = rZYDelEd->text().toDouble() * RAD;
-        //        v = gamma / 2.0;
-        //            curOperator = Operator(exp(C_I * (alpha - beta / 2.0 - delta / 2.0)) *
-        //            cos(v),
-        //                                     exp(C_I * (alpha - beta / 2.0 + delta / 2.0)) *
-        //                                     sin(v), exp(C_I * (alpha + beta / 2.0 - delta / 2.0))
-        //                                     * sin(v), exp(C_I * (alpha + beta / 2.0 + delta
-        //                                     / 2.0)) * cos(v));
+        alpha = rZYAlpEd->text().toDouble();
+        beta = rZYBetEd->text().toDouble();
+        gamma = rZYGamEd->text().toDouble();
+        delta = rZYDelEd->text().toDouble();
+        if (not curOperator.setOperatorByZYDecomposition({alpha, beta, delta, gamma})) {
+            // TODO it's impossible; inspect
+            QMessageBox::warning(0, "Error", "error");
+            return;
+        }
         break;
     case 1:
         alpha = rZXAlpEd->text().toDouble();
@@ -802,17 +784,15 @@ void MainWindow::slotSetRXYZOp() {
         }
         break;
     case 2:
-        //        alpha = rXYAlpEd->text().toDouble() * RAD;
-        //        beta = rXYBetEd->text().toDouble() * RAD;
-        //        gamma = rXYAlpEd->text().toDouble() * RAD;
-        //        delta = rXYDelEd->text().toDouble() * RAD;
-        //        v = gamma / 2.0;
-        //        double w = beta / 2.0 + delta / 2.0, u = beta / 2.0 - delta / 2.0;
-        //            curOperator =
-        //                Operator(exp(C_I * alpha) * (cos(v) * cos(w) - C_I * sin(v) * sin(u)),
-        //                           exp(C_I * alpha) * (-sin(v) * cos(u) - C_I * cos(v) * sin(w)),
-        //                           exp(C_I * alpha) * (sin(v) * cos(u) - C_I * cos(v) * sin(w)),
-        //                           exp(C_I * alpha) * (cos(v) * cos(w) + C_I * sin(v) * sin(u)));
+        alpha = rXYAlpEd->text().toDouble();
+        beta = rXYBetEd->text().toDouble();
+        gamma = rXYGamEd->text().toDouble();
+        delta = rXYDelEd->text().toDouble();
+        if (not curOperator.setOperatorByXYDecomposition({alpha, beta, delta, gamma})) {
+            // TODO it's impossible; inspect
+            QMessageBox::warning(0, "Error", "error");
+            return;
+        }
         break;
     }
     curOpName = "U";
@@ -832,7 +812,7 @@ void MainWindow::slotSetMatrixOp() {
             }
         }
     UnitaryMatrix2x2 matrixOp;
-    if (not matrixOp.updateMatrix(res[0], res[1], res[2], res[3])) {
+    if (not matrixOp.updateMatrix({res[0], res[1], res[2], res[3]})) {
         QMessageBox::warning(0, "Error", "Matrix must be unitary");
         return;
     }
@@ -873,34 +853,29 @@ void MainWindow::slotSetNewAxOp() {
 }
 
 void MainWindow::updateOp() {
-    //        curOperator.toZXdec();
-    //        rZXAlpEd->setText(QString("%1").arg(roundNumber(curOperator._alp() * DEG, 10)));
-    //        rZXBetEd->setText(QString("%1").arg(roundNumber(curOperator._bet() * DEG, 10)));
-    //        rZXGamEd->setText(QString("%1").arg(roundNumber(curOperator._gam() * DEG, 10)));
-    //        rZXDelEd->setText(QString("%1").arg(roundNumber(curOperator._del() * DEG, 10)));
-    //
+    decomposition zyDec = curOperator.zyDecomposition();
+    rZYAlpEd->setText(QString::number(zyDec.alpha));
+    rZYBetEd->setText(QString::number(zyDec.beta));
+    rZYGamEd->setText(QString::number(zyDec.gamma));
+    rZYDelEd->setText(QString::number(zyDec.delta));
+
     decomposition zxDec = curOperator.zxDecomposition();
     rZXAlpEd->setText(QString::number(zxDec.alpha));
     rZXBetEd->setText(QString::number(zxDec.beta));
     rZXGamEd->setText(QString::number(zxDec.gamma));
     rZXDelEd->setText(QString::number(zxDec.delta));
 
-    //    rXYAlpEd->setText(QString::number(zxDec.alpha));
-    //    rXYBetEd->setText(QString::number(zxDec.beta));
-    //    rXYGamEd->setText(QString::number(zxDec.gamma));
-    //    rXYDelEd->setText(QString::number(zxDec.delta));
-    //
-    //        curOperator.toZYdec();
-    //        rZYAlpEd->setText(QString("%1").arg(roundNumber(curOperator._alp() * DEG, 10)));
-    //        rZYBetEd->setText(QString("%1").arg(roundNumber(curOperator._bet() * DEG, 10)));
-    //        rZYGamEd->setText(QString("%1").arg(roundNumber(curOperator._gam() * DEG, 10)));
-    //        rZYDelEd->setText(QString("%1").arg(roundNumber(curOperator._del() * DEG, 10)));
-    //
+    decomposition xyDec = curOperator.xyDecomposition();
+    rXYAlpEd->setText(QString::number(xyDec.alpha));
+    rXYBetEd->setText(QString::number(xyDec.beta));
+    rXYGamEd->setText(QString::number(xyDec.gamma));
+    rXYDelEd->setText(QString::number(xyDec.delta));
+
     mat[0][0]->setText(parseComplexToStr(curOperator.getOperator().a()));
     mat[0][1]->setText(parseComplexToStr(curOperator.getOperator().b()));
     mat[1][0]->setText(parseComplexToStr(curOperator.getOperator().c()));
     mat[1][1]->setText(parseComplexToStr(curOperator.getOperator().d()));
-    //
+
     //        QVector<double> x = curOperator.findNVec();
     //        axRnEd->setText(QString("%1;%2;%3")
     //                            .arg(roundNumber(x[0], 1000))
@@ -932,27 +907,22 @@ void MainWindow::slotAddToQue() {
 
 void MainWindow::slotApplyOp() {
     if (rtRB->isChecked()) {
-        statusBar()->showMessage("rb");
         //            curOperator.toZYdec();
         //            const QVector<double> &x = curOperator.findNVec();
         //            //scene->setNewAxis(x[0], x[1], x[2]);   // 4
         //            //scene->rotateN(x[3] * DEG, curOpName); // 4
     } else if (rzyRB->isChecked()) {
-        statusBar()->showMessage("rzy");
-        //            curOperator.toZYdec();
-        //            //scene->rotateZY(curOperator._del() * DEG, curOperator._gam() * DEG,
-        //                            curOperator._bet() * DEG, curOpName);
+        foreach (auto &e, vectors.keys()) {
+            e->changeVector(curOperator.applyZYDecomposition(e->getSpike()));
+        }
     } else if (rzxRB->isChecked()) {
-        statusBar()->showMessage("rzx");
         foreach (auto &e, vectors.keys()) {
             e->changeVector(curOperator.applyZXDecomposition(e->getSpike()));
         }
-
     } else if (rxyRB->isChecked()) {
-        statusBar()->showMessage("rxy");
-        //            curOperator.toXYdec();
-        //            //scene->rotateXY(curOperator._del() * DEG, curOperator._gam() * DEG,
-        //                            curOperator._bet() * DEG, curOpName);
+        foreach (auto &e, vectors.keys()) {
+            e->changeVector(curOperator.applyXYDecomposition(e->getSpike()));
+        }
     }
 
     appBut->setEnabled(false);
