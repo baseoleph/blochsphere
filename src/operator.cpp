@@ -209,84 +209,79 @@ decomposition Operator::zyDecomposition(UnitaryMatrix2x2 op) {
 decomposition Operator::zyDecomposition() { return zyDecomposition(_op); }
 
 decomposition Operator::xyDecomposition(UnitaryMatrix2x2 op) {
-    // clang-format off
-    //  Compiler: Borland C++ 3.1
-    //  Author   : Швецкий Михаил Владимирович (23.11.2014,16:42-20:03;
-    //                                          01.04-09.05.2018)
-    // *************************
-    // Вычисление X-Y-разложения
-    // ----------------------------
-    // Корректировка значения alpha
-    // ----------------------------
-    if (abs(d) > EPS)
-        if (abs(1 + a / conj(d)) < EPS)
+    //  Author  : Швецкий Михаил Владимирович
+    //  Original: cdc00f14787f28de44d8ae0ee1582ebaa82aba0e
+
+    complex i = complex(0, 1);
+    double  alpha = 0;
+    double  beta = 0;
+    double  delta = 0;
+    double  gamma = 0;
+    complex a = op.a();
+    complex b = op.b();
+    complex c = op.c();
+    complex d = op.d();
+
+    if (abs(d) > EPSILON)
+        if (abs(complex(1) + a / conj(d)) < EPSILON)
             alpha = M_PI / 2.0;
         else
             alpha = arg(a / conj(d)) / 2.0;
-    else if (abs(c) > EPS)
-        if (abs(1 - b / conj(c)) < EPS)
+    else if (abs(c) > EPSILON)
+        if (abs(complex(1) - b / conj(c)) < EPSILON)
             alpha = M_PI / 2.0;
         else
             alpha = arg(-b / conj(c)) / 2.0;
-    // -----------------------------------
+
     complex A, B;
     double  a1, a2, b1, b2;
     A = (exp(-i * alpha) * (a + b) + exp(i * alpha) * (conj(c) + conj(d))) / 2.0;
     B = (exp(-i * alpha) * (a + b) - exp(i * alpha) * (conj(c) + conj(d))) / 2.0;
-    cout << "Определитель полученной специальной матрицы: " << A * conj(A) + B * conj(B) << endl
-         << endl;
+
     a1 = real(A);
     a2 = imag(A);
     b1 = real(B);
     b2 = imag(B);
-    cout << "Значения a1, a2, b1, b2: " << a1 << ", " << a2 << ", " << b1 << ", " << b2 << endl
-         << endl;
-    // --------------------------------------------------
-    if (fabs(a1) < EPS && fabs(b2) < EPS) // a1=0, b2=0
-        if (fabs(b1) > EPS) {
-            cout << "Случай (1)." << endl;
+
+    if (fabs(a1) < EPSILON && fabs(b2) < EPSILON) // a1=0, b2=0
+        if (fabs(b1) > EPSILON) {
             delta = 0; // delta - любое из R
             beta = delta + 2.0 * atan(a2 / b1);
             gamma = M_PI;
-        } else if (fabs(a2) > EPS) {
-            cout << "Случай (2)." << endl;
+        } else if (fabs(a2) > EPSILON) {
             delta = 0; // delta - любое из R
             beta = delta + M_PI - 2.0 * atan(b1 / a2);
             gamma = M_PI;
         } else
             ;
-    // --------------------------------------------------
-    if (fabs(a2) < EPS && fabs(b1) < EPS) // a2=0, b1=0
-        if (fabs(a1) > EPS) {
-            cout << "Случай (3)." << endl;
+
+    if (fabs(a2) < EPSILON && fabs(b1) < EPSILON) // a2=0, b1=0
+        if (fabs(a1) > EPSILON) {
             delta = 0; // delta - любое из R
             if (a1 > 0)
                 beta = -delta + 2.0 * asin(-b2);
             else
                 beta = 2.0 * M_PI - (-delta + 2.0 * asin(-b2));
             gamma = 0;
-        } else if (fabs(b2) > EPS) {
-            cout << "Случай (4)." << endl;
+        } else if (fabs(b2) > EPSILON) {
             delta = 0; // delta - любое из R
             beta = -delta + M_PI - 2.0 * atan(-a1 / b2);
             gamma = 0;
         } else
             ;
-    // ---------------------------------------------
-    if (fabs(a1) < EPS && fabs(a2) > EPS && fabs(b1) < EPS &&
-        fabs(b2) > EPS) // a1=0, a2!=0, b1=0, b2!=0
+
+    if (fabs(a1) < EPSILON && fabs(a2) > EPSILON && fabs(b1) < EPSILON &&
+        fabs(b2) > EPSILON) // a1=0, a2!=0, b1=0, b2!=0
     {
-        cout << "Случай (5)." << endl;
         beta = M_PI;
         gamma = 2.0 * asin(-a2);
         delta = 0;
     } else
         ;
-    // ---------------------------------------------
-    if (fabs(a1) > EPS && fabs(a2) > EPS && fabs(b1) < EPS &&
-        fabs(b2) < EPS) // a1!=0, a2!=0, b1=0, b2=0
+
+    if (fabs(a1) > EPSILON && fabs(a2) > EPSILON && fabs(b1) < EPSILON &&
+        fabs(b2) < EPSILON) // a1!=0, a2!=0, b1=0, b2=0
     {
-        cout << "Случай (6)." << endl;
         beta = M_PI / 2.0;
         if (a1 > 0)
             gamma = 2.0 * asin(-a2);
@@ -295,11 +290,10 @@ decomposition Operator::xyDecomposition(UnitaryMatrix2x2 op) {
         delta = -M_PI / 2.0;
     } else
         ;
-    // ---------------------------------------------
-    if (fabs(a1) > EPS && fabs(a2) < EPS && fabs(b1) > EPS &&
-        fabs(b2) < EPS) // a1!=0, a2=0, b1!=0, b2=0
+
+    if (fabs(a1) > EPSILON && fabs(a2) < EPSILON && fabs(b1) > EPSILON &&
+        fabs(b2) < EPSILON) // a1!=0, a2=0, b1!=0, b2=0
     {
-        cout << "Случай (7)." << endl;
         beta = 0;
         if (a1 > 0)
             gamma = -2.0 * asin(b1);
@@ -308,21 +302,17 @@ decomposition Operator::xyDecomposition(UnitaryMatrix2x2 op) {
         delta = 0;
     } else
         ;
-    // ---------------------------------------------
-    if (fabs(a1) > EPS && fabs(a2) < EPS && fabs(b1) > EPS &&
-        fabs(b2) > EPS) // a1!=0, a2=0, b1!=0, b2!=0
+
+    if (fabs(a1) > EPSILON && fabs(a2) < EPSILON && fabs(b1) > EPSILON &&
+        fabs(b2) > EPSILON) // a1!=0, a2=0, b1!=0, b2!=0
     {
-        cout << "Случай (8)." << endl;
         gamma = 2.0 * asin(-b1);
         beta = asin(-b2 / cos(gamma / 2.0)); // beta=atan(-b2/a1);
         delta = beta;
     } else
         ;
-    // ----------------------------------------------
-    if (fabs(a1) > EPS && fabs(a2) > EPS && fabs(b2) > EPS)
-    // a1!=0, a2!=0, b2!=0
-    {
-        cout << "Случай (9)." << endl;
+
+    if (fabs(a1) > EPSILON && fabs(a2) > EPSILON && fabs(b2) > EPSILON) {
         beta = atan(-b2 / a1) + atan(a2 / b1);
         delta = atan(-b2 / a1) - atan(a2 / b1);
         if (a1 / cos(beta / 2.0 + delta / 2.0) > 0)
@@ -331,8 +321,9 @@ decomposition Operator::xyDecomposition(UnitaryMatrix2x2 op) {
             gamma = 2.0 * M_PI - 2.0 * asin(-a2 / sin(beta / 2.0 - delta / 2.0));
     } else
         ;
-    // -----------------------------------------------
-    // clang-format on
+
+    return decomposition{alpha * (180 / M_PI), beta * (180 / M_PI), delta * (180 / M_PI),
+                         gamma * (180 / M_PI)};
 }
 
 decomposition Operator::xyDecomposition() { return xyDecomposition(_op); }
@@ -419,5 +410,22 @@ matrix2x2 Operator::getMatrixByZyDec(decomposition dec) {
     matrix.b = -exp(i * (alpha - beta / 2.0 + delta / 2.0)) * sin(v);
     matrix.c = exp(i * (alpha + beta / 2.0 - delta / 2.0)) * sin(v);
     matrix.d = exp(i * (alpha + beta / 2.0 + delta / 2.0)) * cos(v);
+    return matrix;
+}
+
+matrix2x2 Operator::getMatrixByXyDec(decomposition dec) {
+    double    alpha = dec.alpha * M_PI / 180;
+    double    beta = dec.beta * M_PI / 180;
+    double    delta = dec.delta * M_PI / 180;
+    double    v = dec.gamma * M_PI / 360;
+    matrix2x2 matrix;
+    complex   i{0, 1};
+    double    w = beta / 2.0 + delta / 2.0;
+    double    u = beta / 2.0 - delta / 2.0;
+
+    matrix.a = exp(i * alpha) * (cos(v) * cos(w) - i * sin(v) * sin(u));
+    matrix.b = exp(i * alpha) * (-sin(v) * cos(u) - i * cos(v) * sin(w));
+    matrix.c = exp(i * alpha) * (sin(v) * cos(u) - i * cos(v) * sin(w));
+    matrix.d = exp(i * alpha) * (cos(v) * cos(w) + i * sin(v) * sin(u));
     return matrix;
 }

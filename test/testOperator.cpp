@@ -70,6 +70,13 @@ TEST(Operator, zyDecompositionRandom) {
     randomTestDecomposition(Operator::zyDecomposition, Operator::getMatrixByZyDec);
 }
 
+TEST(Operator, xyDecompositionStatic) {
+    staticTestDecomposition(Operator::zxDecomposition, Operator::getMatrixByXyDec);
+}
+// TEST(Operator, xyDecompositionRandom) {
+//     randomTestDecomposition(Operator::zxDecomposition, Operator::getMatrixByXyDec);
+// }
+
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     std::cout << "Seed: " << SEED << "\n";

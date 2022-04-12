@@ -60,6 +60,7 @@ public:
 
     static matrix2x2 getMatrixByZxDec(decomposition dec);
     static matrix2x2 getMatrixByZyDec(decomposition dec);
+    static matrix2x2 getMatrixByXyDec(decomposition dec);
 
     bool setOperatorByZXDecomposition(decomposition dec);
     void setOperator(UnitaryMatrix2x2 op);
