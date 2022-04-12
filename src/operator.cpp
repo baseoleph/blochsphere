@@ -206,7 +206,7 @@ decomposition Operator::zyDecomposition(UnitaryMatrix2x2 op) {
                          gamma * (180 / M_PI)};
 }
 
-decomposition Operator::zyDecomposition() { return zxDecomposition(_op); }
+decomposition Operator::zyDecomposition() { return zyDecomposition(_op); }
 
 decomposition Operator::xyDecomposition(UnitaryMatrix2x2 op) {
     // clang-format off
