@@ -16,14 +16,10 @@
 
 #include "unitaryMatrix2x2.hpp"
 
-bool UnitaryMatrix2x2::updateMatrix(complex a, complex b, complex c, complex d) {
-    UnitaryMatrix2x2 tmpOp(a, b, c, d);
+bool UnitaryMatrix2x2::updateMatrix(matrix2x2 matrix) {
+    matrix2x2 tmpOp(matrix);
     if (isUnitaryMatrix(tmpOp)) {
-        _a = a;
-        _b = b;
-        _c = c;
-        _d = d;
-
+        _matrix = matrix;
         return true;
     }
 
@@ -34,13 +30,13 @@ bool UnitaryMatrix2x2::isUnitaryMatrix(UnitaryMatrix2x2 op1) {
     return compareOperators(UnitaryMatrix2x2(), op1 * op1.getConjugateTranspose());
 }
 
-bool UnitaryMatrix2x2::isUnitaryMatrix(complex a, complex b, complex c, complex d) {
-    return isUnitaryMatrix(UnitaryMatrix2x2(a, b, c, d));
+bool UnitaryMatrix2x2::isUnitaryMatrix(matrix2x2 matrix) {
+    return isUnitaryMatrix(UnitaryMatrix2x2(matrix));
 }
 
 bool UnitaryMatrix2x2::fuzzyCompare(double a, double b) { return qAbs(a - b) <= EPSILON; }
 
-void UnitaryMatrix2x2::print(std::ostream &out) {
+void UnitaryMatrix2x2::print(std::ostream &out) const {
     out << "----------------------------------------------\n";
     out << "(" << a().real() << ", " << a().imag() << ") \t";
     out << "(" << b().real() << ", " << b().imag() << ") \n";
@@ -82,28 +78,27 @@ bool UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2 op1, UnitaryMatrix2x2 o
 }
 
 UnitaryMatrix2x2 UnitaryMatrix2x2::getConjugateTranspose() {
-    return UnitaryMatrix2x2(conj(_a), conj(_c), conj(_b), conj(_d));
+    return UnitaryMatrix2x2({conj(_matrix.a), conj(_matrix.c), conj(_matrix.b), conj(_matrix.d)});
 }
 
 UnitaryMatrix2x2 UnitaryMatrix2x2::operator*(const UnitaryMatrix2x2 &op) {
-    complex a = _a * op.a() + _b * op.c();
-    complex b = _a * op.b() + _b * op.d();
-    complex c = _c * op.a() + _d * op.c();
-    complex d = _c * op.b() + _d * op.d();
-    return UnitaryMatrix2x2(a, b, c, d);
+    complex a = _matrix.a * op.a() + _matrix.b * op.c();
+    complex b = _matrix.a * op.b() + _matrix.b * op.d();
+    complex c = _matrix.c * op.a() + _matrix.d * op.c();
+    complex d = _matrix.c * op.b() + _matrix.d * op.d();
+    return UnitaryMatrix2x2({a, b, c, d});
 }
 
-// TODO why I use curly braces?
-UnitaryMatrix2x2 UnitaryMatrix2x2::getX() { return UnitaryMatrix2x2{0, 1, 1, 0}; }
+UnitaryMatrix2x2 UnitaryMatrix2x2::getX() { return UnitaryMatrix2x2({0, 1, 1, 0}); }
 UnitaryMatrix2x2 UnitaryMatrix2x2::getY() {
-    return UnitaryMatrix2x2{0, -complex(0, 1), complex(0, 1), 0};
+    return UnitaryMatrix2x2({0, -complex(0, 1), complex(0, 1), 0});
 }
-UnitaryMatrix2x2 UnitaryMatrix2x2::getZ() { return UnitaryMatrix2x2{1, 0, 0, -1}; }
+UnitaryMatrix2x2 UnitaryMatrix2x2::getZ() { return UnitaryMatrix2x2({1, 0, 0, -1}); }
 UnitaryMatrix2x2 UnitaryMatrix2x2::getH() {
     double h = 1 / sqrt(2);
-    return UnitaryMatrix2x2{h, h, h, -h};
+    return UnitaryMatrix2x2({h, h, h, -h});
 }
-UnitaryMatrix2x2 UnitaryMatrix2x2::getS() { return UnitaryMatrix2x2{1, 0, 0, complex(0, 1)}; }
+UnitaryMatrix2x2 UnitaryMatrix2x2::getS() { return UnitaryMatrix2x2({1, 0, 0, complex(0, 1)}); }
 UnitaryMatrix2x2 UnitaryMatrix2x2::getT() {
-    return UnitaryMatrix2x2{1, 0, 0, exp(complex(0, 1) * (M_PI / 4))};
+    return UnitaryMatrix2x2({1, 0, 0, exp(complex(0, 1) * (M_PI / 4))});
 }

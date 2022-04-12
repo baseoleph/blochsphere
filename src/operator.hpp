@@ -38,7 +38,6 @@ struct decomposition {
     }
 };
 
-// TODO check for unitary
 class Operator {
 public:
     Operator();

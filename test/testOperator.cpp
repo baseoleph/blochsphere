@@ -38,7 +38,7 @@ UnitaryMatrix2x2 checkMatrixZXDecomposition(UnitaryMatrix2x2 op) {
     complex d = exp(i * (dec.alpha + dec.beta / 2.0 + dec.delta / 2.0)) * cos(v);
 
     UnitaryMatrix2x2 opActual;
-    opActual.updateMatrix(a, b, c, d);
+    opActual.updateMatrix({a, b, c, d});
     return opActual;
 }
 

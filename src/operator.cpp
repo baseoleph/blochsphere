@@ -256,7 +256,7 @@ UnitaryMatrix2x2 Operator::genRandUnitaryMatrix(qint64 seed) {
     complex d = exp(i * phi) * conj(a);
 
     // TODO check for exception
-    op.updateMatrix(a, b, c, d);
+    op.updateMatrix({a, b, c, d});
     return op;
 }
 
@@ -285,11 +285,12 @@ bool           Operator::setOperatorByZXDecomposition(decomposition dec) {
     complex d = exp(i * (alpha + beta / 2.0 + delta / 2.0)) * cos(v);
 
     UnitaryMatrix2x2 matrixOp;
-    if (not matrixOp.updateMatrix(a, b, c, d)) {
+    if (not matrixOp.updateMatrix({a, b, c, d})) {
         return false;
     }
 
     setOperator(matrixOp);
     return true;
 }
+
 void Operator::toId() { _op = UnitaryMatrix2x2(); }

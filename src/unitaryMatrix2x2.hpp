@@ -24,22 +24,29 @@
 
 const quint64 SEED = QRandomGenerator::global()->generate64();
 
+struct matrix2x2 {
+    complex a;
+    complex b;
+    complex c;
+    complex d;
+};
+
 class UnitaryMatrix2x2 {
 public:
-    explicit UnitaryMatrix2x2() : _a(1), _b(0), _c(0), _d(1) {}
+    explicit UnitaryMatrix2x2() : _matrix({1, 0, 0, 1}) {}
 
-    bool             updateMatrix(complex a, complex b, complex c, complex d);
+    bool             updateMatrix(matrix2x2 matrix);
     static bool      isUnitaryMatrix(UnitaryMatrix2x2 op);
-    static bool      isUnitaryMatrix(complex a, complex b, complex c, complex d);
+    static bool      isUnitaryMatrix(matrix2x2 matrix);
     static bool      compareOperators(UnitaryMatrix2x2 op1, UnitaryMatrix2x2 op2);
     UnitaryMatrix2x2 getConjugateTranspose();
     static bool      fuzzyCompare(double a, double b);
-    void             print(std::ostream &out);
+    void             print(std::ostream &out) const;
 
-    [[nodiscard]] complex a() const { return _a; }
-    [[nodiscard]] complex b() const { return _b; }
-    [[nodiscard]] complex c() const { return _c; }
-    [[nodiscard]] complex d() const { return _d; }
+    [[nodiscard]] complex a() const { return _matrix.a; }
+    [[nodiscard]] complex b() const { return _matrix.b; }
+    [[nodiscard]] complex c() const { return _matrix.c; }
+    [[nodiscard]] complex d() const { return _matrix.d; }
 
     static UnitaryMatrix2x2 getX();
     static UnitaryMatrix2x2 getY();
@@ -49,13 +56,10 @@ public:
     static UnitaryMatrix2x2 getT();
 
 private:
-    complex _a;
-    complex _b;
-    complex _c;
-    complex _d;
+    matrix2x2 _matrix;
 
     // Matrices must be unitary
-    UnitaryMatrix2x2(complex a, complex b, complex c, complex d) : _a(a), _b(b), _c(c), _d(d) {}
+    explicit UnitaryMatrix2x2(matrix2x2 matrix) : _matrix(matrix) {}
     UnitaryMatrix2x2 operator*(const UnitaryMatrix2x2 &op);
 };
 #endif // UNITARYMATRIX2X2_HPP
