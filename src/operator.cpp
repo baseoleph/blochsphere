@@ -68,7 +68,7 @@ QVector<Spike> Operator::applyOperator(Spike s, UnitaryMatrix2x2 op) {
     QQuaternion    qz2 = QQuaternion::fromAxisAndAngle(zVector, static_cast<float>(dec.delta));
     QQuaternion    q = qz1 * qx * qz2;
 
-    // TODO check algorithm. q.scalar < 0; q.scalar < eps + and -
+    // TODO check algorithm. q.scalar < 0; q.scalar < EPSILON + and -
     QVector3D v = q.vector().normalized();
     double    g = qFuzzyIsNull(v.length()) ? 0 : 2 * qAcos(q.scalar()) * 180 / M_PI;
     if (qFuzzyIsNull(g)) {

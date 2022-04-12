@@ -909,6 +909,7 @@ void MainWindow::updateOp() {
     //        ngRnEd->setText(QString("%1").arg(roundNumber(x[3] * DEG))); // 4
 }
 
+// TODO check
 void MainWindow::slotQueItemClicked(QListWidgetItem *it) {
     OpItem *opi = (OpItem *)it;
     curOpName = opi->text();

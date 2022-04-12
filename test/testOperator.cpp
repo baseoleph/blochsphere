@@ -31,7 +31,6 @@ UnitaryMatrix2x2 checkMatrixDecomposition(UnitaryMatrix2x2 op,
 void staticTestDecomposition(decomposition (*getDec)(UnitaryMatrix2x2),
                              matrix2x2(getMatrix)(decomposition)) {
     QVector<UnitaryMatrix2x2> ops = unitaryOperators2x2();
-    std::cout << "Static cases seed: " << SEED << "\n";
 
     for (int k = 0; k < ops.size(); ++k) {
         EXPECT_TRUE(UnitaryMatrix2x2::isUnitaryMatrix(ops[k]))
@@ -45,7 +44,6 @@ void staticTestDecomposition(decomposition (*getDec)(UnitaryMatrix2x2),
 
 void randomTestDecomposition(decomposition (*getDec)(UnitaryMatrix2x2),
                              matrix2x2(getMatrix)(decomposition)) {
-    std::cout << "Static cases seed: " << SEED << "\n";
     int randomCnt = 10000;
 
     for (int k = 0; k < randomCnt; ++k) {
@@ -74,5 +72,6 @@ TEST(Operator, zyDecompositionRandom) {
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
+    std::cout << "Seed: " << SEED << "\n";
     return RUN_ALL_TESTS();
 }
