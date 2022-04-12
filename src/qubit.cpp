@@ -17,18 +17,10 @@
 #include "qubit.hpp"
 #include <complex>
 
-Qubit::Qubit() {
-    evalAB();
-}
-Qubit::Qubit(double x, double y, double z) : Point(x, y, z) {
-    evalAB();
-}
-Qubit::Qubit(double the, double phi) : Point(the, phi) {
-    evalAB();
-}
-Qubit::Qubit(complex a, complex b) : a_(a), b_(b) {
-    evalVertex();
-}
+Qubit::Qubit() { evalAB(); }
+Qubit::Qubit(double x, double y, double z) : Point(x, y, z) { evalAB(); }
+Qubit::Qubit(double the, double phi) : Point(the, phi) { evalAB(); }
+Qubit::Qubit(complex a, complex b) : a_(a), b_(b) { evalVertex(); }
 
 void Qubit::changeQubit(double x, double y, double z) {
     changePoint(x, y, z);
@@ -62,9 +54,7 @@ void Qubit::evalVertex() {
 }
 
 void Qubit::evalAB() {
-    const complex C_E = complex(exp(1), 0.0);
-    const complex C_I = complex(0.0, 1.0);
-    complex       csin(sin(the() / 2.0), 0.0);
+    complex csin(sin(the() / 2.0), 0.0);
     a_ = cos(the() / 2.0);
     b_ = pow(C_E, C_I * phi()) * csin;
 }

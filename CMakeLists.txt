@@ -48,61 +48,61 @@ set(PROJECT_SOURCES
         src/vector.hpp
         src/unitaryMatrix2x2.cpp
         src/unitaryMatrix2x2.hpp
-)
+        src/blochUtility.cpp src/blochUtility.h)
 
-add_executable(blochsphere ${PROJECT_SOURCES})
+add_executable(blochsphere ${PROJECT_SOURCES} src/blochUtility.cpp src/blochUtility.h)
 
 target_link_libraries(blochsphere PRIVATE
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Widgets
-    Qt5::OpenGL
-    ${OPENGL_LIBRARIES}
-    )
+        Qt5::Core
+        Qt5::Gui
+        Qt5::Widgets
+        Qt5::OpenGL
+        ${OPENGL_LIBRARIES}
+        )
 
 set_target_properties(blochsphere PROPERTIES
-    WIN32_EXECUTABLE TRUE
-)
+        WIN32_EXECUTABLE TRUE
+        )
 
 target_compile_options(
-    blochsphere PRIVATE
-#    -Wall -Wextra -pedantic -Werror
+        blochsphere PRIVATE
+        #    -Wall -Wextra -pedantic -Werror
         -Wall -Wextra
 )
 
 # GTests
 
 add_subdirectory(
-    "${CMAKE_CURRENT_SOURCE_DIR}/gtest" 
-    "gtest"
-    )
-
-add_executable(
-    test
-    test/testOperator.cpp
-    test/unitaryOperators.cpp
-    src/operator.cpp
-    src/unitaryMatrix2x2.cpp
+        "${CMAKE_CURRENT_SOURCE_DIR}/gtest"
+        "gtest"
 )
 
+add_executable(
+        test
+        test/testOperator.cpp
+        test/unitaryOperators.cpp
+        src/operator.cpp
+        src/unitaryMatrix2x2.cpp
+        src/blochUtility.cpp src/blochUtility.h)
+
 target_include_directories(
-    test PRIVATE
-    "${CMAKE_CURRENT_SOURCE_DIR}/src"
+        test PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/src"
 )
 
 target_link_libraries(
-    test PRIVATE
-    gtest 
-    gtest_main
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Widgets
-    Qt5::OpenGL
-    ${OPENGL_LIBRARIES}
+        test PRIVATE
+        gtest
+        gtest_main
+        Qt5::Core
+        Qt5::Gui
+        Qt5::Widgets
+        Qt5::OpenGL
+        ${OPENGL_LIBRARIES}
 )
 
 target_compile_options(
-    test PRIVATE
-#    -Wall -Wextra -pedantic -Werror
+        test PRIVATE
+        #    -Wall -Wextra -pedantic -Werror
         -Wall -Wextra
 )

@@ -14,36 +14,24 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef QUBIT_HPP
-#define QUBIT_HPP
+#ifndef BLOCHUTILITY_H
+#define BLOCHUTILITY_H
 
-#include "blochUtility.h"
-#include "point.hpp"
+#include <QString>
 #include <complex>
 
-class Qubit : public Point {
-public:
-    Qubit();
-    Qubit(double x, double y, double z);
-    Qubit(double the, double phi);
-    Qubit(complex a, complex b);
+#define EEE 2.71828182845904523536
+#define EPSILON 0.000001
+#define C_I complex(0, 1)
+#define C_E complex(EEE, 0.0)
+// TODO change logic duration of animation
+#define DURATION 1000.
 
-    [[nodiscard]] inline complex a() const { return a_; }
-    [[nodiscard]] inline complex b() const { return b_; }
+typedef std::complex<double> complex;
 
-protected:
-    void changeQubit(double x, double y, double z);
-    void changeQubit(double the, double phi);
-    void changeQubit(complex a, complex b);
+// DOTO improve functions; increase accuracy
+complex parseStrToComplex(const QString &str);
+QString parseComplexToStr(complex c, int d = 1 / EPSILON);
+double  roundNumber(double a, double s);
 
-private:
-    using Point::changePoint;
-
-    complex a_;
-    complex b_;
-
-    void evalVertex();
-    void evalAB();
-};
-
-#endif // QUBIT_HPP
+#endif // BLOCHUTILITY_H

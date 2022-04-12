@@ -25,7 +25,7 @@ class Sphere : public QGLWidget {
     Q_OBJECT
 public:
     Sphere(QWidget *parent, const QString objName);
-    // TODO realize safety add end detacch vectors
+    // TODO realize safety add end detach vectors
     void addVector(Vector *v) { vectors.append(v); }
     void deleteVector(Vector *v);
 
@@ -59,8 +59,8 @@ private:
     static void drawSphere(int lats, int longs);
     void        drawCircle();
     void        drawAxis();
-    void        scalePlus() { scaleFactor = scaleFactor * 1.1; }
-    void        scaleMinus() { scaleFactor = scaleFactor / 1.1; }
+    void        scalePlus() { scaleFactor *= 1.1; }
+    void        scaleMinus() { scaleFactor /= 1.1; }
     void        drawVectors();
 };
 

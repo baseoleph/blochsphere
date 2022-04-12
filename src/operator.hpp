@@ -17,12 +17,10 @@
 #ifndef OPERATOR_HPP
 #define OPERATOR_HPP
 
+#include "blochUtility.h"
 #include "unitaryMatrix2x2.hpp"
 #include "vector.hpp"
 #include <QtMath>
-
-// TODO change logic duration of animation
-#define DURATION 1000.
 
 struct decomposition {
     double alpha = 0; // deg

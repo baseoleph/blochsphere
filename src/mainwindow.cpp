@@ -80,66 +80,7 @@ void MainWindow::timerEvent(QTimerEvent *timerEvent) {
     }
 }
 
-void MainWindow::createOldScene() {
-    //    controlWidget = new QWidget(this);
-    //
-    //    QWidget *w = new QWidget(this);
-    //    setCentralWidget(w);
-    //    QGridLayout *layout = new QGridLayout(w);
-    //    w->setLayout(layout);
-    //    for (int i = 0; i < 1; ++i) {
-    //        for (int j = 1; j < 2; ++j) {
-    //            spheres.append(new Sphere(w, QString::number(i + 10 * j)));
-    //            layout->addWidget(spheres.last(), i, j);
-    //        }
-    //    }
-    //    layout->addWidget(controlWidget, 0, 0);
-}
-
-void MainWindow::setupOldControlBlock() {
-    //    controlWidget->setMaximumWidth(200);
-    //    QGridLayout *layout = new QGridLayout(controlWidget);
-    //    controlWidget->setLayout(layout);
-    //    QPushButton *bAddVector = new QPushButton("Add vector", this);
-    //    QPushButton *bResetVectors = new QPushButton("Reset vector", this);
-    //    QPushButton *bRotateVectors = new QPushButton("Rotate vector", this);
-    //    layout->addWidget(bAddVector, 0, 0);
-    //    layout->addWidget(bResetVectors, 0, 1);
-    //    layout->addWidget(bRotateVectors, 0, 2);
-    //    bAddVector->show();
-    //    bResetVectors->show();
-    //    bRotateVectors->show();
-    //    connect(bAddVector, &QPushButton::clicked, this, &MainWindow::addVector);
-    //    connect(bResetVectors, &QPushButton::clicked, this, &MainWindow::removeAllVectors);
-}
-
-//////
-///-----------------------------------------------------------------------------------------------
-
-// TODO move
-double okr(double a, double s) {
-    a *= s;
-    if (a - floor(a) >= 0.5)
-        return (floor(a) + 1) / s;
-    else
-        return floor(a) / s;
-}
-
 void MainWindow::createSphere() {
-
-    // TODO get rid of
-    // scene = new Bloch();
-    // scene->setFocus();
-    //        this->setCentralWidget(//scene);
-    //        connect(//scene, SIGNAL(motionBegin(QString)), SLOT(slotMotionBegin(QString)));
-    //        connect(//scene, SIGNAL(motionEnd()), SLOT(slotMotionEnd()));
-
-    //        QBVector *qV = //scene->getQBV();
-    //        connect(qV, SIGNAL(phiTheChanged(float, float)), SLOT(slotPhiTheChanged(float,
-    //        float))); connect(qV, SIGNAL(alpBetChanged(float, complex)),
-    //        SLOT(slotAlpBetChanged(float, complex))); connect(qV, SIGNAL(xyzChanged(float, float,
-    //        float)), SLOT(slotXYZChanged(float, float, float))); connect(qV,
-    //        SIGNAL(newOp(Operator &)), SLOT(slotNewOp(Operator &))); qV->report();
     controlWidget = new QWidget(this);
     setCentralWidget(controlWidget);
     auto *layout = new QGridLayout(controlWidget);
@@ -671,10 +612,10 @@ QWidget *MainWindow::makeOpWid() {
 }
 
 QPushButton *MainWindow::makeOpButton(QString str) {
-    QPushButton *newBut = new QPushButton(str);
-    newBut->setFixedHeight(26);
-    connect(newBut, SIGNAL(clicked()), this, SLOT(slotButtonClicked()));
-    return newBut;
+    auto *newOpBut = new QPushButton(str);
+    newOpBut->setFixedHeight(26);
+    connect(newOpBut, &QPushButton::clicked, this, &MainWindow::slotSetOperatorClicked);
+    return newOpBut;
 }
 
 // TODO add check ranges
@@ -717,25 +658,6 @@ void MainWindow::slotSetRandomPsi() {
     foreach (auto &e, vectors.keys()) { e->changeVector(sp); }
 
     fillFieldsOfVector(sp);
-}
-
-void MainWindow::slotPhiTheChanged(float phi, float the) {
-    QString t = QString("%1").arg(okr(the * DEG, 10)), p = QString("%1").arg(okr(phi * DEG, 10));
-    theEd->setText(t);
-    phiEd->setText(p);
-}
-
-void MainWindow::slotAlpBetChanged(float a, complex b) {
-    QString alp = QString("%1").arg(okr(a, 1000.0f)), bet = parseComplexToStr(b, 1000);
-    alpEd->setText(alp);
-    reBetEd->setText(bet);
-}
-
-void MainWindow::slotXYZChanged(float x, float y, float z) { // 4
-    xyzStLab->setText(QString("<font size=4>(%1;%2;%3)</font>")
-                          .arg(okr(x, 100))
-                          .arg(okr(y, 100))
-                          .arg(okr(z, 100)));
 }
 
 void MainWindow::slotSaveState() {
@@ -790,7 +712,7 @@ void MainWindow::slotTraceColor(int index) {
     foreach (auto &e, vectors.keys()) { e->setTraceColor(clr); }
 }
 
-void MainWindow::slotButtonClicked() {
+void MainWindow::slotSetOperatorClicked() {
     std::string str = ((QPushButton *)sender())->text().toStdString();
     //    AngInput   *aIn;
     //    QString     axSt = axRnEd->text();
@@ -925,36 +847,37 @@ void MainWindow::slotSetMatrixOp() {
 void MainWindow::slotSetNewAxOp() {
     QRegExp rxp("^(-?[\\d]*\\.?[\\d]*e?[+-]?[\\d]*);(-?[\\d]*\\.?[\\d]*e?[+-]?[\\d]*);(-?[\\d]*\\.?"
                 "[\\d]*e?[+-]?[\\d]*)$");
-    if (axRnEd->text().contains(rxp)) {
-        double ng = ngRnEd->text().toDouble() * RAD, nX = rxp.capturedTexts()[1].toDouble(),
-               nY = rxp.capturedTexts()[2].toDouble(), nZ = rxp.capturedTexts()[3].toDouble();
-        // 4
-        double k = (nX < 0) ? -1.0 : 1.0, l = (nY < 0) ? -1.0 : 1.0, m = (nZ < 0) ? -1.0 : 1.0;
-        double n = nX * nX + nY * nY + nZ * nZ;
-
-        nX = k * sqrt(nX * nX / n);
-        nY = l * sqrt(nY * nY / n);
-        nZ = m * sqrt(nZ * nZ / n);
-
-        // scene->setNewAxis(nX, nY, nZ);
-
-        //        curOperator = cos(ng / 2.0) * Iop - C_I * sin(ng / 2.0) * (nX * Xop + nY * Yop +
-        //        nZ * Zop);
-
-        curOpName = "U";
-        updateOp();
-    } else {
-        QMessageBox::warning(0, "Error", "Wrong input: Vector (x;y;z)");
-        return;
-    }
+    //    if (axRnEd->text().contains(rxp)) {
+    //        double ng = ngRnEd->text().toDouble() * RAD, nX = rxp.capturedTexts()[1].toDouble(),
+    //               nY = rxp.capturedTexts()[2].toDouble(), nZ = rxp.capturedTexts()[3].toDouble();
+    //        // 4
+    //        double k = (nX < 0) ? -1.0 : 1.0, l = (nY < 0) ? -1.0 : 1.0, m = (nZ < 0) ? -1.0
+    //        : 1.0; double n = nX * nX + nY * nY + nZ * nZ;
+    //
+    //        nX = k * sqrt(nX * nX / n);
+    //        nY = l * sqrt(nY * nY / n);
+    //        nZ = m * sqrt(nZ * nZ / n);
+    //
+    //        // scene->setNewAxis(nX, nY, nZ);
+    //
+    //        //        curOperator = cos(ng / 2.0) * Iop - C_I * sin(ng / 2.0) * (nX * Xop + nY *
+    //        Yop +
+    //        //        nZ * Zop);
+    //
+    //        curOpName = "U";
+    //        updateOp();
+    //    } else {
+    //        QMessageBox::warning(0, "Error", "Wrong input: Vector (x;y;z)");
+    //        return;
+    //    }
 }
 
 void MainWindow::updateOp() {
     //        curOperator.toZXdec();
-    //        rZXAlpEd->setText(QString("%1").arg(okr(curOperator._alp() * DEG, 10)));
-    //        rZXBetEd->setText(QString("%1").arg(okr(curOperator._bet() * DEG, 10)));
-    //        rZXGamEd->setText(QString("%1").arg(okr(curOperator._gam() * DEG, 10)));
-    //        rZXDelEd->setText(QString("%1").arg(okr(curOperator._del() * DEG, 10)));
+    //        rZXAlpEd->setText(QString("%1").arg(roundNumber(curOperator._alp() * DEG, 10)));
+    //        rZXBetEd->setText(QString("%1").arg(roundNumber(curOperator._bet() * DEG, 10)));
+    //        rZXGamEd->setText(QString("%1").arg(roundNumber(curOperator._gam() * DEG, 10)));
+    //        rZXDelEd->setText(QString("%1").arg(roundNumber(curOperator._del() * DEG, 10)));
     //
     decomposition zxDec = curOperator.zxDecomposition();
     rZXAlpEd->setText(QString::number(zxDec.alpha));
@@ -968,10 +891,10 @@ void MainWindow::updateOp() {
     //    rXYDelEd->setText(QString::number(zxDec.delta));
     //
     //        curOperator.toZYdec();
-    //        rZYAlpEd->setText(QString("%1").arg(okr(curOperator._alp() * DEG, 10)));
-    //        rZYBetEd->setText(QString("%1").arg(okr(curOperator._bet() * DEG, 10)));
-    //        rZYGamEd->setText(QString("%1").arg(okr(curOperator._gam() * DEG, 10)));
-    //        rZYDelEd->setText(QString("%1").arg(okr(curOperator._del() * DEG, 10)));
+    //        rZYAlpEd->setText(QString("%1").arg(roundNumber(curOperator._alp() * DEG, 10)));
+    //        rZYBetEd->setText(QString("%1").arg(roundNumber(curOperator._bet() * DEG, 10)));
+    //        rZYGamEd->setText(QString("%1").arg(roundNumber(curOperator._gam() * DEG, 10)));
+    //        rZYDelEd->setText(QString("%1").arg(roundNumber(curOperator._del() * DEG, 10)));
     //
     mat[0][0]->setText(parseComplexToStr(curOperator.getOperator().a()));
     mat[0][1]->setText(parseComplexToStr(curOperator.getOperator().b()));
@@ -980,10 +903,10 @@ void MainWindow::updateOp() {
     //
     //        QVector<double> x = curOperator.findNVec();
     //        axRnEd->setText(QString("%1;%2;%3")
-    //                            .arg(okr(x[0], 1000))
-    //                            .arg(okr(x[1], 1000))
-    //                            .arg(okr(x[2], 1000)));          // 4
-    //        ngRnEd->setText(QString("%1").arg(okr(x[3] * DEG))); // 4
+    //                            .arg(roundNumber(x[0], 1000))
+    //                            .arg(roundNumber(x[1], 1000))
+    //                            .arg(roundNumber(x[2], 1000)));          // 4
+    //        ngRnEd->setText(QString("%1").arg(roundNumber(x[3] * DEG))); // 4
 }
 
 void MainWindow::slotQueItemClicked(QListWidgetItem *it) {
@@ -1118,88 +1041,3 @@ OpItem::OpItem(QString str, Operator op) : QListWidgetItem(str), oper(op) {
 };
 
 Operator OpItem::getOp() { return oper; }
-
-complex parseStrToComplex(const QString &str) {
-    QRegExp rxp1("^([+-]?[0-9]+\\.?[0-9]*)([+-]?[0-9]*\\.?[0-9]*)i$");
-    QRegExp rxp2("^([+-]?[\\d]+\\.?[\\d]*)$");
-    QRegExp rxp3("^([+-]?[0-9]*\\.?[0-9]*)i$");
-    QRegExp rxp4("^([+-])i$");
-    if (str.contains(rxp1)) {
-        if (rxp1.capturedTexts()[2] == "+")
-            return complex(rxp1.capturedTexts()[1].toDouble(), 1.0);
-        else if (rxp1.capturedTexts()[2] == "-")
-            return complex(rxp1.capturedTexts()[1].toDouble(), -1.0);
-        else
-            return complex(rxp1.capturedTexts()[1].toDouble(), rxp1.capturedTexts()[2].toDouble());
-    } else if (str.contains(rxp2))
-        return complex(rxp2.capturedTexts()[1].toDouble(), 0.0);
-    else if (str.contains(rxp3)) {
-        if (rxp3.capturedTexts()[1] == "+" || rxp3.capturedTexts()[1] == "")
-            return complex(0.0, 1.0);
-        else if (rxp3.capturedTexts()[1] == "-")
-            return complex(0.0, -1.0);
-        else
-            return complex(0.0, rxp3.capturedTexts()[1].toDouble());
-    }
-    // DOTO nothing try to catch it
-    throw 1;
-}
-
-QString parseComplexToStr(complex c, int d) {
-    QString str;
-    float   im = okr(imag(c), d), re = okr(real(c), d);
-    if (abs(re) < EPS && abs(im) > EPS) {
-        if (abs(1.0 - im) < EPS)
-            return str += "i";
-        else if (abs(1.0 + im) < EPS)
-            return str += "-i";
-        else
-            return str += QString("%1i").arg(im);
-    } else {
-        str = QString("%1").arg(re);
-        if (abs(im) > EPS) {
-            if (im > EPS) {
-                str += "+";
-                if (1.0 - im < EPS)
-                    return str += "i";
-            }
-            if (im < EPS) {
-                if (1.0 + im < EPS)
-                    return str += "-i";
-            }
-            str += QString("%1i").arg(im);
-        }
-        return str;
-    }
-    // DOTO nothing try to catch it
-    throw 1;
-}
-
-QString decompString(double a, double b, double g, double d) {
-    QString res = "<font size=4><center>U=";
-    if (abs(a) > 0.001) {
-        res += "e<sup><font face=symbol size=5>i";
-        if (abs(1 - a) > 0.001)
-            res += QString("%1").arg(a);
-        res += "p</font></sup>";
-    }
-    if (abs(b) > 0.001) {
-        res += "R<sub><font size=5>z</font></sub>(<font face=symbol>";
-        if (abs(1 - b) > 0.001)
-            res += QString("%1").arg(b);
-        res += "p</font>)";
-    }
-    if (abs(g) > 0.001) {
-        res += "R<sub><font size=5>y</font></sub>(<font face=symbol>";
-        if (abs(1 - g) > 0.001)
-            res += QString("%1").arg(g);
-        res += "p</font>)";
-    }
-    if (abs(d) > 0.001) {
-        res += "R<sub><font size=5>z</font></sub>(<font face=symbol>";
-        if (abs(1 - d) > 0.001)
-            res += QString("%1").arg(d);
-        res += "p</font>)";
-    }
-    return res += "</center></font>";
-}

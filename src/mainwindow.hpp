@@ -17,6 +17,7 @@
 #ifndef MAINWINDOW_HPP
 #define MAINWINDOW_HPP
 
+#include "blochUtility.h"
 #include "operator.hpp"
 #include "qubit.hpp"
 #include "sphere.hpp"
@@ -32,20 +33,10 @@
 #include <QVector>
 #include <QtMath>
 
-#define RAD M_PI / 180.0
-#define DEG 180.0 / M_PI
-#define EEE 2.71828182845904523536
-#define EPS 0.001
-#define C_I complex(0, 1)
-
 typedef QMap<Vector *, QVector<Sphere *>> MapVectors;
 
 enum FIELD { NOTHIN = 0, THEPHI, ALPBET, BLOVEC };
 
-struct Bloch {
-    void hideNewAx();
-    void reset();
-};
 class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
@@ -65,8 +56,6 @@ private:
     MapVectors        savedVectors;
 
     QWidget *controlWidget;
-    void     createOldScene();
-    void     setupOldControlBlock();
 
 public slots:
     void slotThePhi();
@@ -74,11 +63,7 @@ public slots:
     void slotBloVec();
     void slotSetRandomPsi();
 
-    void slotPhiTheChanged(float phi, float the);
-    void slotAlpBetChanged(float a, complex b);
-    void slotXYZChanged(float x, float y, float z);
-
-    void slotButtonClicked();
+    void slotSetOperatorClicked();
     void slotSetMatrixOp();
     void slotSetRXYZOp();
     void slotSetNewAxOp();
@@ -123,7 +108,7 @@ private:
     QWidget *makeRZXWid();
     QWidget *makeRXYWid();
     QWidget *makeOpWid();
-    // ------------------
+
     QPushButton *makeOpButton(QString str);
     QPushButton *appBut;
     double       phiFun(double the, double re, double im);
@@ -140,39 +125,39 @@ private:
     QLineEdit *zEd;
 
     QTabWidget *rxyzTab;
-    // rotZY
-    QLineEdit *rZYAlpEd; // Поле ввода угла alpha
-    QLineEdit *rZYBetEd; // Поле ввода угла beta
-    QLineEdit *rZYGamEd; // Поле ввода угла gamma
-    QLineEdit *rZYDelEd; // Поле ввода угла delta
+
+    QLineEdit *rZYAlpEd;
+    QLineEdit *rZYBetEd;
+    QLineEdit *rZYGamEd;
+    QLineEdit *rZYDelEd;
     QLabel    *rZYLabel;
-    // rotZX
-    QLineEdit *rZXAlpEd; // Поле ввода угла alpha
-    QLineEdit *rZXBetEd; // Поле ввода угла beta
-    QLineEdit *rZXGamEd; // Поле ввода угла gamma
-    QLineEdit *rZXDelEd; // Поле ввода угла delta
+
+    QLineEdit *rZXAlpEd;
+    QLineEdit *rZXBetEd;
+    QLineEdit *rZXGamEd;
+    QLineEdit *rZXDelEd;
     QLabel    *rZXLabel;
-    // rotXY
-    QLineEdit *rXYAlpEd; // Поле ввода угла alpha
-    QLineEdit *rXYBetEd; // Поле ввода угла beta
-    QLineEdit *rXYGamEd; // Поле ввода угла gamma
-    QLineEdit *rXYDelEd; // Поле ввода угла delta
+
+    QLineEdit *rXYAlpEd;
+    QLineEdit *rXYBetEd;
+    QLineEdit *rXYGamEd;
+    QLineEdit *rXYDelEd;
     QLabel    *rXYLabel;
-    // --------------
+
     QTabWidget *stackW;
-    // ----------------
+
     Operator curOperator;
     QString  curOpName;
-    // matrix
+
     QLineEdit *mat[2][2];
-    // Rn
+
     QLineEdit    *axRnEd;
     QLineEdit    *ngRnEd;
     QRadioButton *rzyRB;
     QRadioButton *rzxRB;
     QRadioButton *rxyRB;
     QRadioButton *rtRB;
-    // ----------------
+
     QLabel    *xyzStLab;
     QLabel    *abStLab;
     QLabel    *tpStLab;
@@ -181,9 +166,9 @@ private:
     double     savedAlp;
     complex    savedBet;
     QComboBox *qcomb;
-    // --------------
+
     QListWidget *opQueWid;
-    // ------------------
+
     QAction *aboutAct;
     QAction *saveState;
     QAction *recallState;
@@ -195,7 +180,6 @@ private:
 
 class AngInput : public QDialog {
     Q_OBJECT
-    // -----
     QLineEdit *angEd;
 
 public:
@@ -210,10 +194,5 @@ public:
     OpItem(QString str, Operator op);
     Operator getOp();
 };
-
-// TODO may be should create another file with useful functions and constants
-// DOTO improve functions; increase accuracy
-complex parseStrToComplex(const QString &str);
-QString parseComplexToStr(complex c, int d = 10000);
 
 #endif // MAINWINDOW_HPP
