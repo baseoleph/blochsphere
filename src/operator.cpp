@@ -242,6 +242,7 @@ void Operator::toT() { _op = UnitaryMatrix2x2::getT(); }
 
 QVector<Spike> Operator::applyZXDecomposition(Spike s) { return applyZXDecomposition(s, _op); }
 bool           Operator::setOperatorByZXDecomposition(decomposition dec) {
+    // TODO use getMatrixBy functions
     double alpha = dec.alpha * M_PI / 180;
     double beta = dec.beta * M_PI / 180;
     double delta = dec.delta * M_PI / 180;
@@ -263,3 +264,31 @@ bool           Operator::setOperatorByZXDecomposition(decomposition dec) {
 }
 
 void Operator::toId() { _op = UnitaryMatrix2x2(); }
+
+matrix2x2 Operator::getMatrixByZxDec(decomposition dec) {
+    double    alpha = dec.alpha * M_PI / 180;
+    double    beta = dec.beta * M_PI / 180;
+    double    delta = dec.delta * M_PI / 180;
+    double    v = dec.gamma * M_PI / 360;
+    matrix2x2 matrix;
+    complex   i{0, 1};
+    matrix.a = exp(i * (alpha - beta / 2.0 - delta / 2.0)) * cos(v);
+    matrix.b = -i * exp(i * (alpha - beta / 2.0 + delta / 2.0)) * sin(v);
+    matrix.c = -i * exp(i * (alpha + beta / 2.0 - delta / 2.0)) * sin(v);
+    matrix.d = exp(i * (alpha + beta / 2.0 + delta / 2.0)) * cos(v);
+    return matrix;
+}
+
+matrix2x2 Operator::getMatrixByZyDec(decomposition dec) {
+    double    alpha = dec.alpha * M_PI / 180;
+    double    beta = dec.beta * M_PI / 180;
+    double    delta = dec.delta * M_PI / 180;
+    double    v = dec.gamma * M_PI / 360;
+    matrix2x2 matrix;
+    complex   i{0, 1};
+    matrix.a = exp(i * (alpha - beta / 2.0 - delta / 2.0)) * cos(v);
+    matrix.b = -exp(i * (alpha - beta / 2.0 + delta / 2.0)) * sin(v);
+    matrix.c = exp(i * (alpha + beta / 2.0 - delta / 2.0)) * sin(v);
+    matrix.d = exp(i * (alpha + beta / 2.0 + delta / 2.0)) * cos(v);
+    return matrix;
+}

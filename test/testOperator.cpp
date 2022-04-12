@@ -15,34 +15,21 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "operator.hpp"
-#include "point.hpp"
 #include "unitaryOperators.hpp"
 #include <QMap>
-#include <QtGlobal>
 #include <gtest/gtest.h>
 #include <qglobal.h>
 
-UnitaryMatrix2x2 checkMatrixZXDecomposition(UnitaryMatrix2x2 op) {
-    decomposition dec = Operator::zxDecomposition(op);
-
-    dec.alpha *= M_PI / 180;
-    dec.beta *=  M_PI / 180;
-    dec.delta *= M_PI / 180;
-    dec.gamma *= M_PI / 180;
-
-    complex i{0, 1};
-    double  v = dec.gamma / 2.;
-    complex a = exp(i * (dec.alpha - dec.beta / 2.0 - dec.delta / 2.0)) * cos(v);
-    complex b = -i * exp(i * (dec.alpha - dec.beta / 2.0 + dec.delta / 2.0)) * sin(v);
-    complex c = -i * exp(i * (dec.alpha + dec.beta / 2.0 - dec.delta / 2.0)) * sin(v);
-    complex d = exp(i * (dec.alpha + dec.beta / 2.0 + dec.delta / 2.0)) * cos(v);
-
+UnitaryMatrix2x2 checkMatrixDecomposition(UnitaryMatrix2x2 op,
+                                          decomposition (*getDec)(UnitaryMatrix2x2),
+                                          matrix2x2(getMatrix)(decomposition)) {
     UnitaryMatrix2x2 opActual;
-    opActual.updateMatrix({a, b, c, d});
+    opActual.updateMatrix(getMatrix(getDec(op)));
     return opActual;
 }
 
-TEST(Operator, zxDecompositionStatic) {
+void staticTestDecomposition(decomposition (*getDec)(UnitaryMatrix2x2),
+                             matrix2x2(getMatrix)(decomposition)) {
     QVector<UnitaryMatrix2x2> ops = unitaryOperators2x2();
     std::cout << "Static cases seed: " << SEED << "\n";
 
@@ -50,12 +37,14 @@ TEST(Operator, zxDecompositionStatic) {
         EXPECT_TRUE(UnitaryMatrix2x2::isUnitaryMatrix(ops[k]))
             << "Test case number " << k << "\n\n";
 
-        EXPECT_TRUE(UnitaryMatrix2x2::compareOperators(ops[k], checkMatrixZXDecomposition(ops[k])))
+        EXPECT_TRUE(UnitaryMatrix2x2::compareOperators(
+            ops[k], checkMatrixDecomposition(ops[k], getDec, getMatrix)))
             << "Test case number " << k << "\n\n";
     }
 }
 
-TEST(Operator, zxDecompositionRandom) {
+void randomTestDecomposition(decomposition (*getDec)(UnitaryMatrix2x2),
+                             matrix2x2(getMatrix)(decomposition)) {
     std::cout << "Static cases seed: " << SEED << "\n";
     int randomCnt = 10000;
 
@@ -64,8 +53,23 @@ TEST(Operator, zxDecompositionRandom) {
         UnitaryMatrix2x2 op = Operator::genRandUnitaryMatrix(seed);
         EXPECT_TRUE(UnitaryMatrix2x2::isUnitaryMatrix(op))
             << "Random operator seed: " << seed << "\n\n";
-        EXPECT_TRUE(UnitaryMatrix2x2::compareOperators(op, checkMatrixZXDecomposition(op)));
+        EXPECT_TRUE(UnitaryMatrix2x2::compareOperators(
+            op, checkMatrixDecomposition(op, getDec, getMatrix)));
     }
+}
+
+TEST(Operator, zxDecompositionStatic) {
+    staticTestDecomposition(Operator::zxDecomposition, Operator::getMatrixByZxDec);
+}
+TEST(Operator, zxDecompositionRandom) {
+    randomTestDecomposition(Operator::zxDecomposition, Operator::getMatrixByZxDec);
+}
+
+TEST(Operator, zyDecompositionStatic) {
+    staticTestDecomposition(Operator::zyDecomposition, Operator::getMatrixByZyDec);
+}
+TEST(Operator, zyDecompositionRandom) {
+    randomTestDecomposition(Operator::zyDecomposition, Operator::getMatrixByZyDec);
 }
 
 int main(int argc, char **argv) {
