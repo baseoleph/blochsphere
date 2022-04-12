@@ -42,19 +42,24 @@ struct decomposition {
 class Operator {
 public:
     Operator();
-    static QVector<Spike>   rotate(Spike s, QVector3D v, double gamma);
-    static QVector<Spike>   rXRotate(Spike s, double gamma);
-    static QVector<Spike>   rYRotate(Spike s, double gamma);
-    static QVector<Spike>   rZRotate(Spike s, double gamma);
-    static QVector<Spike>   applyZXDecomposition(Spike s, UnitaryMatrix2x2 op);
-    QVector<Spike>          applyZXDecomposition(Spike s);
-    static QVector<Spike>   applyOperator(Spike s, UnitaryMatrix2x2 op);
-    QVector<Spike>          applyOperator(Spike s);
-    static decomposition    zxDecomposition(UnitaryMatrix2x2 op);
-    decomposition           zxDecomposition();
+    static QVector<Spike> rotate(Spike s, QVector3D v, double gamma);
+    static QVector<Spike> rXRotate(Spike s, double gamma);
+    static QVector<Spike> rYRotate(Spike s, double gamma);
+    static QVector<Spike> rZRotate(Spike s, double gamma);
+
+    static QVector<Spike> applyZXDecomposition(Spike s, UnitaryMatrix2x2 op);
+    QVector<Spike>        applyZXDecomposition(Spike s);
+    static QVector<Spike> applyOperator(Spike s, UnitaryMatrix2x2 op);
+    QVector<Spike>        applyOperator(Spike s);
+
+    static decomposition zxDecomposition(UnitaryMatrix2x2 op);
+    decomposition        zxDecomposition();
+    static decomposition zyDecomposition(UnitaryMatrix2x2 op);
+
+    bool setOperatorByZXDecomposition(decomposition dec);
+    void setOperator(UnitaryMatrix2x2 op);
+
     static UnitaryMatrix2x2 genRandUnitaryMatrix(qint64 seed);
-    void                    setOperator(UnitaryMatrix2x2 op);
-    bool                    setOperatorByZXDecomposition(decomposition dec);
 
     UnitaryMatrix2x2 getOperator() { return _op; }
     void             toX();
