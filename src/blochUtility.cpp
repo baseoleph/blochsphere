@@ -19,7 +19,7 @@
 #include <QRegExp>
 #include <QStringList>
 
-double roundNumber(double a, double s) {
+double roundNumber(double a, double s = 1 / EPSILON) {
     a *= s;
     if (a - floor(a) >= 0.5)
         return (floor(a) + 1) / s;
@@ -83,3 +83,5 @@ QString parseComplexToStr(complex c, int d) {
     // DOTO nothing try to catch it
     throw 1;
 }
+QString numberToStr(double d) { return QString::number(roundNumber(d)); }
+QString numberToStr(long d) { return QString::number(d); }

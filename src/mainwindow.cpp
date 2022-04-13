@@ -956,21 +956,21 @@ void MainWindow::fillFieldsOfVector(Spike sp, FIELD exclude) {
     v.changeVector(sp);
 
     if (exclude != FIELD::THEPHI) {
-        theEd->setText(QString::number(qRadiansToDegrees(v.the())));
-        phiEd->setText(QString::number(qRadiansToDegrees(v.phi())));
+        theEd->setText(numberToStr(qRadiansToDegrees(v.the())));
+        phiEd->setText(numberToStr(qRadiansToDegrees(v.phi())));
     }
 
     if (exclude != FIELD::ALPBET) {
         // TODO maybe should create function that converts double to str
-        alpEd->setText(QString::number(v.a().real(), 'f', 3));
-        reBetEd->setText(QString::number(v.b().real(), 'f', 3) + (v.b().imag() >= 0 ? "+" : "") +
-                         QString::number(v.b().imag(), 'f', 3) + "i");
+        alpEd->setText(numberToStr(v.a().real()));
+        reBetEd->setText(numberToStr(v.b().real()) + (v.b().imag() >= 0 ? "+" : "") +
+                         numberToStr(v.b().imag()) + "i");
     }
 
     if (exclude != FIELD::BLOVEC) {
-        xEd->setText(QString::number(v.x()));
-        yEd->setText(QString::number(v.y()));
-        zEd->setText(QString::number(v.z()));
+        xEd->setText(numberToStr(v.x()));
+        yEd->setText(numberToStr(v.y()));
+        zEd->setText(numberToStr(v.z()));
     }
 }
 

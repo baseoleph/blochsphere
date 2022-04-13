@@ -32,6 +32,8 @@ typedef std::complex<double> complex;
 // DOTO improve functions; increase accuracy
 complex parseStrToComplex(const QString &str);
 QString parseComplexToStr(complex c, int d = 1 / EPSILON);
+QString numberToStr(double d);
+QString numberToStr(long d);
 double  roundNumber(double a, double s);
 
 #endif // BLOCHUTILITY_H
