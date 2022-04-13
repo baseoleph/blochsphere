@@ -18,11 +18,19 @@
 #define UNITARYMATRIX2X2_HPP
 
 #include "qubit.hpp"
-#include <QRandomGenerator64>
 #include <iostream>
 #include <ostream>
 
+#if QT_VERSION >= 0x050000
+#include <QRandomGenerator64>
+
 const quint64 SEED = QRandomGenerator::global()->generate64();
+#else
+#include <cstdlib>
+#include <ctime>
+
+const quint64 SEED = time(NULL);
+#endif
 
 struct matrix2x2 {
     complex a;
@@ -33,7 +41,12 @@ struct matrix2x2 {
 
 class UnitaryMatrix2x2 {
 public:
-    explicit UnitaryMatrix2x2() : _matrix({1, 0, 0, 1}) {}
+    explicit UnitaryMatrix2x2() {
+        _matrix.a = 1;
+        _matrix.b = 0;
+        _matrix.c = 0;
+        _matrix.d = 1;
+    }
 
     bool             updateMatrix(matrix2x2 matrix);
     static bool      isUnitaryMatrix(UnitaryMatrix2x2 op);
@@ -43,10 +56,10 @@ public:
     static bool      fuzzyCompare(double a, double b);
     void             print(std::ostream &out) const;
 
-    [[nodiscard]] complex a() const { return _matrix.a; }
-    [[nodiscard]] complex b() const { return _matrix.b; }
-    [[nodiscard]] complex c() const { return _matrix.c; }
-    [[nodiscard]] complex d() const { return _matrix.d; }
+    complex a() const { return _matrix.a; }
+    complex b() const { return _matrix.b; }
+    complex c() const { return _matrix.c; }
+    complex d() const { return _matrix.d; }
 
     static UnitaryMatrix2x2 getX();
     static UnitaryMatrix2x2 getY();

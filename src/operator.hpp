@@ -20,7 +20,14 @@
 #include "blochUtility.h"
 #include "unitaryMatrix2x2.hpp"
 #include "vector.hpp"
+
+#if QT_VERSION >= 0x050000
+#include <QRandomGenerator64>
 #include <QtMath>
+#else
+#include <QtCore/qmath.h>
+#include <cstdlib>
+#endif
 
 struct decomposition {
     double alpha = 0; // deg
@@ -74,7 +81,9 @@ public:
 
     static UnitaryMatrix2x2 genRandUnitaryMatrix(qint64 seed);
 
-    UnitaryMatrix2x2 getOperator() { return _op; }
+    UnitaryMatrix2x2 getOperator() {
+        return _op;
+    }
 
     void    toX();
     void    toY();
@@ -83,10 +92,18 @@ public:
     void    toS();
     void    toT();
     void    toId();
-    complex a() { return _op.a(); }
-    complex b() { return _op.b(); }
-    complex c() { return _op.c(); }
-    complex d() { return _op.d(); }
+    complex a() {
+        return _op.a();
+    }
+    complex b() {
+        return _op.b();
+    }
+    complex c() {
+        return _op.c();
+    }
+    complex d() {
+        return _op.d();
+    }
 
 private:
     UnitaryMatrix2x2 _op;

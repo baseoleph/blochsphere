@@ -19,7 +19,8 @@
 Operator::Operator() {}
 
 QVector<Spike> Operator::rotate(Spike s, QVector3D v, double gamma) {
-    QVector<Spike> trace = {s};
+    QVector<Spike> trace;
+    trace.append(s);
     for (uint i = 1; i < DURATION; ++i) {
         QQuaternion q = QQuaternion::fromAxisAndAngle(v, static_cast<float>(i / DURATION * gamma));
         trace.append(Vector::actOperator(q, s));
@@ -45,13 +46,22 @@ QVector<Spike> Operator::applyZXDecomposition(Spike s, UnitaryMatrix2x2 op) {
     QVector<Spike> spike = {s};
     decomposition  dec = zxDecomposition(op);
     if (dec.beta != 0) {
-        spike.append(rZRotate(spike.last(), dec.beta));
+        QVector<Spike> vct = rZRotate(spike.last(), dec.beta);
+        for (auto &e : vct) {
+            spike.append(e);
+        }
     }
     if (dec.gamma != 0) {
-        spike.append(rXRotate(spike.last(), dec.gamma));
+        QVector<Spike> vct = rXRotate(spike.last(), dec.gamma);
+        for (auto &e : vct) {
+            spike.append(e);
+        }
     }
     if (dec.delta != 0) {
-        spike.append(rZRotate(spike.last(), dec.delta));
+        QVector<Spike> vct = rZRotate(spike.last(), dec.delta);
+        for (auto &e : vct) {
+            spike.append(e);
+        }
     }
 
     std::reverse(spike.begin(), spike.end());
@@ -62,13 +72,22 @@ QVector<Spike> Operator::applyZYDecomposition(Spike s, UnitaryMatrix2x2 op) {
     QVector<Spike> spike = {s};
     decomposition  dec = zyDecomposition(op);
     if (dec.beta != 0) {
-        spike.append(rZRotate(spike.last(), dec.beta));
+        QVector<Spike> vct = rZRotate(spike.last(), dec.beta);
+        for (auto &e : vct) {
+            spike.append(e);
+        }
     }
     if (dec.gamma != 0) {
-        spike.append(rYRotate(spike.last(), dec.gamma));
+        QVector<Spike> vct = rYRotate(spike.last(), dec.gamma);
+        for (auto &e : vct) {
+            spike.append(e);
+        }
     }
     if (dec.delta != 0) {
-        spike.append(rZRotate(spike.last(), dec.delta));
+        QVector<Spike> vct = rZRotate(spike.last(), dec.delta);
+        for (auto &e : vct) {
+            spike.append(e);
+        }
     }
 
     std::reverse(spike.begin(), spike.end());
@@ -79,13 +98,22 @@ QVector<Spike> Operator::applyXYDecomposition(Spike s, UnitaryMatrix2x2 op) {
     QVector<Spike> spike = {s};
     decomposition  dec = xyDecomposition(op);
     if (dec.beta != 0) {
-        spike.append(rXRotate(spike.last(), dec.beta));
+        QVector<Spike> vct = rXRotate(spike.last(), dec.beta);
+        for (auto &e : vct) {
+            spike.append(e);
+        }
     }
     if (dec.gamma != 0) {
-        spike.append(rYRotate(spike.last(), dec.gamma));
+        QVector<Spike> vct = rYRotate(spike.last(), dec.gamma);
+        for (auto &e : vct) {
+            spike.append(e);
+        }
     }
     if (dec.delta != 0) {
-        spike.append(rZRotate(spike.last(), dec.delta));
+        QVector<Spike> vct = rZRotate(spike.last(), dec.delta);
+        for (auto &e : vct) {
+            spike.append(e);
+        }
     }
 
     std::reverse(spike.begin(), spike.end());
@@ -185,8 +213,12 @@ decomposition Operator::zxDecomposition(UnitaryMatrix2x2 op) {
     //    qDebug() << getComplexStr(aa) << getComplexStr(bb);
     //    qDebug() << getComplexStr(cc) << getComplexStr(dd);
 
-    return decomposition{alpha * (180 / M_PI), beta * (180 / M_PI), delta * (180 / M_PI),
-                         gamma * (180 / M_PI)};
+    decomposition dec;
+    dec.alpha = alpha * (180 / M_PI);
+    dec.beta = beta * (180 / M_PI);
+    dec.delta = delta * (180 / M_PI);
+    dec.gamma = gamma * (180 / M_PI);
+    return dec;
 }
 
 decomposition Operator::zxDecomposition() { return zxDecomposition(_op); }
@@ -236,8 +268,12 @@ decomposition Operator::zyDecomposition(UnitaryMatrix2x2 op) {
         alpha = M_PI + alpha;
     }
 
-    return decomposition{alpha * (180 / M_PI), beta * (180 / M_PI), delta * (180 / M_PI),
-                         gamma * (180 / M_PI)};
+    decomposition dec;
+    dec.alpha = alpha * (180 / M_PI);
+    dec.beta = beta * (180 / M_PI);
+    dec.delta = delta * (180 / M_PI);
+    dec.gamma = gamma * (180 / M_PI);
+    return dec;
 }
 
 decomposition Operator::zyDecomposition() { return zyDecomposition(_op); }
@@ -356,8 +392,12 @@ decomposition Operator::xyDecomposition(UnitaryMatrix2x2 op) {
     } else
         ;
 
-    return decomposition{alpha * (180 / M_PI), beta * (180 / M_PI), delta * (180 / M_PI),
-                         gamma * (180 / M_PI)};
+    decomposition dec;
+    dec.alpha = alpha * (180 / M_PI);
+    dec.beta = beta * (180 / M_PI);
+    dec.delta = delta * (180 / M_PI);
+    dec.gamma = gamma * (180 / M_PI);
+    return dec;
 }
 
 decomposition Operator::xyDecomposition() { return xyDecomposition(_op); }
@@ -439,21 +479,25 @@ decomposition Operator::xyDecomposition2(UnitaryMatrix2x2 op) {
         gamma = 2.0 * asin(-a2 / sin(beta / 2.0 - delta / 2.0));
     }
 
-    return decomposition{alpha * (180 / M_PI), beta * (180 / M_PI), delta * (180 / M_PI),
-                         gamma * (180 / M_PI)};
+    decomposition dec;
+    dec.alpha = alpha * (180 / M_PI);
+    dec.beta = beta * (180 / M_PI);
+    dec.delta = delta * (180 / M_PI);
+    dec.gamma = gamma * (180 / M_PI);
+    return dec;
 }
 
 UnitaryMatrix2x2 Operator::genRandUnitaryMatrix(qint64 seed) {
-    UnitaryMatrix2x2   op;
-    complex            i{0, 1};
-    double             a1, a2, b1, b2, moda, modb, phi;
-    QRandomGenerator64 rd(seed);
-    moda = rd.generateDouble();
-    a1 = rd.generateDouble() * sqrt(moda);
+    UnitaryMatrix2x2 op;
+    complex          i{0, 1};
+    double           a1, a2, b1, b2, moda, modb, phi;
+    srand(seed);
+    moda = rand() / double(RAND_MAX);
+    a1 = rand() / double(RAND_MAX) * sqrt(moda);
     a2 = sqrt(moda - a1 * a1);
-    b1 = rd.generateDouble() * sqrt(modb = 1 - a1 * a1 - a2 * a2);
+    b1 = rand() / double(RAND_MAX) * sqrt(modb = 1 - a1 * a1 - a2 * a2);
     b2 = sqrt(modb - b1 * b1);
-    phi = floor((2.0 * M_PI * rd.generateDouble() - M_PI) * 180.0 / M_PI);
+    phi = floor((2.0 * M_PI * rand() / double(RAND_MAX) - M_PI) * 180.0 / M_PI);
     complex a = exp(i * phi) * complex(a1, a2);
     complex b = exp(i * phi) * complex(b1, b2);
     complex c = -exp(i * phi) * conj(b);

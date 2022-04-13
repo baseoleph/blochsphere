@@ -28,8 +28,8 @@ public:
     Qubit(double the, double phi);
     Qubit(complex a, complex b);
 
-    [[nodiscard]] inline complex a() const { return a_; }
-    [[nodiscard]] inline complex b() const { return b_; }
+    inline complex a() const { return a_; }
+    inline complex b() const { return b_; }
 
 protected:
     void changeQubit(double x, double y, double z);

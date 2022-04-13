@@ -61,7 +61,7 @@ void MainWindow::removeVector(Vector *v, MapVectors &mp) {
 
 void MainWindow::removeAllVectors(MapVectors &mp) {
     while (not mp.isEmpty()) {
-        removeVector(mp.lastKey(), mp);
+        removeVector(mp.keys().last(), mp);
     }
 }
 
@@ -93,30 +93,59 @@ void MainWindow::createSphere() {
     controlWidget->setFocus();
 }
 
+//    QRandomGenerator64 rd(seed);
 void MainWindow::createActions() {
     aboutAct = new QAction("About program", this);
+#if QT_VERSION >= 0x050000
     connect(aboutAct, &QAction::triggered, this, &MainWindow::slotAbout);
+#else
+    connect(aboutAct, SIGNAL(triggered()), SLOT(slotAbout()));
+#endif
 
     saveState = new QAction("Save state", this);
+#if QT_VERSION >= 0x050000
     connect(saveState, &QAction::triggered, this, &MainWindow::slotSaveState);
+#else
+    connect(saveState, SIGNAL(triggered()), SLOT(slotSaveState()));
+#endif
 
     recallState = new QAction("Recall state", this);
     recallState->setEnabled(false);
+#if QT_VERSION >= 0x050000
     connect(recallState, &QAction::triggered, this, &MainWindow::slotRecallState);
+#else
+    connect(recallState, SIGNAL(triggered()), SLOT(slotRecallState()));
+#endif
 
     resetAct = new QAction("Reset", this);
+#if QT_VERSION >= 0x050000
     connect(resetAct, &QAction::triggered, this, &MainWindow::slotReset);
+#else
+    connect(resetAct, SIGNAL(triggered()), SLOT(slotReset()));
+#endif
 
     showTAct = new QAction("Show trace", this);
     showTAct->setCheckable(true);
     showTAct->setChecked(true);
+#if QT_VERSION >= 0x050000
     connect(showTAct, &QAction::triggered, this, &MainWindow::slotShowTrace);
+#else
+    connect(showTAct, SIGNAL(triggered()), SLOT(slotShowTrace()));
+#endif
 
     clearTAct = new QAction("Clear trace", this);
+#if QT_VERSION >= 0x050000
     connect(clearTAct, &QAction::triggered, this, &MainWindow::slotClearTrace);
+#else
+    connect(clearTAct, SIGNAL(triggered()), SLOT(slotClearTrace()));
+#endif
 
     exitAct = new QAction("Exit", this);
+#if QT_VERSION >= 0x050000
     connect(exitAct, &QAction::triggered, this, &MainWindow::close);
+#else
+    connect(exitAct, SIGNAL(triggered()), SLOT(close()));
+#endif
 }
 
 void MainWindow::createMenu() {
@@ -151,8 +180,12 @@ void MainWindow::createTopBar() {
     qcomb->addItem("Yellow");
     qcomb->setCurrentIndex(0);
 
+#if QT_VERSION >= 0x050000
     connect(qcomb, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
             &MainWindow::slotTraceColor);
+#else
+    connect(qcomb, SIGNAL(currentIndexChanged(int)), SLOT(slotTraceColor(int)));
+#endif
 
     qtb->addWidget(new QLabel("<center>Trace Color:"));
     qtb->addWidget(qcomb);
@@ -242,7 +275,11 @@ QWidget *MainWindow::makeThePhiWid() {
 
     auto *thePhiButton = new QPushButton("Set");
     thePhiButton->setFixedWidth(55);
+#if QT_VERSION >= 0x050000
     connect(thePhiButton, &QPushButton::clicked, this, &MainWindow::slotThePhi);
+#else
+    connect(thePhiButton, SIGNAL(clicked()), SLOT(slotThePhi()));
+#endif
 
     auto *tpW = new QWidget();
     tpW->setFixedHeight(90);
@@ -280,11 +317,19 @@ QWidget *MainWindow::makeAlpBetWid() {
 
     auto *bPsi = new QPushButton("Set");
     bPsi->setFixedWidth(60);
+#if QT_VERSION >= 0x050000
     connect(bPsi, &QPushButton::clicked, this, &MainWindow::slotAlpBet);
+#else
+    connect(bPsi, SIGNAL(clicked()), SLOT(slotAlpBet()));
+#endif
 
     auto *bRandPsi = new QPushButton("Random");
     bRandPsi->setFixedWidth(60);
+#if QT_VERSION >= 0x050000
     connect(bRandPsi, &QPushButton::clicked, this, &MainWindow::slotSetRandomPsi);
+#else
+    connect(bRandPsi, SIGNAL(clicked()), SLOT(slotSetRandomPsi()));
+#endif
 
     auto *abW = new QWidget();
     abW->setFixedHeight(90);
@@ -326,7 +371,11 @@ QWidget *MainWindow::makeBloVecWid() {
 
     auto *bPsi = new QPushButton("Set");
     bPsi->setFixedWidth(60);
+#if QT_VERSION >= 0x050000
     connect(bPsi, &QPushButton::clicked, this, &MainWindow::slotBloVec);
+#else
+    connect(bPsi, SIGNAL(clicked()), SLOT(slotBloVec()));
+#endif
 
     auto *xyzW = new QWidget();
     xyzW->setFixedHeight(90);
@@ -361,7 +410,11 @@ QWidget *MainWindow::makeRXYZWid() {
 
     auto *bRotXYZ = new QPushButton("Set");
     bRotXYZ->setFixedWidth(60);
+#if QT_VERSION >= 0x050000
     connect(bRotXYZ, &QPushButton::clicked, this, &MainWindow::slotSetRXYZOp);
+#else
+    connect(bRotXYZ, SIGNAL(clicked()), SLOT(slotSetRXYZOp()));
+#endif
 
     auto *qwb = new QVBoxLayout;
     qwb->addWidget(rxyzTab);
@@ -518,7 +571,11 @@ QWidget *MainWindow::makeOpWid() {
     }
 
     auto *applyMat = new QPushButton("Ok");
+#if QT_VERSION >= 0x050000
     connect(applyMat, &QPushButton::clicked, this, &MainWindow::slotSetMatrixOp);
+#else
+    connect(applyMat, SIGNAL(clicked()), SLOT(slotSetMatrixOp()));
+#endif
 
     mOpLay->addWidget(mat[0][0], 1, 0);
     mOpLay->addWidget(mat[0][1], 1, 5);
@@ -537,7 +594,11 @@ QWidget *MainWindow::makeOpWid() {
     ngRnEd->setValidator(new QDoubleValidator);
 
     auto *axOpBut = new QPushButton("Ok");
+#if QT_VERSION >= 0x050000
     connect(axOpBut, &QPushButton::clicked, this, &MainWindow::slotSetNewAxOp);
+#else
+    connect(axOpBut, SIGNAL(clicked()), SLOT(slotSetNewAxOp()));
+#endif
 
     auto *rNwLay = new QGridLayout();
     rNwLay->addWidget(new QLabel("Vector"), 0, 0);
@@ -573,10 +634,18 @@ QWidget *MainWindow::makeOpWid() {
 
     appBut = new QPushButton("Apply operator");
     appBut->setFixedHeight(35);
+#if QT_VERSION >= 0x050000
     connect(appBut, &QPushButton::clicked, this, &MainWindow::slotApplyOp);
+#else
+    connect(appBut, SIGNAL(clicked()), SLOT(slotApplyOp()));
+#endif
     auto *addToQueBut = new QPushButton("Add to queue");
     addToQueBut->setFixedHeight(35);
+#if QT_VERSION >= 0x050000
     connect(addToQueBut, &QPushButton::clicked, this, &MainWindow::slotAddToQue);
+#else
+    connect(addToQueBut, SIGNAL(clicked()), SLOT(slotAddToQue()));
+#endif
 
     auto *horLay = new QHBoxLayout;
     horLay->addWidget(appBut);
@@ -598,7 +667,11 @@ QWidget *MainWindow::makeOpWid() {
 QPushButton *MainWindow::makeOpButton(QString str) {
     auto *newOpBut = new QPushButton(str);
     newOpBut->setFixedHeight(26);
+#if QT_VERSION >= 0x050000
     connect(newOpBut, &QPushButton::clicked, this, &MainWindow::slotSetOperatorClicked);
+#else
+    connect(newOpBut, SIGNAL(clicked()), SLOT(slotSetOperatorClicked()));
+#endif
     return newOpBut;
 }
 
@@ -635,8 +708,8 @@ void MainWindow::slotBloVec() {
 }
 
 void MainWindow::slotSetRandomPsi() {
-    double the = QRandomGenerator::global()->bounded(180.);
-    double phi = QRandomGenerator::global()->bounded(360.);
+    double the = random(0, 180);
+    double phi = random(0, 360);
 
     Spike sp = Vector::createSpike(the, phi);
     foreach (auto &e, vectors.keys()) { e->changeVector(sp); }
@@ -654,7 +727,7 @@ void MainWindow::slotRecallState() {
     removeAllVectors(vectors);
     vectors.clear();
     foreach (auto &e, savedVectors.keys()) { addVector(e->getCopyState(), vectors); }
-    fillFieldsOfVector(vectors.lastKey()->getSpike());
+    fillFieldsOfVector(vectors.keys().last()->getSpike());
 }
 
 void MainWindow::slotMotionBegin(QString msg) {
@@ -676,22 +749,22 @@ void MainWindow::slotTraceColor(int index) {
     QColor clr;
     switch (index) {
     case 0:
-        clr = QColorConstants::Red;
+        clr = QColor(Qt::red);
         break;
     case 1:
-        clr = QColorConstants::Green;
+        clr = QColor(Qt::green);
         break;
     case 2:
-        clr = QColorConstants::Blue;
+        clr = QColor(Qt::blue);
         break;
     case 3:
-        clr = QColorConstants::Gray;
+        clr = QColor(Qt::gray);
         break;
     case 4:
-        clr = QColorConstants::Yellow;
+        clr = QColor(Qt::yellow);
         break;
     default:
-        clr = QColorConstants::Black;
+        clr = QColor(Qt::black);
     }
     foreach (auto &e, vectors.keys()) { e->setTraceColor(clr); }
 }
@@ -759,36 +832,36 @@ void MainWindow::slotNewOp(Operator &op) {
 }
 
 void MainWindow::slotSetRXYZOp() {
-    double alpha, beta, gamma, delta;
+    decomposition dec;
     switch (rxyzTab->currentIndex()) {
     case 0:
-        alpha = rZYAlpEd->text().toDouble();
-        beta = rZYBetEd->text().toDouble();
-        gamma = rZYGamEd->text().toDouble();
-        delta = rZYDelEd->text().toDouble();
-        if (not curOperator.setOperatorByZYDecomposition({alpha, beta, delta, gamma})) {
+        dec.alpha = rZYAlpEd->text().toDouble();
+        dec.beta = rZYBetEd->text().toDouble();
+        dec.gamma = rZYGamEd->text().toDouble();
+        dec.delta = rZYDelEd->text().toDouble();
+        if (not curOperator.setOperatorByZYDecomposition(dec)) {
             // TODO it's impossible; inspect
             QMessageBox::warning(0, "Error", "error");
             return;
         }
         break;
     case 1:
-        alpha = rZXAlpEd->text().toDouble();
-        beta = rZXBetEd->text().toDouble();
-        gamma = rZXGamEd->text().toDouble();
-        delta = rZXDelEd->text().toDouble();
-        if (not curOperator.setOperatorByZXDecomposition({alpha, beta, delta, gamma})) {
+        dec.alpha = rZXAlpEd->text().toDouble();
+        dec.beta = rZXBetEd->text().toDouble();
+        dec.gamma = rZXGamEd->text().toDouble();
+        dec.delta = rZXDelEd->text().toDouble();
+        if (not curOperator.setOperatorByZXDecomposition(dec)) {
             // TODO it's impossible; inspect
             QMessageBox::warning(0, "Error", "error");
             return;
         }
         break;
     case 2:
-        alpha = rXYAlpEd->text().toDouble();
-        beta = rXYBetEd->text().toDouble();
-        gamma = rXYGamEd->text().toDouble();
-        delta = rXYDelEd->text().toDouble();
-        if (not curOperator.setOperatorByXYDecomposition({alpha, beta, delta, gamma})) {
+        dec.alpha = rXYAlpEd->text().toDouble();
+        dec.beta = rXYBetEd->text().toDouble();
+        dec.gamma = rXYGamEd->text().toDouble();
+        dec.delta = rXYDelEd->text().toDouble();
+        if (not curOperator.setOperatorByXYDecomposition(dec)) {
             // TODO it's impossible; inspect
             QMessageBox::warning(0, "Error", "error");
             return;
@@ -977,7 +1050,7 @@ void MainWindow::fillFieldsOfVector(Spike sp, FIELD exclude) {
 void MainWindow::slotReset() {
     removeAllVectors(vectors);
     addVector(new Vector(0., 0.), vectors);
-    fillFieldsOfVector(vectors.lastKey()->getSpike());
+    fillFieldsOfVector(vectors.keys().last()->getSpike());
 }
 
 AngInput::AngInput(QWidget *pwgt) : QDialog(pwgt, Qt::WindowTitleHint | Qt::WindowSystemMenuHint) {

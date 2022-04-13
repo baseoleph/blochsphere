@@ -31,7 +31,6 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QVector>
-#include <QtMath>
 
 typedef QMap<Vector *, QVector<Sphere *>> MapVectors;
 

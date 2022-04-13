@@ -67,22 +67,28 @@ void Vector::printVector() const {
 }
 
 void Vector::tracePushBack() {
-    trace_.append(
-        Trace{QVector3D(path_[path_.size() - 2].point.x(), path_[path_.size() - 2].point.y(),
-                        path_[path_.size() - 2].point.z()),
-              getSpike().point, traceColor_});
+    Trace tr;
+    tr.first = QVector3D(path_[path_.size() - 2].point.x(), path_[path_.size() - 2].point.y(),
+                         path_[path_.size() - 2].point.z());
+    tr.last = getSpike().point;
+    tr.color = traceColor_;
+    trace_.append(tr);
 }
 
 void Vector::initialSpike() { spike_ = createSpike(x(), y(), z()); }
 
-QColor Vector::generateRandomColor() {
-    return {QRandomGenerator::global()->bounded(255), QRandomGenerator::global()->bounded(255),
-            QRandomGenerator::global()->bounded(255)};
-}
+// QColor Vector::generateRandomColor() {
+//    return {QRandomGenerator::global()->bounded(255), QRandomGenerator::global()->bounded(255),
+//            QRandomGenerator::global()->bounded(255)};
+//}
 
 Spike Vector::createSpike(double x, double y, double z) {
-    Spike       s;
+    Spike s;
+#if QT_VERSION >= 0x050000
     QQuaternion q = QQuaternion::rotationTo(QVector3D(0, 0, 1), QVector3D(x, y, z));
+#else
+    QQuaternion q = QQuaternionrotationTo(QVector3D(0, 0, 1), QVector3D(x, y, z));
+#endif
     s.point = QVector3D(x, y, z);
     s.arrow1 = q.rotatedVector(QVector3D(0.02, 0.0, 0.9));
     s.arrow2 = q.rotatedVector(QVector3D(-0.02, 0.0, 0.9));
@@ -122,3 +128,24 @@ Vector *Vector::getCopyState() {
 
     return v;
 }
+
+#if QT_VERSION < 0x050000
+QQuaternion QQuaternionrotationTo(const QVector3D &from, const QVector3D &to) {
+    // Based on Stan Melax's article in Game Programming Gems
+    const QVector3D v0(from.normalized());
+    const QVector3D v1(to.normalized());
+    float           d = QVector3D::dotProduct(v0, v1) + 1.0f;
+    // if dest vector is close to the inverse of source vector, ANY axis of rotation is valid
+    if (qFuzzyIsNull(d)) {
+        QVector3D axis = QVector3D::crossProduct(QVector3D(1.0f, 0.0f, 0.0f), v0);
+        if (qFuzzyIsNull(axis.lengthSquared()))
+            axis = QVector3D::crossProduct(QVector3D(0.0f, 1.0f, 0.0f), v0);
+        axis.normalize();
+        // same as QQuaternion::fromAxisAndAngle(axis, 180.0f)
+        return QQuaternion(0.0f, axis.x(), axis.y(), axis.z());
+    }
+    d = std::sqrt(2.0f * d);
+    const QVector3D axis(QVector3D::crossProduct(v0, v1) / d);
+    return QQuaternion(d * 0.5f, axis).normalized();
+}
+#endif

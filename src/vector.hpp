@@ -22,16 +22,24 @@
 #include <QDebug>
 #include <QObject>
 #include <QQuaternion>
-#include <QRandomGenerator>
 #include <QTimerEvent>
 #include <QVector3D>
-#include <QtMath>
 #include <utility>
+
+#if QT_VERSION >= 0x050000
+#include <QtMath>
+#else
+inline double qDegreesToRadians(double degrees) { return degrees * (M_PI / 180); }
+
+inline double qRadiansToDegrees(double radians) { return radians * (180 / M_PI); }
+
+QQuaternion QQuaternionrotationTo(const QVector3D &from, const QVector3D &to);
+#endif
 
 struct Trace {
     QVector3D first;
     QVector3D last;
-    QColor color;
+    QColor    color;
 };
 
 struct Spike {
@@ -51,19 +59,19 @@ public:
     Vector(double the, double phi);
     Vector(complex a, complex b);
 
-    [[nodiscard]] inline QColor getSelfColor() const { return selfColor_; }
-    inline void                 setSelfColor(QColor color) { selfColor_ = std::move(color); }
-    [[nodiscard]] inline QColor getTraceColor() const { return traceColor_; }
-    inline void                 setTraceColor(QColor color) { traceColor_ = std::move(color); }
-    inline void                 setEnableTrace(bool b) { traceEnabled_ = b; }
-    [[nodiscard]] inline bool   isTraceEnabled() const { return traceEnabled_; }
-    [[nodiscard]] inline QVector<Trace> const &getTrace() const { return trace_; }
-    [[nodiscard]] Spike                        getSpike() const;
-    inline void                                clearTrace() { trace_.clear(); }
+    inline QColor                getSelfColor() const { return selfColor_; }
+    inline void                  setSelfColor(QColor color) { selfColor_ = color; }
+    inline QColor                getTraceColor() const { return traceColor_; }
+    inline void                  setTraceColor(QColor color) { traceColor_ = color; }
+    inline void                  setEnableTrace(bool b) { traceEnabled_ = b; }
+    inline bool                  isTraceEnabled() const { return traceEnabled_; }
+    inline QVector<Trace> const &getTrace() const { return trace_; }
+    Spike                        getSpike() const;
+    inline void                  clearTrace() { trace_.clear(); }
 
     inline QVector3D toQVector3D(Qubit const &q) const { return QVector3D(q.x(), q.y(), q.z()); }
     inline QVector3D toQVector3D() const { return QVector3D(x(), y(), z()); }
-    [[nodiscard]] inline bool hasPath() const { return not path_.empty(); }
+    inline bool      hasPath() const { return not path_.empty(); }
 
     // TODO when I should use inline?
     void popPath();
@@ -93,9 +101,9 @@ public:
 
     void printVector() const;
 
-    static QColor generateRandomColor();
+    //    static QColor generateRandomColor();
 
-    [[nodiscard]] bool isNowAnimate() const { return isNowAnimate_; }
+    bool isNowAnimate() const { return isNowAnimate_; }
 
     void setAnimateState(bool animate) { isNowAnimate_ = animate; }
 

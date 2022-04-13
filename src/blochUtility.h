@@ -24,6 +24,7 @@
 #define EPSILON 0.000001
 #define C_I complex(0, 1)
 #define C_E complex(EEE, 0.0)
+#define M_PI 3.14159265358979323846
 // TODO change logic duration of animation
 #define DURATION 1000.
 
@@ -35,5 +36,10 @@ QString parseComplexToStr(complex c, int d = 1 / EPSILON);
 QString numberToStr(double d);
 QString numberToStr(long d);
 double  roundNumber(double a, double s);
+
+// TODO must be double
+inline int random(int min, int max) {
+    return min + rand() % ((max + 1) - min);
+}
 
 #endif // BLOCHUTILITY_H

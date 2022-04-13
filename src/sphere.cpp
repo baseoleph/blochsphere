@@ -17,16 +17,13 @@
 #include "sphere.hpp"
 #include <QMouseEvent>
 #include <QQuaternion>
-#include <QtMath>
 
 Sphere::Sphere(QWidget *parent, const QString objName) : QGLWidget{parent} {
     this->setObjectName(objName);
     startTimer(10);
 }
 
-void Sphere::deleteVector(Vector *v) {
-    vectors.removeOne(v);
-}
+void Sphere::deleteVector(Vector *v) { vectors.removeOne(v); }
 
 void Sphere::initializeGL() {
     // TODO why I use it?
@@ -88,18 +85,24 @@ void Sphere::mouseMoveEvent(QMouseEvent *pe) {
 }
 
 void Sphere::wheelEvent(QWheelEvent *pe) {
+#if QT_VERSION >= 0x050000
     if (pe->angleDelta().y() > 0) {
         scalePlus();
     } else if (pe->angleDelta().y() < 0) {
         scaleMinus();
     }
+#else
+    if (pe->delta() > 0) {
+        scalePlus();
+    } else if (pe->delta() < 0) {
+        scaleMinus();
+    }
+#endif
 
     updateGL();
 }
 
-void Sphere::timerEvent(QTimerEvent *) {
-    update();
-}
+void Sphere::timerEvent(QTimerEvent *) { update(); }
 
 // TODO optimize function. remove c-style cast
 void Sphere::drawSphere(int lats, int longs) {
@@ -222,8 +225,7 @@ void Sphere::drawVectors() {
     for (auto &e : vectors) {
         if (e->isTraceEnabled()) {
             for (auto &segment : e->getTrace()) {
-                glColor3f(segment.color.redF(), segment.color.greenF(),
-                          segment.color.blueF());
+                glColor3f(segment.color.redF(), segment.color.greenF(), segment.color.blueF());
                 glLineWidth(2.5f);
                 glBegin(GL_LINES);
 

@@ -21,13 +21,17 @@
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
-    // TODO add support old codecs
-    MainWindow w;
-    w.resize(1200, 1024);
-
+    MainWindow      w;
     QDesktopWidget *desktop = QApplication::desktop();
-    int             x = (desktop->width() - w.width()) / 2;
-    int             y = (desktop->height() - w.height()) / 3;
+
+    if (desktop->height() > 1200) {
+        w.resize(1200, 1024);
+    } else {
+        w.resize(1000, 700);
+    }
+
+    int x = (desktop->width() - w.width()) / 2;
+    int y = (desktop->height() - w.height()) / 3;
     w.move(x, y);
 
     w.show();
