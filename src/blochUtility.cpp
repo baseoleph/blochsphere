@@ -19,7 +19,7 @@
 #include <QRegExp>
 #include <QStringList>
 
-double roundNumber(double a, double s = 1 / EPSILON) {
+double roundNumber(double a, double s) {
     a *= s;
     if (a - floor(a) >= 0.5)
         return (floor(a) + 1) / s;
@@ -57,16 +57,16 @@ QString parseComplexToStr(complex c, int d) {
     QString str;
     double  im = roundNumber(imag(c), d);
     double  re = roundNumber(real(c), d);
-    if (abs(re) < EPSILON && abs(im) > EPSILON) {
-        if (abs(1.0 - im) < EPSILON)
+    if (std::abs(re) < EPSILON && std::abs(im) > EPSILON) {
+        if (std::abs(1.0 - im) < EPSILON)
             return str += "i";
-        else if (abs(1.0 + im) < EPSILON)
+        else if (std::abs(1.0 + im) < EPSILON)
             return str += "-i";
         else
             return str += QString("%1i").arg(im);
     } else {
         str = QString("%1").arg(re);
-        if (abs(im) > EPSILON) {
+        if (std::abs(im) > EPSILON) {
             if (im > EPSILON) {
                 str += "+";
                 if (1.0 - im < EPSILON)

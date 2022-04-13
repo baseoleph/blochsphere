@@ -489,22 +489,33 @@ decomposition Operator::xyDecomposition2(UnitaryMatrix2x2 op) {
 
 UnitaryMatrix2x2 Operator::genRandUnitaryMatrix(qint64 seed) {
     UnitaryMatrix2x2 op;
-    complex          i{0, 1};
-    double           a1, a2, b1, b2, moda, modb, phi;
-    srand(seed);
+    matrix2x2        matrix;
+
+    // DOTO algorithm mast work every time!!
+    // DOTO get rid of c-style rand, must use c++-style
+    complex i{0, 1};
+    double  a1, a2, b1, b2, moda, modb, phi;
+    srand(time(nullptr) * rand());
     moda = rand() / double(RAND_MAX);
-    a1 = rand() / double(RAND_MAX) * sqrt(moda);
-    a2 = sqrt(moda - a1 * a1);
-    b1 = rand() / double(RAND_MAX) * sqrt(modb = 1 - a1 * a1 - a2 * a2);
-    b2 = sqrt(modb - b1 * b1);
-    phi = floor((2.0 * M_PI * rand() / double(RAND_MAX) - M_PI) * 180.0 / M_PI);
-    complex a = exp(i * phi) * complex(a1, a2);
-    complex b = exp(i * phi) * complex(b1, b2);
-    complex c = -exp(i * phi) * conj(b);
-    complex d = exp(i * phi) * conj(a);
+    a1 = random(0., 1.);
+    a2 = random(0., 1. - a1 * a1);
+    b1 = random(0., 1. - a1 * a1 - a2 * a2);
+    b2 = sqrt(1 - a1 * a1 - a2 * a2 - b1 * b1);
+
+    // TODO check with and without
+    //    phi = floor((2.0 * M_PI * rand() / double(RAND_MAX) - M_PI) * 180.0 / M_PI);
+    phi = rand();
+
+    matrix.a = exp(i * phi) * complex(a1, a2);
+    matrix.b = exp(i * phi) * complex(b1, b2);
+    matrix.c = -exp(i * phi) * conj(matrix.b);
+    matrix.d = exp(i * phi) * conj(matrix.a);
+
+    //    qDebug() << a1 << a2;
+    //    qDebug() << b1 << b2;
 
     // TODO check for exception
-    op.updateMatrix({a, b, c, d});
+    op.updateMatrix(matrix);
     return op;
 }
 

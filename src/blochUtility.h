@@ -35,11 +35,13 @@ complex parseStrToComplex(const QString &str);
 QString parseComplexToStr(complex c, int d = 1 / EPSILON);
 QString numberToStr(double d);
 QString numberToStr(long d);
-double  roundNumber(double a, double s);
+double  roundNumber(double a, double s = 1 / EPSILON);
 
 // TODO must be double
-inline int random(int min, int max) {
-    return min + rand() % ((max + 1) - min);
+inline int    random(int min, int max) { return min + rand() % ((max + 1) - min); }
+inline double random(double fMin, double fMax) {
+    double f = (double)rand() / RAND_MAX;
+    return fMin + f * (fMax - fMin);
 }
 
 #endif // BLOCHUTILITY_H

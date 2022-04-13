@@ -17,12 +17,10 @@
 #include "unitaryMatrix2x2.hpp"
 
 bool UnitaryMatrix2x2::updateMatrix(matrix2x2 matrix) {
-    matrix2x2 tmpOp(matrix);
-    if (isUnitaryMatrix(tmpOp)) {
+    if (isUnitaryMatrix(matrix)) {
         _matrix = matrix;
         return true;
     }
-
     return false;
 }
 

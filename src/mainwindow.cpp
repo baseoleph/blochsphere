@@ -38,7 +38,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
     createSideWidget();
     createOpQueWidget();
     createSphere();
-    addVector(new Vector(0., 0.), vectors);
+
+    addVector(new Vector(0., 0.), vectors, spheres[0]);
+    //    addVector(new Vector(0., 0.), vectors, spheres[0]);
+    //    vectors.keys().last()->setTraceColor(QColor(Qt::blue));
+    //    vectors.keys().last()->setSelfColor(QColor(Qt::green));
+    //    // TODO why it sets with mistake
+    //    addVector(new Vector(qRadiansToDegrees(45.), qRadiansToDegrees(120.)), vectors,
+    //    spheres[0]); vectors.keys().last()->setTraceColor(QColor(Qt::red));
+    //    vectors.keys().last()->setSelfColor(QColor(Qt::darkBlue));
 }
 
 void MainWindow::addVector(Vector *v, MapVectors &mp) {
@@ -48,6 +56,13 @@ void MainWindow::addVector(Vector *v, MapVectors &mp) {
         e->addVector(v);
         mp[v].append(e);
     }
+}
+
+void MainWindow::addVector(Vector *v, MapVectors &mp, Sphere *sph) {
+    mp.insert(v, QVector<Sphere *>());
+
+    sph->addVector(v);
+    mp[v].append(sph);
 }
 
 void MainWindow::removeVector(Vector *v, MapVectors &mp) {
@@ -570,6 +585,7 @@ QWidget *MainWindow::makeOpWid() {
         }
     }
 
+    // TODO move connectors in one function to one place or get rid of qt5 connectors
     auto *applyMat = new QPushButton("Ok");
 #if QT_VERSION >= 0x050000
     connect(applyMat, &QPushButton::clicked, this, &MainWindow::slotSetMatrixOp);
@@ -577,11 +593,19 @@ QWidget *MainWindow::makeOpWid() {
     connect(applyMat, SIGNAL(clicked()), SLOT(slotSetMatrixOp()));
 #endif
 
+    auto *getRandomBut = new QPushButton("Random");
+#if QT_VERSION >= 0x050000
+    connect(getRandomBut, &QPushButton::clicked, this, &MainWindow::slotSetRandomOp);
+#else
+    connect(getRandomBut, SIGNAL(clicked()), SLOT(slotSetRandomOp()));
+#endif
+
     mOpLay->addWidget(mat[0][0], 1, 0);
     mOpLay->addWidget(mat[0][1], 1, 5);
     mOpLay->addWidget(mat[1][0], 2, 0);
     mOpLay->addWidget(mat[1][1], 2, 5);
     mOpLay->addWidget(applyMat, 3, 5);
+    mOpLay->addWidget(getRandomBut, 3, 0);
     mOpLay->setContentsMargins(10, 10, 10, 0);
     mOp->setLayout(mOpLay);
 
@@ -897,6 +921,15 @@ void MainWindow::slotSetMatrixOp() {
     //    slotNewOp(op);
 }
 
+void MainWindow::slotSetRandomOp() {
+    curOpName = "U";
+    curOperator.setOperator(Operator::genRandUnitaryMatrix(time(nullptr)));
+
+    // TODO may change matrix fields
+    updateOp();
+    //    slotNewOp(op);
+}
+
 void MainWindow::slotSetNewAxOp() {
     QRegExp rxp("^(-?[\\d]*\\.?[\\d]*e?[+-]?[\\d]*);(-?[\\d]*\\.?[\\d]*e?[+-]?[\\d]*);(-?[\\d]*\\.?"
                 "[\\d]*e?[+-]?[\\d]*)$");
@@ -927,22 +960,22 @@ void MainWindow::slotSetNewAxOp() {
 
 void MainWindow::updateOp() {
     decomposition zyDec = curOperator.zyDecomposition();
-    rZYAlpEd->setText(QString::number(zyDec.alpha));
-    rZYBetEd->setText(QString::number(zyDec.beta));
-    rZYGamEd->setText(QString::number(zyDec.gamma));
-    rZYDelEd->setText(QString::number(zyDec.delta));
+    rZYAlpEd->setText(numberToStr(zyDec.alpha));
+    rZYBetEd->setText(numberToStr(zyDec.beta));
+    rZYGamEd->setText(numberToStr(zyDec.gamma));
+    rZYDelEd->setText(numberToStr(zyDec.delta));
 
     decomposition zxDec = curOperator.zxDecomposition();
-    rZXAlpEd->setText(QString::number(zxDec.alpha));
-    rZXBetEd->setText(QString::number(zxDec.beta));
-    rZXGamEd->setText(QString::number(zxDec.gamma));
-    rZXDelEd->setText(QString::number(zxDec.delta));
+    rZXAlpEd->setText(numberToStr(zxDec.alpha));
+    rZXBetEd->setText(numberToStr(zxDec.beta));
+    rZXGamEd->setText(numberToStr(zxDec.gamma));
+    rZXDelEd->setText(numberToStr(zxDec.delta));
 
     decomposition xyDec = curOperator.xyDecomposition();
-    rXYAlpEd->setText(QString::number(xyDec.alpha));
-    rXYBetEd->setText(QString::number(xyDec.beta));
-    rXYGamEd->setText(QString::number(xyDec.gamma));
-    rXYDelEd->setText(QString::number(xyDec.delta));
+    rXYAlpEd->setText(numberToStr(xyDec.alpha));
+    rXYBetEd->setText(numberToStr(xyDec.beta));
+    rXYGamEd->setText(numberToStr(xyDec.gamma));
+    rXYDelEd->setText(numberToStr(xyDec.delta));
 
     mat[0][0]->setText(parseComplexToStr(curOperator.getOperator().a()));
     mat[0][1]->setText(parseComplexToStr(curOperator.getOperator().b()));

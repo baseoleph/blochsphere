@@ -43,6 +43,7 @@ public:
 
 public slots:
     void addVector(Vector *v, MapVectors &mp);
+    void addVector(Vector *v, MapVectors &mp, Sphere *sph);
     void removeVector(Vector *v, MapVectors &mp);
     void removeAllVectors(MapVectors &mp);
 
@@ -64,6 +65,7 @@ public slots:
 
     void slotSetOperatorClicked();
     void slotSetMatrixOp();
+    void slotSetRandomOp();
     void slotSetRXYZOp();
     void slotSetNewAxOp();
     //    void slotHideNewAx() {

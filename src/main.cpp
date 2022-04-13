@@ -25,7 +25,8 @@ int main(int argc, char *argv[]) {
     QDesktopWidget *desktop = QApplication::desktop();
 
     if (desktop->height() > 1200) {
-        w.resize(1200, 1024);
+        //        w.resize(1200, 1024);
+        w.resize(1200, 800);
     } else {
         w.resize(1000, 700);
     }
