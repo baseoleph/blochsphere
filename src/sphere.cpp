@@ -60,7 +60,6 @@ void Sphere::paintGL() {
     drawCircle();
 
     glEnable(GL_DEPTH_TEST);
-
     drawAxis();
     glDisable(GL_DEPTH_TEST);
     drawVectors();
@@ -221,6 +220,7 @@ void Sphere::drawAxis() {
 void Sphere::drawVectors() {
     for (auto &e : vectors) {
         if (e->isTraceEnabled()) {
+            glEnable(GL_DEPTH_TEST);
             for (auto &segment : e->getTrace()) {
                 glColor3f(segment.color.redF(), segment.color.greenF(), segment.color.blueF());
                 glLineWidth(2.5f);
@@ -231,6 +231,7 @@ void Sphere::drawVectors() {
 
                 glEnd();
             }
+            glDisable(GL_DEPTH_TEST);
         }
         glColor3f(e->getSelfColor().redF(), e->getSelfColor().greenF(), e->getSelfColor().blueF());
         glLineWidth(2.5f);
