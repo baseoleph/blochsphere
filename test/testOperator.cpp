@@ -34,11 +34,11 @@ void staticTestDecomposition(decomposition (*getDec)(UnitaryMatrix2x2),
 
     for (int k = 0; k < ops.size(); ++k) {
         EXPECT_TRUE(UnitaryMatrix2x2::isUnitaryMatrix(ops[k]))
-            << "Test case number " << k << "\n\n";
+            << "Not unitary; test case number " << k << "\n\n";
 
         EXPECT_TRUE(UnitaryMatrix2x2::compareOperators(
             ops[k], checkMatrixDecomposition(ops[k], getDec, getMatrix)))
-            << "Test case number " << k << "\n\n";
+            << "Not equal; test case number " << k << "\n\n";
     }
 }
 
