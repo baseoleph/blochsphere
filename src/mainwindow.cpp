@@ -38,15 +38,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
     createSideWidget();
     createOpQueWidget();
     createSphere();
-
     addVector(new Vector(0., 0.), vectors, spheres[0]);
-    //    addVector(new Vector(0., 0.), vectors, spheres[0]);
-    //    vectors.keys().last()->setTraceColor(QColor(Qt::blue));
-    //    vectors.keys().last()->setSelfColor(QColor(Qt::green));
-    //    // TODO why it sets with mistake
-    //    addVector(new Vector(qRadiansToDegrees(45.), qRadiansToDegrees(120.)), vectors,
-    //    spheres[0]); vectors.keys().last()->setTraceColor(QColor(Qt::red));
-    //    vectors.keys().last()->setSelfColor(QColor(Qt::darkBlue));
 }
 
 void MainWindow::addVector(Vector *v, MapVectors &mp) {

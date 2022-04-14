@@ -17,15 +17,9 @@
 #include "point.hpp"
 #include <complex>
 
-Point::Point() {
-    evalPT();
-}
-Point::Point(double x, double y, double z) : x_(x), y_(y), z_(z) {
-    evalPT();
-}
-Point::Point(double the, double phi) : the_(the), phi_(phi) {
-    evalXYZ();
-}
+Point::Point() { evalPT(); }
+Point::Point(double x, double y, double z) : x_(x), y_(y), z_(z) { evalPT(); }
+Point::Point(double the, double phi) : the_(the), phi_(phi) { evalXYZ(); }
 
 void Point::changePoint(double x, double y, double z) {
     x_ = x;
