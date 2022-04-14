@@ -101,7 +101,7 @@ void MainWindow::createSphere() {
     auto *layout = new QGridLayout(controlWidget);
     for (int i = 0; i < 1; ++i) {
         for (int j = 1; j < 2; ++j) {
-            spheres.append(new Sphere(controlWidget, QString::number(i + 10 * j)));
+            spheres.append(new Sphere(controlWidget));
             layout->addWidget(spheres.last(), i, j);
         }
     }

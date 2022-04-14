@@ -18,10 +18,7 @@
 #include <QMouseEvent>
 #include <QQuaternion>
 
-Sphere::Sphere(QWidget *parent, const QString objName) : QGLWidget{parent} {
-    this->setObjectName(objName);
-    startTimer(10);
-}
+Sphere::Sphere(QWidget *parent) : QGLWidget{parent} { startTimer(10); }
 
 void Sphere::deleteVector(Vector *v) { vectors.removeOne(v); }
 

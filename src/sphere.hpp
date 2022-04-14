@@ -24,20 +24,20 @@
 class Sphere : public QGLWidget {
     Q_OBJECT
 public:
-    Sphere(QWidget *parent, const QString objName);
+    explicit Sphere(QWidget *parent);
     // TODO realize safety add end detach vectors
     void addVector(Vector *v) { vectors.append(v); }
     void deleteVector(Vector *v);
 
 protected:
-    void initializeGL();
-    void resizeGL(int w, int h);
-    void paintGL();
+    void initializeGL() override;
+    void resizeGL(int w, int h) override;
+    void paintGL() override;
     // TODO add shortcuts
-    void mousePressEvent(QMouseEvent *pe);
-    void mouseMoveEvent(QMouseEvent *pe);
-    void wheelEvent(QWheelEvent *pe);
-    void timerEvent(QTimerEvent *);
+    void mousePressEvent(QMouseEvent *pe) override;
+    void mouseMoveEvent(QMouseEvent *pe) override;
+    void wheelEvent(QWheelEvent *pe) override;
+    void timerEvent(QTimerEvent *) override;
 
 private:
     const GLfloat sphereRadius = 1;
