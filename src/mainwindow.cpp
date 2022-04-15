@@ -27,7 +27,8 @@
 #include <QToolBar>
 
 // TODO move to another place
-QRegExpValidator compValid(QRegExp("^[+-]?[0-9]*\\.?[0-9]*[+-]?[0-9]*\\.?[0-9]*i?$"));
+QRegExpValidator
+    compValid(QRegExp(QString::fromUtf8("^[+-]?[0-9]*\\.?[0-9]*[+-]?[0-9]*\\.?[0-9]*[iIшШ]?$")));
 QRegExpValidator axisValid(QRegExp("^-?[\\d]*\\.?[\\d]*;?-?[\\d]*\\.?[\\d]*;?-?[\\d]*\\.?[\\d]*$"));
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
@@ -322,6 +323,13 @@ QWidget *MainWindow::makeAlpBetWid() {
     reBetEd->setFixedWidth(90);
     reBetEd->setValidator(&compValid);
 
+#if QT_VERSION >= 0x050000
+    connect(reBetEd, &QLineEdit::textEdited, this, &MainWindow::slotComplexLineEditChanged);
+#else
+    connect(reBetEd, SIGNAL(textEdited(const QString &)),
+            SLOT(slotComplexLineEditChanged(const QString &)));
+#endif
+
     auto *bPsi = new QPushButton("Set");
     bPsi->setFixedWidth(60);
 #if QT_VERSION >= 0x050000
@@ -574,6 +582,13 @@ QWidget *MainWindow::makeOpWid() {
         for (int j = 0; j < 2; j++) {
             mat[i][j] = new QLineEdit(QString::number(i == j));
             mat[i][j]->setValidator(&compValid);
+#if QT_VERSION >= 0x050000
+            connect(mat[i][j], &QLineEdit::textEdited, this,
+                    &MainWindow::slotComplexLineEditChanged);
+#else
+            connect(mat[i][j], SIGNAL(textEdited(const QString &)),
+                    SLOT(slotComplexLineEditChanged(const QString &)));
+#endif
         }
     }
 
@@ -1076,6 +1091,19 @@ void MainWindow::slotReset() {
     removeAllVectors(vectors);
     addVector(new Vector(0., 0.), vectors);
     fillFieldsOfVector(vectors.keys().last()->getSpike());
+}
+
+void MainWindow::slotComplexLineEditChanged(const QString &) {
+    updateComplexLineEdit(reBetEd);
+    updateComplexLineEdit(mat[0][0]);
+    updateComplexLineEdit(mat[0][1]);
+    updateComplexLineEdit(mat[1][0]);
+    updateComplexLineEdit(mat[1][1]);
+}
+
+void MainWindow::updateComplexLineEdit(QLineEdit *lineEdit) {
+    QRegExp re(QString::fromUtf8("[IШш]"));
+    lineEdit->setText(lineEdit->text().replace(re, "i"));
 }
 
 AngInput::AngInput(QWidget *pwgt) : QDialog(pwgt, Qt::WindowTitleHint | Qt::WindowSystemMenuHint) {

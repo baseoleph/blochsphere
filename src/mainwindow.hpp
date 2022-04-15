@@ -88,6 +88,7 @@ public slots:
     void slotClearTrace();
     void slotTraceColor(int index);
 
+    void slotComplexLineEditChanged(const QString &);
     // TODO change about window
     static void slotAbout();
 
@@ -100,6 +101,7 @@ private:
     void createTopBar();
     void createOpQueWidget();
     void fillFieldsOfVector(Spike sp, FIELD exclude = FIELD::NOTHIN);
+    void updateComplexLineEdit(QLineEdit *lineEdit);
 
     QWidget *makeThePhiWid();
     QWidget *makeAlpBetWid();
