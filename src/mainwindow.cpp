@@ -15,6 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "mainwindow.hpp"
+#include "anginput.hpp"
+#include "opitem.hpp"
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QLineEdit>
@@ -164,18 +166,18 @@ void MainWindow::createTopBar() {
     qtb->addAction(showTAct);
     qtb->addAction(clearTAct);
 
-    qcomb = new QComboBox(qtb);
-    qcomb->addItem("Red");
-    qcomb->addItem("Green");
-    qcomb->addItem("Blue");
-    qcomb->addItem("Grey");
-    qcomb->addItem("Yellow");
-    qcomb->setCurrentIndex(0);
+    colorComboBox = new QComboBox(qtb);
+    colorComboBox->addItem("Red");
+    colorComboBox->addItem("Green");
+    colorComboBox->addItem("Blue");
+    colorComboBox->addItem("Grey");
+    colorComboBox->addItem("Yellow");
+    colorComboBox->setCurrentIndex(0);
 
-    connect(qcomb, SIGNAL(currentIndexChanged(int)), SLOT(slotTraceColor(int)));
+    connect(colorComboBox, SIGNAL(currentIndexChanged(int)), SLOT(slotTraceColor(int)));
 
     qtb->addWidget(new QLabel("<center>Trace Color:"));
-    qtb->addWidget(qcomb);
+    qtb->addWidget(colorComboBox);
 
     this->addToolBar(Qt::TopToolBarArea, qtb);
 }
@@ -287,18 +289,17 @@ QWidget *MainWindow::makeThePhiWid() {
 
 QWidget *MainWindow::makeAlpBetWid() {
     alpEd = new QLineEdit("1");
-    reBetEd = new QLineEdit("0");
+    betEd = new QLineEdit("0");
     auto *alpLab = new QLabel("<font face=symbol size=5>a</font>");
-    auto *reBetLab = new QLabel("<font face=symbol size=5>b</font>");
-    auto *imBetLab = new QLabel("<font size=4>Im(<font face=symbol size=5>b</font>)</font>");
+    auto *betLab = new QLabel("<font face=symbol size=5>b</font>");
 
     alpEd->setFixedWidth(90);
     alpEd->setValidator(new QDoubleValidator);
 
-    reBetEd->setFixedWidth(90);
-    reBetEd->setValidator(&compValid);
+    betEd->setFixedWidth(90);
+    betEd->setValidator(&compValid);
 
-    connect(reBetEd, SIGNAL(textEdited(const QString &)),
+    connect(betEd, SIGNAL(textEdited(const QString &)),
             SLOT(slotComplexLineEditChanged(const QString &)));
 
     auto *bPsi = new QPushButton("Set");
@@ -320,8 +321,8 @@ QWidget *MainWindow::makeAlpBetWid() {
     auto *abLay = new QGridLayout();
     abLay->addWidget(alpLab, 1, 0);
     abLay->addWidget(alpEd, 1, 1, 1, 3);
-    abLay->addWidget(reBetLab, 2, 0);
-    abLay->addWidget(reBetEd, 2, 1, 1, 3);
+    abLay->addWidget(betLab, 2, 0);
+    abLay->addWidget(betEd, 2, 1, 1, 3);
     abLay->addWidget(bRandPsi, 4, 0, 1, 2);
     abLay->addWidget(bPsi, 4, 2);
     abLay->setContentsMargins(10, 5, 5, 5);
@@ -652,7 +653,7 @@ void MainWindow::slotThePhi() {
 // DOTO push while animating
 void MainWindow::slotAlpBet() {
     double  a = alpEd->text().toDouble();
-    complex b = parseStrToComplex(reBetEd->text());
+    complex b = parseStrToComplex(betEd->text());
     Spike   sp = Vector::createSpike(a, b);
     foreach (auto &e, vectors.keys()) { e->changeVector(sp); }
 
@@ -691,13 +692,6 @@ void MainWindow::slotRecallState() {
     foreach (auto &e, savedVectors.keys()) { addVector(e->getCopyState(), vectors); }
     fillFieldsOfVector(vectors.keys().last()->getSpike());
 }
-
-void MainWindow::slotMotionBegin(QString msg) {
-    mtnStLab->setText("<font size=4>" + msg + "</font>");
-    mtnStLab->setVisible(true);
-}
-
-void MainWindow::slotMotionEnd() { mtnStLab->setVisible(false); }
 
 void MainWindow::slotShowTrace() {
     foreach (auto &e, vectors.keys()) { e->setEnableTrace(showTAct->isChecked()); }
@@ -785,11 +779,6 @@ void MainWindow::slotSetOperatorClicked() {
     updateOp();
 }
 
-void MainWindow::slotNewOp(Operator &op) {
-    curOperator = op;
-    updateOp();
-}
-
 void MainWindow::slotSetRXYZOp() {
     decomposition dec;
     switch (rxyzTab->currentIndex()) {
@@ -853,7 +842,6 @@ void MainWindow::slotSetMatrixOp() {
 
     // TODO may change matrix fields
     updateOp();
-    //    slotNewOp(op);
 }
 
 void MainWindow::slotSetRandomOp() {
@@ -862,7 +850,6 @@ void MainWindow::slotSetRandomOp() {
 
     // TODO may change matrix fields
     updateOp();
-    //    slotNewOp(op);
 }
 
 void MainWindow::slotSetNewAxOp() {
@@ -928,7 +915,7 @@ void MainWindow::updateOp() {
 
 // TODO check
 void MainWindow::slotQueItemClicked(QListWidgetItem *it) {
-    OpItem *opi = (OpItem *)it;
+    auto *opi = (OpItem *)it;
     curOpName = opi->text();
     curOperator = opi->getOp();
     updateOp();
@@ -1016,8 +1003,8 @@ void MainWindow::fillFieldsOfVector(Spike sp, FIELD exclude) {
     if (exclude != FIELD::ALPBET) {
         // TODO maybe should create function that converts double to str
         alpEd->setText(numberToStr(v.a().real()));
-        reBetEd->setText(numberToStr(v.b().real()) + (v.b().imag() >= 0 ? "+" : "") +
-                         numberToStr(v.b().imag()) + "i");
+        betEd->setText(numberToStr(v.b().real()) + (v.b().imag() >= 0 ? "+" : "") +
+                       numberToStr(v.b().imag()) + "i");
     }
 
     if (exclude != FIELD::BLOVEC) {
@@ -1034,7 +1021,7 @@ void MainWindow::slotReset() {
 }
 
 void MainWindow::slotComplexLineEditChanged(const QString &) {
-    updateComplexLineEdit(reBetEd);
+    updateComplexLineEdit(betEd);
     updateComplexLineEdit(mat[0][0]);
     updateComplexLineEdit(mat[0][1]);
     updateComplexLineEdit(mat[1][0]);
@@ -1065,37 +1052,4 @@ void MainWindow::updateCurOperatorTable() {
                                   "</tr></table>");
 }
 
-AngInput::AngInput(QWidget *pwgt) : QDialog(pwgt, Qt::WindowTitleHint | Qt::WindowSystemMenuHint) {
-    angEd = new QLineEdit;
-    auto *angLab = new QLabel("Enter the angle in degrees:");
-
-    angLab->setBuddy(angEd);
-    angEd->setValidator(new QDoubleValidator);
-
-    auto *bOk = new QPushButton("Ok");
-    auto *bCl = new QPushButton("Cancel");
-    connect(bOk, SIGNAL(clicked()), SLOT(accept()));
-    connect(bCl, SIGNAL(clicked()), SLOT(reject()));
-
-    auto *lay = new QVBoxLayout;
-    lay->addWidget(angLab);
-    lay->addWidget(angEd);
-
-    auto *lay1 = new QHBoxLayout;
-    lay1->addWidget(bOk);
-    lay1->addWidget(bCl);
-
-    lay->addLayout(lay1);
-    setLayout(lay);
-    setWindowTitle(((QPushButton *)parent())->text());
-    setFixedWidth(155);
-}
-
-QString AngInput::ang() const { return angEd->text(); }
-
-OpItem::OpItem(QString str, Operator op) : QListWidgetItem(str), oper(op) {
-    this->setToolTip(parseComplexToStr(op.a()) + "\t" + parseComplexToStr(op.b()) + "\n" +
-                     parseComplexToStr(op.c()) + "\t" + parseComplexToStr(op.d()));
-};
-
-Operator OpItem::getOp() { return oper; }
+;

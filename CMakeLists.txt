@@ -31,13 +31,16 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(Qt5 COMPONENTS Widgets OpenGL REQUIRED)
 
-# TODO h to hpp
 set(PROJECT_SOURCES
+        src/anginput.cpp
+        src/anginput.hpp
         src/main.cpp
         src/mainwindow.cpp
         src/mainwindow.hpp
         src/operator.cpp
         src/operator.hpp
+        src/opitem.cpp
+        src/opitem.hpp
         src/point.cpp
         src/point.hpp
         src/qubit.cpp
@@ -48,7 +51,9 @@ set(PROJECT_SOURCES
         src/vector.hpp
         src/unitaryMatrix2x2.cpp
         src/unitaryMatrix2x2.hpp
-        src/blochUtility.cpp src/blochUtility.h)
+        src/blochUtility.cpp
+        src/blochUtility.h
+        )
 
 add_executable(blochsphere ${PROJECT_SOURCES} src/blochUtility.cpp src/blochUtility.h)
 

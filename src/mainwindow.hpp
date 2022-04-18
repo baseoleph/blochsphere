@@ -49,17 +49,6 @@ public slots:
     void removeVector(Vector *v, MapVectors &mp);
     void removeAllVectors(MapVectors &mp);
 
-protected:
-    void timerEvent(QTimerEvent *) override;
-
-private:
-    QVector<Sphere *> spheres;
-    MapVectors        vectors;
-    MapVectors        savedVectors;
-
-    QWidget *controlWidget;
-
-public slots:
     void slotThePhi();
     void slotAlpBet();
     void slotBloVec();
@@ -70,10 +59,6 @@ public slots:
     void slotSetRandomOp();
     void slotSetRXYZOp();
     void slotSetNewAxOp();
-    //    void slotHideNewAx() {
-    //        sceneOld->hideNewAx();
-    //    }
-    void slotNewOp(Operator &op);
     void slotQueItemClicked(QListWidgetItem *it);
     void slotOpItemDelete();
 
@@ -84,8 +69,6 @@ public slots:
     void slotReset();
     void slotSaveState();
     void slotRecallState();
-    void slotMotionBegin(QString);
-    void slotMotionEnd();
     void slotShowTrace();
     void slotClearTrace();
     void slotTraceColor(int index);
@@ -94,7 +77,16 @@ public slots:
     // TODO change about window
     static void slotAbout();
 
+protected:
+    void timerEvent(QTimerEvent *) override;
+
 private:
+    QVector<Sphere *> spheres;
+    MapVectors        vectors;
+    MapVectors        savedVectors;
+
+    QWidget *controlWidget = nullptr;
+
     void         createSideWidget();
     void         createSphere();
     void         createMenu();
@@ -107,6 +99,7 @@ private:
     void         startMove(Vector *v, CurDecompFun getDec);
     CurDecompFun getCurrentDecomposition();
     void         updateCurOperatorTable();
+    void         updateOp();
 
     QWidget *makeThePhiWid();
     QWidget *makeAlpBetWid();
@@ -118,43 +111,38 @@ private:
     QWidget *makeOpWid();
 
     QPushButton *makeOpButton(QString str);
-    QPushButton *appBut;
-    QPushButton *appQueBut;
-    QLabel      *currentOperatorLabel;
-    double       phiFun(double the, double re, double im);
-    void         updateOp();
+    QPushButton *appBut = nullptr;
+    QPushButton *appQueBut = nullptr;
+    QLabel      *currentOperatorLabel = nullptr;
 
-    QLineEdit *theEd;
-    QLineEdit *phiEd;
+    QLineEdit *theEd = nullptr;
+    QLineEdit *phiEd = nullptr;
 
-    QLineEdit *alpEd;
-    QLineEdit *reBetEd;
+    QLineEdit *alpEd = nullptr;
+    QLineEdit *betEd = nullptr;
 
-    QLineEdit *xEd;
-    QLineEdit *yEd;
-    QLineEdit *zEd;
+    QLineEdit *xEd = nullptr;
+    QLineEdit *yEd = nullptr;
+    QLineEdit *zEd = nullptr;
 
-    QTabWidget *rxyzTab;
+    QTabWidget *rxyzTab = nullptr;
 
-    QLineEdit *rZYAlpEd;
-    QLineEdit *rZYBetEd;
-    QLineEdit *rZYGamEd;
-    QLineEdit *rZYDelEd;
-    QLabel    *rZYLabel;
+    QLineEdit *rZYAlpEd = nullptr;
+    QLineEdit *rZYBetEd = nullptr;
+    QLineEdit *rZYGamEd = nullptr;
+    QLineEdit *rZYDelEd = nullptr;
 
-    QLineEdit *rZXAlpEd;
-    QLineEdit *rZXBetEd;
-    QLineEdit *rZXGamEd;
-    QLineEdit *rZXDelEd;
-    QLabel    *rZXLabel;
+    QLineEdit *rZXAlpEd = nullptr;
+    QLineEdit *rZXBetEd = nullptr;
+    QLineEdit *rZXGamEd = nullptr;
+    QLineEdit *rZXDelEd = nullptr;
 
-    QLineEdit *rXYAlpEd;
-    QLineEdit *rXYBetEd;
-    QLineEdit *rXYGamEd;
-    QLineEdit *rXYDelEd;
-    QLabel    *rXYLabel;
+    QLineEdit *rXYAlpEd = nullptr;
+    QLineEdit *rXYBetEd = nullptr;
+    QLineEdit *rXYGamEd = nullptr;
+    QLineEdit *rXYDelEd = nullptr;
 
-    QTabWidget *stackW;
+    QTabWidget *stackW = nullptr;
 
     Operator curOperator;
     Operator singleOperator;
@@ -162,50 +150,29 @@ private:
 
     QLineEdit *mat[2][2];
 
-    QLineEdit    *axRnEd;
-    QLineEdit    *ngRnEd;
-    QRadioButton *rzyRB;
-    QRadioButton *rzxRB;
-    QRadioButton *rxyRB;
-    QRadioButton *rtRB;
+    QLineEdit    *axRnEd = nullptr;
+    QLineEdit    *ngRnEd = nullptr;
+    QRadioButton *rzyRB = nullptr;
+    QRadioButton *rzxRB = nullptr;
+    QRadioButton *rxyRB = nullptr;
+    QRadioButton *rtRB = nullptr;
 
-    QLabel           *xyzStLab;
-    QLabel           *abStLab;
-    QLabel           *tpStLab;
-    QLabel           *svdStLab;
-    QLabel           *mtnStLab;
-    double            savedAlp;
-    complex           savedBet;
-    QComboBox        *qcomb;
+    QLabel           *xyzStLab = nullptr;
+    QLabel           *svdStLab = nullptr;
+    QLabel           *mtnStLab = nullptr;
+    QComboBox        *colorComboBox = nullptr;
     bool              isQueueAnimation = false;
     QVector<Operator> opQueue = {};
 
-    QListWidget *opQueWid;
+    QListWidget *opQueWid = nullptr;
 
-    QAction *aboutAct;
-    QAction *saveState;
-    QAction *recallState;
-    QAction *resetAct;
-    QAction *exitAct;
-    QAction *showTAct;
-    QAction *clearTAct;
-};
-
-class AngInput : public QDialog {
-    Q_OBJECT
-    QLineEdit *angEd;
-
-public:
-    AngInput(QWidget *pwgt = 0);
-    QString ang() const;
-};
-
-class OpItem : public QListWidgetItem {
-    Operator oper;
-
-public:
-    OpItem(QString str, Operator op);
-    Operator getOp();
+    QAction *aboutAct = nullptr;
+    QAction *saveState = nullptr;
+    QAction *recallState = nullptr;
+    QAction *resetAct = nullptr;
+    QAction *exitAct = nullptr;
+    QAction *showTAct = nullptr;
+    QAction *clearTAct = nullptr;
 };
 
 #endif // MAINWINDOW_HPP

@@ -29,6 +29,8 @@ SOURCES += \
     src/point.cpp \
     src/qubit.cpp \
     src/sphere.cpp \
+    src/opitem.cpp \
+    src/anginput.cpp \
     src/unitaryMatrix2x2.cpp \
     src/vector.cpp
 
@@ -38,6 +40,8 @@ HEADERS += \
     src/mainwindow.hpp \
     src/operator.hpp \
     src/point.hpp \
+    src/opitem.hpp \
+    src/anginput.hpp \
     src/qubit.hpp \
     src/sphere.hpp \
     src/unitaryMatrix2x2.hpp \
