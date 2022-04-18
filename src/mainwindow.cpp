@@ -116,56 +116,28 @@ void MainWindow::createSphere() {
 //    QRandomGenerator64 rd(seed);
 void MainWindow::createActions() {
     aboutAct = new QAction("About program", this);
-#if QT_VERSION >= 0x050000
-    connect(aboutAct, &QAction::triggered, this, &MainWindow::slotAbout);
-#else
     connect(aboutAct, SIGNAL(triggered()), SLOT(slotAbout()));
-#endif
 
     saveState = new QAction("Save state", this);
-#if QT_VERSION >= 0x050000
-    connect(saveState, &QAction::triggered, this, &MainWindow::slotSaveState);
-#else
     connect(saveState, SIGNAL(triggered()), SLOT(slotSaveState()));
-#endif
 
     recallState = new QAction("Recall state", this);
     recallState->setEnabled(false);
-#if QT_VERSION >= 0x050000
-    connect(recallState, &QAction::triggered, this, &MainWindow::slotRecallState);
-#else
     connect(recallState, SIGNAL(triggered()), SLOT(slotRecallState()));
-#endif
 
     resetAct = new QAction("Reset", this);
-#if QT_VERSION >= 0x050000
-    connect(resetAct, &QAction::triggered, this, &MainWindow::slotReset);
-#else
     connect(resetAct, SIGNAL(triggered()), SLOT(slotReset()));
-#endif
 
     showTAct = new QAction("Show trace", this);
     showTAct->setCheckable(true);
     showTAct->setChecked(true);
-#if QT_VERSION >= 0x050000
-    connect(showTAct, &QAction::triggered, this, &MainWindow::slotShowTrace);
-#else
     connect(showTAct, SIGNAL(triggered()), SLOT(slotShowTrace()));
-#endif
 
     clearTAct = new QAction("Clear trace", this);
-#if QT_VERSION >= 0x050000
-    connect(clearTAct, &QAction::triggered, this, &MainWindow::slotClearTrace);
-#else
     connect(clearTAct, SIGNAL(triggered()), SLOT(slotClearTrace()));
-#endif
 
     exitAct = new QAction("Exit", this);
-#if QT_VERSION >= 0x050000
-    connect(exitAct, &QAction::triggered, this, &MainWindow::close);
-#else
     connect(exitAct, SIGNAL(triggered()), SLOT(close()));
-#endif
 }
 
 void MainWindow::createMenu() {
@@ -200,12 +172,7 @@ void MainWindow::createTopBar() {
     qcomb->addItem("Yellow");
     qcomb->setCurrentIndex(0);
 
-#if QT_VERSION >= 0x050000
-    connect(qcomb, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-            &MainWindow::slotTraceColor);
-#else
     connect(qcomb, SIGNAL(currentIndexChanged(int)), SLOT(slotTraceColor(int)));
-#endif
 
     qtb->addWidget(new QLabel("<center>Trace Color:"));
     qtb->addWidget(qcomb);
@@ -295,11 +262,7 @@ QWidget *MainWindow::makeThePhiWid() {
 
     auto *thePhiButton = new QPushButton("Set");
     thePhiButton->setFixedWidth(55);
-#if QT_VERSION >= 0x050000
-    connect(thePhiButton, &QPushButton::clicked, this, &MainWindow::slotThePhi);
-#else
     connect(thePhiButton, SIGNAL(clicked()), SLOT(slotThePhi()));
-#endif
 
     auto *tpW = new QWidget();
     tpW->setFixedHeight(90);
@@ -335,28 +298,16 @@ QWidget *MainWindow::makeAlpBetWid() {
     reBetEd->setFixedWidth(90);
     reBetEd->setValidator(&compValid);
 
-#if QT_VERSION >= 0x050000
-    connect(reBetEd, &QLineEdit::textEdited, this, &MainWindow::slotComplexLineEditChanged);
-#else
     connect(reBetEd, SIGNAL(textEdited(const QString &)),
             SLOT(slotComplexLineEditChanged(const QString &)));
-#endif
 
     auto *bPsi = new QPushButton("Set");
     bPsi->setFixedWidth(60);
-#if QT_VERSION >= 0x050000
-    connect(bPsi, &QPushButton::clicked, this, &MainWindow::slotAlpBet);
-#else
     connect(bPsi, SIGNAL(clicked()), SLOT(slotAlpBet()));
-#endif
 
     auto *bRandPsi = new QPushButton("Random");
     bRandPsi->setFixedWidth(60);
-#if QT_VERSION >= 0x050000
-    connect(bRandPsi, &QPushButton::clicked, this, &MainWindow::slotSetRandomPsi);
-#else
     connect(bRandPsi, SIGNAL(clicked()), SLOT(slotSetRandomPsi()));
-#endif
 
     auto *abW = new QWidget();
     abW->setFixedHeight(90);
@@ -398,11 +349,7 @@ QWidget *MainWindow::makeBloVecWid() {
 
     auto *bPsi = new QPushButton("Set");
     bPsi->setFixedWidth(60);
-#if QT_VERSION >= 0x050000
-    connect(bPsi, &QPushButton::clicked, this, &MainWindow::slotBloVec);
-#else
     connect(bPsi, SIGNAL(clicked()), SLOT(slotBloVec()));
-#endif
 
     auto *xyzW = new QWidget();
     xyzW->setFixedHeight(90);
@@ -437,11 +384,7 @@ QWidget *MainWindow::makeRXYZWid() {
 
     auto *bRotXYZ = new QPushButton("Set");
     bRotXYZ->setFixedWidth(60);
-#if QT_VERSION >= 0x050000
-    connect(bRotXYZ, &QPushButton::clicked, this, &MainWindow::slotSetRXYZOp);
-#else
     connect(bRotXYZ, SIGNAL(clicked()), SLOT(slotSetRXYZOp()));
-#endif
 
     auto *qwb = new QVBoxLayout;
     qwb->addWidget(rxyzTab);
@@ -594,30 +537,17 @@ QWidget *MainWindow::makeOpWid() {
         for (int j = 0; j < 2; j++) {
             mat[i][j] = new QLineEdit(QString::number(i == j));
             mat[i][j]->setValidator(&compValid);
-#if QT_VERSION >= 0x050000
-            connect(mat[i][j], &QLineEdit::textEdited, this,
-                    &MainWindow::slotComplexLineEditChanged);
-#else
             connect(mat[i][j], SIGNAL(textEdited(const QString &)),
                     SLOT(slotComplexLineEditChanged(const QString &)));
-#endif
         }
     }
 
     // TODO move connectors in one function to one place or get rid of qt5 connectors
     auto *applyMat = new QPushButton("Ok");
-#if QT_VERSION >= 0x050000
-    connect(applyMat, &QPushButton::clicked, this, &MainWindow::slotSetMatrixOp);
-#else
     connect(applyMat, SIGNAL(clicked()), SLOT(slotSetMatrixOp()));
-#endif
 
     auto *getRandomBut = new QPushButton("Random");
-#if QT_VERSION >= 0x050000
-    connect(getRandomBut, &QPushButton::clicked, this, &MainWindow::slotSetRandomOp);
-#else
     connect(getRandomBut, SIGNAL(clicked()), SLOT(slotSetRandomOp()));
-#endif
 
     mOpLay->addWidget(mat[0][0], 1, 0);
     mOpLay->addWidget(mat[0][1], 1, 5);
@@ -637,11 +567,7 @@ QWidget *MainWindow::makeOpWid() {
     ngRnEd->setValidator(new QDoubleValidator);
 
     auto *axOpBut = new QPushButton("Ok");
-#if QT_VERSION >= 0x050000
-    connect(axOpBut, &QPushButton::clicked, this, &MainWindow::slotSetNewAxOp);
-#else
     connect(axOpBut, SIGNAL(clicked()), SLOT(slotSetNewAxOp()));
-#endif
 
     auto *rNwLay = new QGridLayout();
     rNwLay->addWidget(new QLabel("Vector"), 0, 0);
@@ -677,18 +603,12 @@ QWidget *MainWindow::makeOpWid() {
 
     appBut = new QPushButton("Apply operator");
     appBut->setFixedHeight(35);
-#if QT_VERSION >= 0x050000
-    connect(appBut, &QPushButton::clicked, this, &MainWindow::slotApplyOp);
-#else
     connect(appBut, SIGNAL(clicked()), SLOT(slotApplyOp()));
-#endif
+
     auto *addToQueBut = new QPushButton("Add to queue");
     addToQueBut->setFixedHeight(35);
-#if QT_VERSION >= 0x050000
-    connect(addToQueBut, &QPushButton::clicked, this, &MainWindow::slotAddToQue);
-#else
     connect(addToQueBut, SIGNAL(clicked()), SLOT(slotAddToQue()));
-#endif
+
     currentOperatorLabel = new QLabel();
     updateCurOperatorTable();
 
@@ -713,11 +633,7 @@ QWidget *MainWindow::makeOpWid() {
 QPushButton *MainWindow::makeOpButton(QString str) {
     auto *newOpBut = new QPushButton(str);
     newOpBut->setFixedHeight(26);
-#if QT_VERSION >= 0x050000
-    connect(newOpBut, &QPushButton::clicked, this, &MainWindow::slotSetOperatorClicked);
-#else
     connect(newOpBut, SIGNAL(clicked()), SLOT(slotSetOperatorClicked()));
-#endif
     return newOpBut;
 }
 
