@@ -817,9 +817,7 @@ void MainWindow::slotTraceColor(int index) {
 
 void MainWindow::slotSetOperatorClicked() {
     std::string str = ((QPushButton *)sender())->text().toStdString();
-    //    AngInput   *aIn;
-    //    QString     axSt = axRnEd->text();
-    //    bool        rzyCond = rzyRB->isChecked();
+    AngInput   *aIn;
 
     switch (str[0]) {
     case 'X':
@@ -840,33 +838,32 @@ void MainWindow::slotSetOperatorClicked() {
     case 'T':
         curOperator.toT();
         break;
-        //            case 'P':
-        //                aIn = new AngInput((QWidget *)sender());
-        //                if (aIn->exec() == QDialog::Accepted)
-        //                    op = PHIop(aIn->ang().toFloat() * RAD);
-        //                else {
-        //                    delete aIn;
-        //                    return;
-        //                }
-        //                delete aIn;
-        //                break;
-        //            case 'R':
-        //                aIn = new AngInput((QWidget *)sender());
-        //                if (aIn->exec() == QDialog::Accepted) {
-        //                    float the = (aIn->ang().toFloat()) * RAD;
-        //                    if (str[1] == 'x')
-        //                        op = RXop(the);
-        //                    else if (str[1] == 'y')
-        //                        op = RYop(the);
-        //                    else if (str[1] == 'z')
-        //                        op = RZop(the);
-        //
-        //                } else {
-        //                    delete aIn;
-        //                    return;
-        //                }
-        //                delete aIn;
-        //                break;
+    case 'P':
+        aIn = new AngInput((QWidget *)sender());
+        if (aIn->exec() == QDialog::Accepted) {
+            curOperator.toPhi(aIn->ang().toDouble() * M_PI / 180);
+        } else {
+            delete aIn;
+            return;
+        }
+        delete aIn;
+        break;
+    case 'R':
+        aIn = new AngInput((QWidget *)sender());
+        if (aIn->exec() == QDialog::Accepted) {
+            double the = (aIn->ang().toDouble()) * M_PI / 180;
+            if (str[1] == 'x')
+                curOperator.toXrotate(the);
+            else if (str[1] == 'y')
+                curOperator.toYrotate(the);
+            else if (str[1] == 'z')
+                curOperator.toZrotate(the);
+        } else {
+            delete aIn;
+            return;
+        }
+        delete aIn;
+        break;
     }
     curOpName = str.c_str();
     updateOp();
@@ -1154,20 +1151,21 @@ void MainWindow::updateCurOperatorTable() {
 
 AngInput::AngInput(QWidget *pwgt) : QDialog(pwgt, Qt::WindowTitleHint | Qt::WindowSystemMenuHint) {
     angEd = new QLineEdit;
-    QLabel *angLab = new QLabel("Введите угол в градусах:");
+    auto *angLab = new QLabel("Enter the angle in degrees:");
 
     angLab->setBuddy(angEd);
+    angEd->setValidator(new QDoubleValidator);
 
-    QPushButton *bOk = new QPushButton("Ok");
-    QPushButton *bCl = new QPushButton("Cancel");
+    auto *bOk = new QPushButton("Ok");
+    auto *bCl = new QPushButton("Cancel");
     connect(bOk, SIGNAL(clicked()), SLOT(accept()));
     connect(bCl, SIGNAL(clicked()), SLOT(reject()));
 
-    QVBoxLayout *lay = new QVBoxLayout;
+    auto *lay = new QVBoxLayout;
     lay->addWidget(angLab);
     lay->addWidget(angEd);
 
-    QHBoxLayout *lay1 = new QHBoxLayout;
+    auto *lay1 = new QHBoxLayout;
     lay1->addWidget(bOk);
     lay1->addWidget(bCl);
 
@@ -1176,6 +1174,7 @@ AngInput::AngInput(QWidget *pwgt) : QDialog(pwgt, Qt::WindowTitleHint | Qt::Wind
     setWindowTitle(((QPushButton *)parent())->text());
     setFixedWidth(155);
 }
+
 QString AngInput::ang() const { return angEd->text(); }
 
 OpItem::OpItem(QString str, Operator op) : QListWidgetItem(str), oper(op) {

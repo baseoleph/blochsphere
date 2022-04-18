@@ -529,6 +529,10 @@ void Operator::toZ() { _op = UnitaryMatrix2x2::getZ(); }
 void Operator::toH() { _op = UnitaryMatrix2x2::getH(); }
 void Operator::toS() { _op = UnitaryMatrix2x2::getS(); }
 void Operator::toT() { _op = UnitaryMatrix2x2::getT(); }
+void Operator::toPhi(double gamma) { _op = UnitaryMatrix2x2::getPhi(gamma); }
+void Operator::toXrotate(double the) { _op = UnitaryMatrix2x2::getXrotate(the); }
+void Operator::toYrotate(double the) { _op = UnitaryMatrix2x2::getYrotate(the); }
+void Operator::toZrotate(double the) { _op = UnitaryMatrix2x2::getZrotate(the); }
 
 QVector<Spike> Operator::applyZXDecomposition(Spike s) { return applyZXDecomposition(s, _op); }
 QVector<Spike> Operator::applyZYDecomposition(Spike s) { return applyZYDecomposition(s, _op); }

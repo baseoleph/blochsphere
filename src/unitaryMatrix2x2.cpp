@@ -100,3 +100,22 @@ UnitaryMatrix2x2 UnitaryMatrix2x2::getS() { return UnitaryMatrix2x2({1, 0, 0, co
 UnitaryMatrix2x2 UnitaryMatrix2x2::getT() {
     return UnitaryMatrix2x2({1, 0, 0, exp(complex(0, 1) * (M_PI / 4))});
 }
+
+UnitaryMatrix2x2 UnitaryMatrix2x2::getPhi(double gamma) {
+    return UnitaryMatrix2x2({1, 0, 0, pow(C_E, C_I * gamma)});
+}
+
+UnitaryMatrix2x2 UnitaryMatrix2x2::getXrotate(double the) {
+    the /= 2.0;
+    return UnitaryMatrix2x2({cos(the), -C_I * sin(the), -C_I * sin(the), cos(the)});
+}
+
+UnitaryMatrix2x2 UnitaryMatrix2x2::getYrotate(double the) {
+    the /= 2.0;
+    return UnitaryMatrix2x2({cos(the), -sin(the), sin(the), cos(the)});
+}
+
+UnitaryMatrix2x2 UnitaryMatrix2x2::getZrotate(double the) {
+    the /= 2.0;
+    return UnitaryMatrix2x2({exp(-C_I * the), 0.0, 0.0, exp(C_I * the)});
+}

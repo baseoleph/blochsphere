@@ -89,7 +89,12 @@ public:
     void    toH();
     void    toS();
     void    toT();
+    void    toPhi(double gamma);
+    void    toXrotate(double the);
+    void    toYrotate(double the);
+    void    toZrotate(double the);
     void    toId();
+
     complex a() { return _op.a(); }
     complex b() { return _op.b(); }
     complex c() { return _op.c(); }

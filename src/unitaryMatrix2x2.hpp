@@ -71,6 +71,10 @@ public:
     static UnitaryMatrix2x2 getH();
     static UnitaryMatrix2x2 getS();
     static UnitaryMatrix2x2 getT();
+    static UnitaryMatrix2x2 getPhi(double gamma);
+    static UnitaryMatrix2x2 getXrotate(double the);
+    static UnitaryMatrix2x2 getYrotate(double the);
+    static UnitaryMatrix2x2 getZrotate(double the);
 
 private:
     matrix2x2 _matrix;
