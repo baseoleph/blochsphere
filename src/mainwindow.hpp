@@ -36,6 +36,8 @@ typedef QMap<Vector *, QVector<Sphere *>> MapVectors;
 
 enum FIELD { NOTHIN = 0, THEPHI, ALPBET, BLOVEC };
 
+typedef QVector<Spike> (Operator::*CurDecompFun)(Spike);
+
 class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
@@ -93,15 +95,18 @@ public slots:
     static void slotAbout();
 
 private:
-    void createSideWidget();
-    void createSphere();
-    void createMenu();
-    void createActions();
-    void createStatusBar();
-    void createTopBar();
-    void createOpQueWidget();
-    void fillFieldsOfVector(Spike sp, FIELD exclude = FIELD::NOTHIN);
-    void updateComplexLineEdit(QLineEdit *lineEdit);
+    void         createSideWidget();
+    void         createSphere();
+    void         createMenu();
+    void         createActions();
+    void         createStatusBar();
+    void         createTopBar();
+    void         createOpQueWidget();
+    void         fillFieldsOfVector(Spike sp, FIELD exclude = FIELD::NOTHIN);
+    void         updateComplexLineEdit(QLineEdit *lineEdit);
+    void         startMove(Vector *v, CurDecompFun getDec);
+    CurDecompFun getCurrentDecomposition();
+    void         updateCurOperatorTable();
 
     QWidget *makeThePhiWid();
     QWidget *makeAlpBetWid();
@@ -114,6 +119,8 @@ private:
 
     QPushButton *makeOpButton(QString str);
     QPushButton *appBut;
+    QPushButton *appQueBut;
+    QLabel      *currentOperatorLabel;
     double       phiFun(double the, double re, double im);
     void         updateOp();
 
@@ -150,6 +157,7 @@ private:
     QTabWidget *stackW;
 
     Operator curOperator;
+    Operator singleOperator;
     QString  curOpName;
 
     QLineEdit *mat[2][2];
@@ -161,14 +169,16 @@ private:
     QRadioButton *rxyRB;
     QRadioButton *rtRB;
 
-    QLabel    *xyzStLab;
-    QLabel    *abStLab;
-    QLabel    *tpStLab;
-    QLabel    *svdStLab;
-    QLabel    *mtnStLab;
-    double     savedAlp;
-    complex    savedBet;
-    QComboBox *qcomb;
+    QLabel           *xyzStLab;
+    QLabel           *abStLab;
+    QLabel           *tpStLab;
+    QLabel           *svdStLab;
+    QLabel           *mtnStLab;
+    double            savedAlp;
+    complex           savedBet;
+    QComboBox        *qcomb;
+    bool              isQueueAnimation = false;
+    QVector<Operator> opQueue = {};
 
     QListWidget *opQueWid;
 

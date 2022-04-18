@@ -60,6 +60,10 @@ public:
     complex b() const { return _matrix.b; }
     complex c() const { return _matrix.c; }
     complex d() const { return _matrix.d; }
+    QString aStr() const { return parseComplexToStr(_matrix.a); }
+    QString bStr() const { return parseComplexToStr(_matrix.b); }
+    QString cStr() const { return parseComplexToStr(_matrix.c); }
+    QString dStr() const { return parseComplexToStr(_matrix.d); }
 
     static UnitaryMatrix2x2 getX();
     static UnitaryMatrix2x2 getY();

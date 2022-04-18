@@ -83,8 +83,20 @@ void MainWindow::timerEvent(QTimerEvent *timerEvent) {
     }
 
     if (not isNowAnimate) {
-        this->killTimer(timerEvent->timerId());
-        appBut->setEnabled(true);
+        if (isQueueAnimation and not opQueue.isEmpty()) {
+            curOperator = opQueue.last();
+            opQueue.pop_back();
+            updateOp();
+            slotApplyOp();
+            appBut->setEnabled(false);
+            appQueBut->setEnabled(false);
+        } else {
+            this->killTimer(timerEvent->timerId());
+            curOperator = singleOperator;
+            appBut->setEnabled(true);
+            appQueBut->setEnabled(true);
+            isQueueAnimation = false;
+        }
     }
 }
 
@@ -207,19 +219,19 @@ void MainWindow::createOpQueWidget() {
     opQueWid->setSpacing(6);
     connect(opQueWid, SIGNAL(itemClicked(QListWidgetItem *)),
             SLOT(slotQueItemClicked(QListWidgetItem *)));
-    QAction *delAct = new QAction("Delete", opQueWid);
+    auto *delAct = new QAction("Delete", opQueWid);
     opQueWid->addAction(delAct);
     connect(delAct, SIGNAL(triggered()), SLOT(slotOpItemDelete()));
     opQueWid->setContextMenuPolicy(Qt::ActionsContextMenu);
 
-    QPushButton *appQueBut = new QPushButton("Apply queue");
+    appQueBut = new QPushButton("Apply queue");
     appQueBut->setFixedSize(70, 40);
     connect(appQueBut, SIGNAL(clicked()), SLOT(slotApplyQue()));
-    QPushButton *clrQueBut = new QPushButton("Clear queue");
+    auto *clrQueBut = new QPushButton("Clear queue");
     clrQueBut->setFixedSize(70, 40);
     connect(clrQueBut, SIGNAL(clicked()), opQueWid, SLOT(clear()));
 
-    QToolBar *qtb = new QToolBar("Operators queue");
+    auto *qtb = new QToolBar("Operators queue");
     qtb->addWidget(opQueWid);
     qtb->addWidget(appQueBut);
     qtb->addWidget(clrQueBut);
@@ -677,6 +689,8 @@ QWidget *MainWindow::makeOpWid() {
 #else
     connect(addToQueBut, SIGNAL(clicked()), SLOT(slotAddToQue()));
 #endif
+    currentOperatorLabel = new QLabel();
+    updateCurOperatorTable();
 
     auto *horLay = new QHBoxLayout;
     horLay->addWidget(appBut);
@@ -685,6 +699,7 @@ QWidget *MainWindow::makeOpWid() {
     auto *pLay = new QVBoxLayout();
     pLay->addWidget(stackW);
     pLay->addWidget(qGb);
+    pLay->addWidget(currentOperatorLabel);
     pLay->addStretch();
     pLay->addLayout(horLay);
 
@@ -989,6 +1004,7 @@ void MainWindow::updateOp() {
     mat[1][0]->setText(parseComplexToStr(curOperator.getOperator().c()));
     mat[1][1]->setText(parseComplexToStr(curOperator.getOperator().d()));
 
+    updateCurOperatorTable();
     //        QVector<double> x = curOperator.findNVec();
     //        axRnEd->setText(QString("%1;%2;%3")
     //                            .arg(roundNumber(x[0], 1000))
@@ -1019,34 +1035,45 @@ void MainWindow::slotAddToQue() {
 }
 
 void MainWindow::slotApplyOp() {
+    foreach (auto e, vectors.keys()) { startMove(e, getCurrentDecomposition()); }
+}
+
+void MainWindow::slotApplyQue() {
+    isQueueAnimation = true;
+    singleOperator = curOperator;
+    for (int i = 0; i < opQueWid->count(); ++i) {
+        opQueue.append(((OpItem *)(opQueWid->item(i)))->getOp());
+    }
+
+    curOperator = opQueue.last();
+    if (not opQueue.isEmpty()) {
+        opQueue.pop_back();
+    }
+    appBut->setEnabled(false);
+    appQueBut->setEnabled(false);
+    updateOp();
+    slotApplyOp();
+    this->startTimer(50);
+}
+
+void MainWindow::startMove(Vector *v, CurDecompFun getDec) {
+    v->changeVector((curOperator.*getDec)(v->getSpike()));
+    appBut->setEnabled(false);
+    this->startTimer(50);
+}
+
+CurDecompFun MainWindow::getCurrentDecomposition() {
     if (rtRB->isChecked()) {
         //            curOperator.toZYdec();
         //            const QVector<double> &x = curOperator.findNVec();
         //            //scene->setNewAxis(x[0], x[1], x[2]);   // 4
         //            //scene->rotateN(x[3] * DEG, curOpName); // 4
     } else if (rzyRB->isChecked()) {
-        foreach (auto &e, vectors.keys()) {
-            e->changeVector(curOperator.applyZYDecomposition(e->getSpike()));
-        }
+        return &Operator::applyZYDecomposition;
     } else if (rzxRB->isChecked()) {
-        foreach (auto &e, vectors.keys()) {
-            e->changeVector(curOperator.applyZXDecomposition(e->getSpike()));
-        }
+        return &Operator::applyZXDecomposition;
     } else if (rxyRB->isChecked()) {
-        foreach (auto &e, vectors.keys()) {
-            e->changeVector(curOperator.applyXYDecomposition(e->getSpike()));
-        }
-    }
-
-    appBut->setEnabled(false);
-    this->startTimer(50);
-}
-
-void MainWindow::slotApplyQue() {
-    for (int i = opQueWid->count() - 1; i >= 0; i--) {
-        curOperator = ((OpItem *)(opQueWid->item(i)))->getOp();
-        curOpName = opQueWid->item(i)->text();
-        slotApplyOp();
+        return &Operator::applyXYDecomposition;
     }
 }
 
@@ -1104,6 +1131,25 @@ void MainWindow::slotComplexLineEditChanged(const QString &) {
 void MainWindow::updateComplexLineEdit(QLineEdit *lineEdit) {
     QRegExp re(QString::fromUtf8("[IШш]"));
     lineEdit->setText(lineEdit->text().replace(re, "i"));
+}
+void MainWindow::updateCurOperatorTable() {
+    currentOperatorLabel->setText("<table>"
+                                  "<tr>"
+                                  "<td>" +
+                                  curOperator.getOperator().aStr() +
+                                  "</td>"
+                                  "<td>" +
+                                  curOperator.getOperator().bStr() +
+                                  "</td>"
+                                  "</tr><tr>"
+                                  "<td>" +
+                                  curOperator.getOperator().cStr() +
+                                  "</td>"
+                                  "<td>" +
+                                  curOperator.getOperator().dStr() +
+                                  "</td>"
+
+                                  "</tr></table>");
 }
 
 AngInput::AngInput(QWidget *pwgt) : QDialog(pwgt, Qt::WindowTitleHint | Qt::WindowSystemMenuHint) {
