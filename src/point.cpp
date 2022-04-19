@@ -43,4 +43,7 @@ void Point::evalXYZ() {
     x_ = sin(the_) * cos(phi_);
     y_ = sin(the_) * sin(phi_);
     z_ = cos(the_);
+    assert(qFuzzyCompare(getXyzLen(), 1.));
 }
+
+double Point::getXyzLen() { return sqrt(x_ * x_ + y_ * y_ + z_ * z_); }

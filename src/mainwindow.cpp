@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "mainwindow.hpp"
-#include "anginput.hpp"
+#include "blochdialog.hpp"
 #include "opitem.hpp"
 #include <QGridLayout>
 #include <QGroupBox>
@@ -348,9 +348,9 @@ QWidget *MainWindow::makeBloVecWid() {
     zEd->setFixedWidth(90);
     zEd->setValidator(new QDoubleValidator);
 
-    auto *bPsi = new QPushButton("Set");
-    bPsi->setFixedWidth(60);
-    connect(bPsi, SIGNAL(clicked()), SLOT(slotBloVec()));
+    auto *bXyz = new QPushButton("Set");
+    bXyz->setFixedWidth(60);
+    connect(bXyz, SIGNAL(clicked()), SLOT(slotBloVec()));
 
     auto *xyzW = new QWidget();
     xyzW->setFixedHeight(90);
@@ -367,7 +367,7 @@ QWidget *MainWindow::makeBloVecWid() {
     abLay->addWidget(yEd, 2, 1, 1, 3);
     abLay->addWidget(zLab, 3, 0);
     abLay->addWidget(zEd, 3, 1, 1, 3);
-    abLay->addWidget(bPsi, 4, 2);
+    abLay->addWidget(bXyz, 4, 2);
 
     abLay->setContentsMargins(10, 5, 5, 5);
     abLay->setSpacing(2);
@@ -654,7 +654,19 @@ void MainWindow::slotThePhi() {
 void MainWindow::slotAlpBet() {
     double  a = alpEd->text().toDouble();
     complex b = parseStrToComplex(betEd->text());
-    Spike   sp = Vector::createSpike(a, b);
+    double  len = sqrt(a * a + b.real() * b.real() + b.imag() * b.imag());
+    if (not UnitaryMatrix2x2::fuzzyCompare(len, 1.)) {
+        auto *dial = new BlochDialog((QWidget *)sender(), DIALOG_TYPE::NORMALIZE);
+        if (dial->exec() == QDialog::Accepted) {
+            a /= len;
+            b = complex(b.real() / len, b.imag() / len);
+            alpEd->setText(QString::number(a));
+            betEd->setText(parseComplexToStr(b));
+        } else {
+            return;
+        }
+    }
+    Spike sp = Vector::createSpike(a, b);
     foreach (auto &e, vectors.keys()) { e->changeVector(sp); }
 
     fillFieldsOfVector(sp, FIELD::ALPBET);
@@ -664,7 +676,22 @@ void MainWindow::slotBloVec() {
     double x = xEd->text().toDouble();
     double y = yEd->text().toDouble();
     double z = zEd->text().toDouble();
-    Spike  sp = Vector::createSpike(x, y, z);
+    double len = sqrt(x * x + y * y + z * z);
+    if (not UnitaryMatrix2x2::fuzzyCompare(len, 1.)) {
+        // TODO  (QWidget *)sender() ? qt4 fails with "this"
+        auto *dial = new BlochDialog((QWidget *)sender(), DIALOG_TYPE::NORMALIZE);
+        if (dial->exec() == QDialog::Accepted) {
+            x /= len;
+            y /= len;
+            z /= len;
+            xEd->setText(QString::number(x));
+            yEd->setText(QString::number(y));
+            zEd->setText(QString::number(z));
+        } else {
+            return;
+        }
+    }
+    Spike sp = Vector::createSpike(x, y, z);
     foreach (auto &e, vectors.keys()) { e->changeVector(sp); }
 
     fillFieldsOfVector(sp, FIELD::BLOVEC);
@@ -726,8 +753,8 @@ void MainWindow::slotTraceColor(int index) {
 }
 
 void MainWindow::slotSetOperatorClicked() {
-    std::string str = ((QPushButton *)sender())->text().toStdString();
-    AngInput   *aIn;
+    std::string  str = ((QPushButton *)sender())->text().toStdString();
+    BlochDialog *aIn;
 
     switch (str[0]) {
     case 'X':
@@ -749,7 +776,7 @@ void MainWindow::slotSetOperatorClicked() {
         curOperator.toT();
         break;
     case 'P':
-        aIn = new AngInput((QWidget *)sender());
+        aIn = new BlochDialog((QWidget *)sender(), DIALOG_TYPE::ANGLE);
         if (aIn->exec() == QDialog::Accepted) {
             curOperator.toPhi(aIn->ang().toDouble() * M_PI / 180);
         } else {
@@ -759,7 +786,7 @@ void MainWindow::slotSetOperatorClicked() {
         delete aIn;
         break;
     case 'R':
-        aIn = new AngInput((QWidget *)sender());
+        aIn = new BlochDialog((QWidget *)sender(), DIALOG_TYPE::ANGLE);
         if (aIn->exec() == QDialog::Accepted) {
             double the = (aIn->ang().toDouble()) * M_PI / 180;
             if (str[1] == 'x')

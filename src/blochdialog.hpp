@@ -20,12 +20,21 @@
 #include <QDialog>
 #include <QLineEdit>
 
-class AngInput : public QDialog {
-    Q_OBJECT
-    QLineEdit *angEd;
+enum DIALOG_TYPE { ANGLE = 0, NORMALIZE };
 
+class BlochDialog : public QDialog {
+    Q_OBJECT
 public:
-    explicit AngInput(QWidget *parent = nullptr);
+    explicit BlochDialog(QWidget *parent, DIALOG_TYPE dt);
+
+    // TODO not safe method
     QString ang() const;
+
+private:
+    QLineEdit *angEd = nullptr;
+    void       angleInput();
+
+    // TODO show before/after (xyz, ab)
+    void       suggestNormalize();
 };
 #endif // ANGINPUT_HPP

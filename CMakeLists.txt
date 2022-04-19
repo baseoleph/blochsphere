@@ -32,8 +32,8 @@ find_package(OpenGL REQUIRED)
 find_package(Qt5 COMPONENTS Widgets OpenGL REQUIRED)
 
 set(PROJECT_SOURCES
-        src/anginput.cpp
-        src/anginput.hpp
+        src/blochdialog.cpp
+        src/blochdialog.hpp
         src/main.cpp
         src/mainwindow.cpp
         src/mainwindow.hpp

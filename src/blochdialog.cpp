@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "anginput.hpp"
+#include "blochdialog.hpp"
 #include "mainwindow.hpp"
 #include <QGridLayout>
 #include <QLineEdit>
@@ -25,8 +25,18 @@
 #include <QString>
 #include <QTime>
 
-AngInput::AngInput(QWidget *parent)
+BlochDialog::BlochDialog(QWidget *parent, DIALOG_TYPE dt)
     : QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint) {
+    if (dt == DIALOG_TYPE::ANGLE) {
+        angleInput();
+    } else {
+        suggestNormalize();
+    }
+}
+
+QString BlochDialog::ang() const { return angEd->text(); }
+
+void BlochDialog::angleInput() {
     angEd = new QLineEdit;
     auto *angLab = new QLabel("Enter the angle in degrees:");
 
@@ -51,5 +61,22 @@ AngInput::AngInput(QWidget *parent)
     setWindowTitle(((QPushButton *)this->parent())->text());
     setFixedWidth(155);
 }
+void BlochDialog::suggestNormalize() {
+    auto *angLab = new QLabel("Vector is not unit. \nDo you want normalize it?");
 
-QString AngInput::ang() const { return angEd->text(); }
+    auto *bOk = new QPushButton("Ok");
+    auto *bCl = new QPushButton("Cancel");
+    connect(bOk, SIGNAL(clicked()), SLOT(accept()));
+    connect(bCl, SIGNAL(clicked()), SLOT(reject()));
+
+    auto *lay = new QVBoxLayout;
+    lay->addWidget(angLab);
+
+    auto *lay1 = new QHBoxLayout;
+    lay1->addWidget(bOk);
+    lay1->addWidget(bCl);
+
+    lay->addLayout(lay1);
+    setLayout(lay);
+    setWindowTitle(((QPushButton *)this->parent())->text());
+}

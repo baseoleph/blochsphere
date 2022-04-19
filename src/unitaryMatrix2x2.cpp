@@ -32,6 +32,7 @@ bool UnitaryMatrix2x2::isUnitaryMatrix(matrix2x2 matrix) {
     return isUnitaryMatrix(UnitaryMatrix2x2(matrix));
 }
 
+// TODO move to utils
 bool UnitaryMatrix2x2::fuzzyCompare(double a, double b) { return qAbs(a - b) <= EPSILON; }
 
 void UnitaryMatrix2x2::print(std::ostream &out) const {

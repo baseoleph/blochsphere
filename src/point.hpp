@@ -43,8 +43,9 @@ private:
     double the_; // radians
     double phi_; // radians
 
-    void evalPT();
-    void evalXYZ();
+    void          evalPT();
+    void          evalXYZ();
+    inline double getXyzLen();
 };
 
 #endif // POINT_HPP
