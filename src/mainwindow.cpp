@@ -16,7 +16,6 @@
 
 #include "mainwindow.hpp"
 #include "blochdialog.hpp"
-#include "opitem.hpp"
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QLineEdit>
@@ -85,19 +84,27 @@ void MainWindow::timerEvent(QTimerEvent *timerEvent) {
     }
 
     if (not isNowAnimate) {
-        if (isQueueAnimation and not opQueue.isEmpty()) {
-            curOperator = opQueue.last();
+        if (isQueueAnimation) {
+            opQueue.last()->setBackground(QBrush(Qt::white));
             opQueue.pop_back();
-            updateOp();
-            slotApplyOp();
-            appBut->setEnabled(false);
-            appQueBut->setEnabled(false);
+            if (not opQueue.isEmpty()) {
+                opQueue.last()->setBackground(QBrush(Qt::red));
+                curOperator = opQueue.last()->getOp();
+                updateOp();
+                slotApplyOp();
+                appBut->setEnabled(false);
+                appQueBut->setEnabled(false);
+            } else {
+                this->killTimer(timerEvent->timerId());
+                curOperator = singleOperator;
+                appBut->setEnabled(true);
+                appQueBut->setEnabled(true);
+                isQueueAnimation = false;
+            }
         } else {
             this->killTimer(timerEvent->timerId());
-            curOperator = singleOperator;
             appBut->setEnabled(true);
             appQueBut->setEnabled(true);
-            isQueueAnimation = false;
         }
     }
 }
@@ -969,14 +976,12 @@ void MainWindow::slotApplyQue() {
     isQueueAnimation = true;
     singleOperator = curOperator;
     for (int i = 0; i < opQueWid->count(); ++i) {
-        opQueue.append(((OpItem *)(opQueWid->item(i)))->getOp());
+        opQueue.append((OpItem *)(opQueWid->item(i)));
     }
 
     if (not opQueue.isEmpty()) {
-        curOperator = opQueue.last();
-        if (not opQueue.isEmpty()) {
-            opQueue.pop_back();
-        }
+        curOperator = opQueue.last()->getOp();
+        opQueue.last()->setBackground(QBrush(Qt::red));
         appBut->setEnabled(false);
         appQueBut->setEnabled(false);
         updateOp();
@@ -988,7 +993,10 @@ void MainWindow::slotApplyQue() {
 void MainWindow::startMove(Vector *v, CurDecompFun getDec) {
     v->changeVector((curOperator.*getDec)(v->getSpike()));
     appBut->setEnabled(false);
-    this->startTimer(50);
+    appQueBut->setEnabled(false);
+    if (not isQueueAnimation) {
+        this->startTimer(50);
+    }
 }
 
 CurDecompFun MainWindow::getCurrentDecomposition() {

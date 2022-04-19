@@ -19,6 +19,7 @@
 
 #include "blochUtility.h"
 #include "operator.hpp"
+#include "opitem.hpp"
 #include "qubit.hpp"
 #include "sphere.hpp"
 #include <QActionGroup>
@@ -162,7 +163,7 @@ private:
     QLabel           *mtnStLab = nullptr;
     QComboBox        *colorComboBox = nullptr;
     bool              isQueueAnimation = false;
-    QVector<Operator> opQueue = {};
+    QVector<OpItem *> opQueue;
 
     QListWidget *opQueWid = nullptr;
 
