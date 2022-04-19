@@ -945,15 +945,17 @@ void MainWindow::slotApplyQue() {
         opQueue.append(((OpItem *)(opQueWid->item(i)))->getOp());
     }
 
-    curOperator = opQueue.last();
     if (not opQueue.isEmpty()) {
-        opQueue.pop_back();
+        curOperator = opQueue.last();
+        if (not opQueue.isEmpty()) {
+            opQueue.pop_back();
+        }
+        appBut->setEnabled(false);
+        appQueBut->setEnabled(false);
+        updateOp();
+        slotApplyOp();
+        this->startTimer(50);
     }
-    appBut->setEnabled(false);
-    appQueBut->setEnabled(false);
-    updateOp();
-    slotApplyOp();
-    this->startTimer(50);
 }
 
 void MainWindow::startMove(Vector *v, CurDecompFun getDec) {
