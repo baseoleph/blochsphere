@@ -243,23 +243,25 @@ decomposition Operator::zyDecomposition(UnitaryMatrix2x2 op) {
         delta = (arg(d / a) - arg(-c / b)) / 2.0;
 
         complex z = exp(-i * (2.0 * alpha - beta));
-        if (real(exp(-i * 2.0 * alpha) * (a * d + b * c)) > 0)
+        if (real(exp(-i * 2.0 * alpha) * (a * d + b * c)) > 0) {
             gamma = real(asin(-2.0 * a * b * z));
-        else
+        } else {
             gamma = M_PI - real(asin(-2.0 * a * b * z));
+        }
     } else if (abs(b) < EPSILON && abs(c) < EPSILON) {
         alpha = arg(a * d) / 2.0;
         delta = 0;
         beta = -delta + arg(d / a);
         gamma = 0;
     } else if (abs(a) < EPSILON && abs(d) < EPSILON) {
-        alpha = arg(-b * c) / 2.0;
+        if (abs(1.0 - b * c) < EPSILON) {
+            alpha = M_PI / 2.0;
+        } else {
+            alpha = arg(-b * c) / 2.0;
+        }
         beta = 0;
+        gamma = M_PI;
         delta = beta + arg(-b / c);
-        if (real(c * exp(-i * (alpha + beta / 2.0 - delta / 2.0))) > 0)
-            gamma = M_PI;
-        else
-            gamma = -M_PI;
     }
 
     double v = gamma / 2.0;
