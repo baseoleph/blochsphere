@@ -59,6 +59,33 @@ bool UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2 op1, UnitaryMatrix2x2 o
     cmp &= fuzzyCompare(op1.d().imag(), op2.d().imag());
 
     if (!cmp) {
+        cmp = true;
+        complex ephi(1, 0);
+        if (abs(op2.a() + op2.b()) < EPSILON) {
+            ephi = (op2.a() - op2.b()) / (op1.a() - op1.b());
+        } else {
+            ephi = (op2.a() + op2.b()) / (op1.a() + op1.b());
+        }
+
+        complex a = op2.a() / ephi;
+        complex b = op2.b() / ephi;
+        complex c = op2.c() / ephi;
+        complex d = op2.d() / ephi;
+
+        cmp &= fuzzyCompare(op1.a().real(), a.real());
+        cmp &= fuzzyCompare(op1.a().imag(), a.imag());
+
+        cmp &= fuzzyCompare(op1.b().real(), b.real());
+        cmp &= fuzzyCompare(op1.b().imag(), b.imag());
+
+        cmp &= fuzzyCompare(op1.c().real(), c.real());
+        cmp &= fuzzyCompare(op1.c().imag(), c.imag());
+
+        cmp &= fuzzyCompare(op1.d().real(), d.real());
+        cmp &= fuzzyCompare(op1.d().imag(), d.imag());
+    }
+
+    if (!cmp) {
         std::cout << "----------------------------------------------\n";
         std::cout << "Expected\n";
         std::cout << "(" << op1.a().real() << ", " << op1.a().imag() << ") \t";

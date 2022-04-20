@@ -1022,8 +1022,7 @@ CurDecompFun MainWindow::getCurrentDecomposition() {
     } else if (rzxRB->isChecked()) {
         return &Operator::applyZXDecomposition;
     } else if (rxyRB->isChecked()) {
-        //        return &Operator::applyXYDecomposition;
-        return &Operator::applyOperator;
+        return &Operator::applyXYDecomposition;
     }
 }
 
