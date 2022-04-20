@@ -45,6 +45,13 @@ struct decomposition {
     }
 };
 
+struct vectorangle {
+    double x = 0;
+    double y = 0;
+    double z = 0;
+    double angle = 0;
+};
+
 class Operator {
 public:
     Operator();
@@ -61,6 +68,8 @@ public:
     QVector<Spike>        applyXYDecomposition(Spike s);
     static QVector<Spike> applyOperator(Spike s, UnitaryMatrix2x2 op);
     QVector<Spike>        applyOperator(Spike s);
+    static QVector<Spike> applyVectorRotation(Spike s, UnitaryMatrix2x2 op);
+    QVector<Spike>        applyVectorRotation(Spike s);
 
     static decomposition zxDecomposition(UnitaryMatrix2x2 op);
     decomposition        zxDecomposition();
@@ -69,31 +78,36 @@ public:
     static decomposition xyDecomposition(UnitaryMatrix2x2 op);
     static decomposition xyDecomposition2(UnitaryMatrix2x2 op);
     decomposition        xyDecomposition();
+    static vectorangle   vectorAngleDec(UnitaryMatrix2x2 op);
+    vectorangle          vectorAngleDec();
 
     static matrix2x2 getMatrixByZxDec(decomposition dec);
     static matrix2x2 getMatrixByZyDec(decomposition dec);
     static matrix2x2 getMatrixByXyDec(decomposition dec);
+    static matrix2x2 getMatrixByVecAng(vectorangle va);
 
     bool setOperatorByZXDecomposition(decomposition dec);
     bool setOperatorByZYDecomposition(decomposition dec);
     bool setOperatorByXYDecomposition(decomposition dec);
+    bool setOperatorByVectorAngle(vectorangle va);
     void setOperator(UnitaryMatrix2x2 op);
 
     static UnitaryMatrix2x2 genRandUnitaryMatrix(qint64 seed);
 
     UnitaryMatrix2x2 getOperator() { return _op; }
 
-    void    toX();
-    void    toY();
-    void    toZ();
-    void    toH();
-    void    toS();
-    void    toT();
-    void    toPhi(double gamma);
-    void    toXrotate(double the);
-    void    toYrotate(double the);
-    void    toZrotate(double the);
-    void    toId();
+    void toX();
+    void toY();
+    void toZ();
+    void toH();
+    void toS();
+    void toT();
+    void toPhi(double gamma);
+    void toXrotate(double the);
+    void toYrotate(double the);
+    void toZrotate(double the);
+    void toId();
+    void toRnRotate(vectorangle);
 
     complex a() { return _op.a(); }
     complex b() { return _op.b(); }

@@ -122,7 +122,7 @@ QVector<Spike> Operator::applyXYDecomposition(Spike s, UnitaryMatrix2x2 op) {
 
 QVector<Spike> Operator::applyOperator(Spike s, UnitaryMatrix2x2 op) {
     QVector<Spike> spike = {s};
-    decomposition  dec = zxDecomposition(op);
+    decomposition  dec = zyDecomposition(op);
     QVector3D      zVector = QVector3D(0, 0, 1);
     QVector3D      xVector = QVector3D(1, 0, 0);
     QQuaternion    qz1 = QQuaternion::fromAxisAndAngle(zVector, static_cast<float>(dec.beta));
@@ -489,6 +489,32 @@ decomposition Operator::xyDecomposition2(UnitaryMatrix2x2 op) {
     return dec;
 }
 
+vectorangle Operator::vectorAngleDec(UnitaryMatrix2x2 op) {
+    decomposition zyDec = Operator::zyDecomposition(op);
+
+    zyDec.gamma = zyDec.gamma / 180 * M_PI;
+    zyDec.beta = zyDec.beta / 180 * M_PI;
+    zyDec.delta = zyDec.delta / 180 * M_PI;
+
+    vectorangle va;
+
+    va.angle = 2.0 * acos(cos(zyDec.gamma / 2.0) * cos(zyDec.beta / 2.0 + zyDec.delta / 2.0));
+    double sint = sin(va.angle / 2.0);
+    if (abs(sint) > EPSILON) {
+        va.x = sin(zyDec.gamma / 2.0) / sint * sin(zyDec.delta / 2.0 - zyDec.beta / 2.0);
+        va.y = sin(zyDec.gamma / 2.0) / sint * cos(zyDec.beta / 2.0 - zyDec.delta / 2.0);
+        va.z = cos(zyDec.gamma / 2.0) / sint * sin(zyDec.beta / 2.0 + zyDec.delta / 2.0);
+    } else {
+        va.x = 0;
+        va.y = 0;
+        va.z = 0;
+    }
+
+    return va;
+}
+
+vectorangle Operator::vectorAngleDec() { return vectorAngleDec(_op); }
+
 UnitaryMatrix2x2 Operator::genRandUnitaryMatrix(qint64 seed) {
     UnitaryMatrix2x2 op;
     matrix2x2        matrix;
@@ -524,6 +550,21 @@ UnitaryMatrix2x2 Operator::genRandUnitaryMatrix(qint64 seed) {
 void Operator::setOperator(UnitaryMatrix2x2 op) { _op = op; }
 
 QVector<Spike> Operator::applyOperator(Spike s) { return applyOperator(s, _op); }
+
+QVector<Spike> Operator::applyVectorRotation(Spike s, UnitaryMatrix2x2 op) {
+    QVector<Spike> spike = {s};
+    vectorangle    va = vectorAngleDec(op);
+
+    QVector<Spike> vct = rotate(s, QVector3D(va.x, va.y, va.z), va.angle * 180 / M_PI);
+    for (auto &e : vct) {
+        spike.append(e);
+    }
+
+    std::reverse(spike.begin(), spike.end());
+    return spike;
+}
+
+QVector<Spike> Operator::applyVectorRotation(Spike s) { return applyVectorRotation(s, _op); }
 
 void Operator::toX() { _op = UnitaryMatrix2x2::getX(); }
 void Operator::toY() { _op = UnitaryMatrix2x2::getY(); }
@@ -561,6 +602,15 @@ bool Operator::setOperatorByZYDecomposition(decomposition dec) {
 bool Operator::setOperatorByXYDecomposition(decomposition dec) {
     UnitaryMatrix2x2 matrixOp;
     if (not matrixOp.updateMatrix(getMatrixByXyDec(dec))) {
+        return false;
+    }
+    setOperator(matrixOp);
+    return true;
+}
+
+bool Operator::setOperatorByVectorAngle(vectorangle va) {
+    UnitaryMatrix2x2 matrixOp;
+    if (not matrixOp.updateMatrix(getMatrixByVecAng(va))) {
         return false;
     }
     setOperator(matrixOp);
@@ -612,4 +662,25 @@ matrix2x2 Operator::getMatrixByXyDec(decomposition dec) {
     matrix.c = exp(i * alpha) * (sin(v) * cos(u) - i * cos(v) * sin(w));
     matrix.d = exp(i * alpha) * (cos(v) * cos(w) + i * sin(v) * sin(u));
     return matrix;
+}
+
+matrix2x2 Operator::getMatrixByVecAng(vectorangle va) {
+    double    v = va.angle / 2;
+    matrix2x2 matrix;
+    complex   i{0, 1};
+
+    matrix.a = cos(v) - i * sin(v) * va.z;
+    matrix.b = -i * sin(v) * (va.x - i * va.y);
+    matrix.c = -i * sin(v) * (va.x + i * va.y);
+    matrix.d = cos(v) + i * sin(v) * va.z;
+    matrix.a *= i;
+    matrix.b *= i;
+    matrix.c *= i;
+    matrix.d *= i;
+    return matrix;
+}
+
+void Operator::toRnRotate(vectorangle) {
+    //        curOperator = cos(ng / 2.0) * Iop - C_I * sin(ng / 2.0) * (nX * Xop + nY * Yop + nZ *
+    //        Zop);
 }

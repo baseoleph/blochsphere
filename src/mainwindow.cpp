@@ -569,9 +569,9 @@ QWidget *MainWindow::makeOpWid() {
     stackW->addTab(mOp, "Matrix");
 
     auto *rNw = new QWidget();
-    axRnEd = new QLineEdit();
+    axRnEd = new QLineEdit("0;0;0");
     axRnEd->setValidator(&axisValid);
-    ngRnEd = new QLineEdit();
+    ngRnEd = new QLineEdit("0");
     ngRnEd->setValidator(new QDoubleValidator);
 
     auto *axOpBut = new QPushButton("Ok");
@@ -889,29 +889,45 @@ void MainWindow::slotSetRandomOp() {
 void MainWindow::slotSetNewAxOp() {
     QRegExp rxp("^(-?[\\d]*\\.?[\\d]*e?[+-]?[\\d]*);(-?[\\d]*\\.?[\\d]*e?[+-]?[\\d]*);(-?[\\d]*\\.?"
                 "[\\d]*e?[+-]?[\\d]*)$");
-    //    if (axRnEd->text().contains(rxp)) {
-    //        double ng = ngRnEd->text().toDouble() * RAD, nX = rxp.capturedTexts()[1].toDouble(),
-    //               nY = rxp.capturedTexts()[2].toDouble(), nZ = rxp.capturedTexts()[3].toDouble();
-    //        // 4
-    //        double k = (nX < 0) ? -1.0 : 1.0, l = (nY < 0) ? -1.0 : 1.0, m = (nZ < 0) ? -1.0
-    //        : 1.0; double n = nX * nX + nY * nY + nZ * nZ;
-    //
-    //        nX = k * sqrt(nX * nX / n);
-    //        nY = l * sqrt(nY * nY / n);
-    //        nZ = m * sqrt(nZ * nZ / n);
-    //
-    //        // scene->setNewAxis(nX, nY, nZ);
-    //
-    //        //        curOperator = cos(ng / 2.0) * Iop - C_I * sin(ng / 2.0) * (nX * Xop + nY *
-    //        Yop +
-    //        //        nZ * Zop);
-    //
-    //        curOpName = "U";
-    //        updateOp();
-    //    } else {
-    //        QMessageBox::warning(0, "Error", "Wrong input: Vector (x;y;z)");
-    //        return;
-    //    }
+    if (axRnEd->text().contains(rxp)) {
+        vectorangle va;
+        va.angle = ngRnEd->text().toDouble() * M_PI / 180;
+        va.x = rxp.capturedTexts()[1].toDouble();
+        va.y = rxp.capturedTexts()[2].toDouble();
+        va.z = rxp.capturedTexts()[3].toDouble();
+
+        double len = sqrt(va.x * va.x + va.y * va.y + va.z * va.z);
+        if (not UnitaryMatrix2x2::fuzzyCompare(len, 1.)) {
+            // TODO  (QWidget *)sender() ? qt4 fails with "this"
+            auto *dial = new BlochDialog((QWidget *)sender(), DIALOG_TYPE::NORMALIZE);
+            if (dial->exec() == QDialog::Accepted) {
+                va.x /= len;
+                va.y /= len;
+                va.z /= len;
+                axRnEd->setText(QString("%1;%2;%3")
+                                    .arg(roundNumber(va.x))
+                                    .arg(roundNumber(va.y))
+                                    .arg(roundNumber(va.z)));
+            } else {
+                return;
+            }
+        }
+
+        // TODO
+        // scene->setNewAxis(nX, nY, nZ);
+
+        if (not curOperator.setOperatorByVectorAngle(va)) {
+            // TODO it's impossible; inspect
+            QMessageBox::warning(0, "Error", "error");
+            return;
+        }
+
+        curOpName = "U";
+        updateOp();
+    } else {
+        QMessageBox::warning(this, "Error", "Wrong input: Vector (x;y;z)");
+        return;
+    }
 }
 
 void MainWindow::updateOp() {
@@ -938,13 +954,12 @@ void MainWindow::updateOp() {
     mat[1][0]->setText(parseComplexToStr(curOperator.getOperator().c()));
     mat[1][1]->setText(parseComplexToStr(curOperator.getOperator().d()));
 
+    vectorangle va = curOperator.vectorAngleDec();
+    axRnEd->setText(
+        QString("%1;%2;%3").arg(roundNumber(va.x)).arg(roundNumber(va.y)).arg(roundNumber(va.z)));
+    ngRnEd->setText(QString("%1").arg(roundNumber(va.angle * 180 / M_PI)));
+
     updateCurOperatorTable();
-    //        QVector<double> x = curOperator.findNVec();
-    //        axRnEd->setText(QString("%1;%2;%3")
-    //                            .arg(roundNumber(x[0], 1000))
-    //                            .arg(roundNumber(x[1], 1000))
-    //                            .arg(roundNumber(x[2], 1000)));          // 4
-    //        ngRnEd->setText(QString("%1").arg(roundNumber(x[3] * DEG))); // 4
 }
 
 // TODO check
@@ -1001,16 +1016,14 @@ void MainWindow::startMove(Vector *v, CurDecompFun getDec) {
 
 CurDecompFun MainWindow::getCurrentDecomposition() {
     if (rtRB->isChecked()) {
-        //            curOperator.toZYdec();
-        //            const QVector<double> &x = curOperator.findNVec();
-        //            //scene->setNewAxis(x[0], x[1], x[2]);   // 4
-        //            //scene->rotateN(x[3] * DEG, curOpName); // 4
+        return &Operator::applyVectorRotation;
     } else if (rzyRB->isChecked()) {
         return &Operator::applyZYDecomposition;
     } else if (rzxRB->isChecked()) {
         return &Operator::applyZXDecomposition;
     } else if (rxyRB->isChecked()) {
-        return &Operator::applyXYDecomposition;
+        //        return &Operator::applyXYDecomposition;
+        return &Operator::applyOperator;
     }
 }
 

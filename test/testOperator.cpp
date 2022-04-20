@@ -76,9 +76,25 @@ TEST(Operator, xyDecompositionStatic) {
 TEST(Operator, xyDecompositionStatic2) {
     staticTestDecomposition(Operator::xyDecomposition2, Operator::getMatrixByXyDec);
 }
-// TEST(Operator, xyDecompositionRandom) {
-//     randomTestDecomposition(Operator::xyDecomposition, Operator::getMatrixByXyDec);
-// }
+//  TEST(Operator, xyDecompositionRandom) {
+//      randomTestDecomposition(Operator::xyDecomposition, Operator::getMatrixByXyDec);
+//  }
+
+TEST(Operator, vectorAngleStatic) {
+    QVector<UnitaryMatrix2x2> ops = unitaryOperators2x2();
+
+    for (int k = 0; k < ops.size(); ++k) {
+        //    for (int k = 39; k <= 41; ++k) {
+        EXPECT_TRUE(UnitaryMatrix2x2::isUnitaryMatrix(ops[k]))
+            << "Not unitary; test case number " << k << "\n\n";
+
+        UnitaryMatrix2x2 opActual;
+        opActual.updateMatrix(Operator::getMatrixByVecAng(Operator::vectorAngleDec(ops[k])));
+
+        EXPECT_TRUE(UnitaryMatrix2x2::compareOperators(ops[k], opActual))
+            << "Not equal; test case number " << k << "\n\n";
+    }
+}
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
