@@ -591,21 +591,23 @@ QWidget *MainWindow::makeOpWid() {
 
     auto *qGb = new QGroupBox("Rotation");
 
-    rzyRB = new QRadioButton("ZY-decomposition");
-    rzyRB->toggle();
+    rzyRb = new QRadioButton("ZY-decomposition");
+    rzyRb->toggle();
 
-    rzxRB = new QRadioButton("ZX-decomposition");
+    rzxRb = new QRadioButton("ZX-decomposition");
 
-    rxyRB = new QRadioButton("XY-decomposition");
+    rxyRb = new QRadioButton("XY-decomposition");
 
-    rtRB = new QRadioButton("Rotation about vector");
+    rtRb = new QRadioButton("Rotation about vector");
+
+    connect(rtRb, SIGNAL(toggled(bool)), SLOT(slotToggleRotateVector(bool)));
 
     auto *gbLay = new QVBoxLayout();
     qGb->setFixedHeight(120);
-    gbLay->addWidget(rzyRB);
-    gbLay->addWidget(rzxRB);
-    gbLay->addWidget(rxyRB);
-    gbLay->addWidget(rtRB);
+    gbLay->addWidget(rzyRb);
+    gbLay->addWidget(rzxRb);
+    gbLay->addWidget(rxyRb);
+    gbLay->addWidget(rtRb);
     gbLay->setSpacing(5);
     qGb->setLayout(gbLay);
 
@@ -913,12 +915,9 @@ void MainWindow::slotSetNewAxOp() {
             }
         }
 
-        // TODO
-        // scene->setNewAxis(nX, nY, nZ);
-
         if (not curOperator.setOperatorByVectorAngle(va)) {
             // TODO it's impossible; inspect
-            QMessageBox::warning(0, "Error", "error");
+            QMessageBox::warning(this, "Error", "error");
             return;
         }
 
@@ -959,6 +958,7 @@ void MainWindow::updateOp() {
         QString("%1;%2;%3").arg(roundNumber(va.x)).arg(roundNumber(va.y)).arg(roundNumber(va.z)));
     ngRnEd->setText(QString("%1").arg(roundNumber(va.angle * 180 / M_PI)));
 
+    foreach (auto e, spheres) { e->setRotateVector(QVector3D(va.x, va.y, va.z)); }
     updateCurOperatorTable();
 }
 
@@ -1015,20 +1015,20 @@ void MainWindow::startMove(Vector *v, CurDecompFun getDec) {
 }
 
 CurDecompFun MainWindow::getCurrentDecomposition() {
-    if (rtRB->isChecked()) {
+    if (rtRb->isChecked()) {
         return &Operator::applyVectorRotation;
-    } else if (rzyRB->isChecked()) {
+    } else if (rzyRb->isChecked()) {
         return &Operator::applyZYDecomposition;
-    } else if (rzxRB->isChecked()) {
+    } else if (rzxRb->isChecked()) {
         return &Operator::applyZXDecomposition;
-    } else if (rxyRB->isChecked()) {
+    } else if (rxyRb->isChecked()) {
         return &Operator::applyXYDecomposition;
     }
 }
 
 void MainWindow::slotAbout() {
     QMessageBox::about(
-        0, "About program",
+        this, "About program",
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi volutpat quis nibh mollis "
         "tristique. Duis ac mi id turpis laoreet pretium. Nullam consequat pretium ipsum, sit amet "
         "congue purus. Sed id justo eget velit interdum malesuada. Donec vel ultricies eros. Nam "
@@ -1099,6 +1099,10 @@ void MainWindow::updateCurOperatorTable() {
                                   "</td>"
 
                                   "</tr></table>");
+}
+void MainWindow::slotToggleRotateVector(bool f){
+    foreach (auto e, spheres){e->setEnabledRotateVector(f);
+}
 }
 
 ;

@@ -75,8 +75,9 @@ public slots:
     void slotTraceColor(int index);
 
     void slotComplexLineEditChanged(const QString &);
+    void slotToggleRotateVector(bool f);
     // TODO change about window
-    static void slotAbout();
+    void slotAbout();
 
 protected:
     void timerEvent(QTimerEvent *) override;
@@ -153,10 +154,10 @@ private:
 
     QLineEdit    *axRnEd = nullptr;
     QLineEdit    *ngRnEd = nullptr;
-    QRadioButton *rzyRB = nullptr;
-    QRadioButton *rzxRB = nullptr;
-    QRadioButton *rxyRB = nullptr;
-    QRadioButton *rtRB = nullptr;
+    QRadioButton *rzyRb = nullptr;
+    QRadioButton *rzxRb = nullptr;
+    QRadioButton *rxyRb = nullptr;
+    QRadioButton *rtRb = nullptr;
 
     QLabel           *xyzStLab = nullptr;
     QLabel           *svdStLab = nullptr;

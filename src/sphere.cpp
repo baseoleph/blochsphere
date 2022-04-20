@@ -215,6 +215,14 @@ void Sphere::drawAxis() {
     glVertex3f(0.f, -0.025f, axSize - 0.1f);
     glEnd();
     renderText(0, 0, axSize + 0.1f, "z", font);
+
+    if (_isRotateVectorEnable) {
+        qglColor(Qt::blue);
+        glBegin(GL_LINES);
+        glVertex3f(rotateVector.x(), rotateVector.y(), rotateVector.z());
+        glVertex3f(-rotateVector.x(), -rotateVector.y(), -rotateVector.z());
+        glEnd();
+    }
 }
 
 void Sphere::drawVectors() {
