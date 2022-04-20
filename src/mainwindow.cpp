@@ -16,6 +16,7 @@
 
 #include "mainwindow.hpp"
 #include "blochdialog.hpp"
+#include <QCheckBox>
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QLineEdit>
@@ -185,6 +186,15 @@ void MainWindow::createTopBar() {
 
     qtb->addWidget(new QLabel("<center>Trace Color:"));
     qtb->addWidget(colorComboBox);
+    qtb->addSeparator();
+
+    auto normalizeCheckBox = new QCheckBox(qtb);
+    normalizeCheckBox->setText("Auto normalize vectors");
+    normalizeCheckBox->setChecked(true);
+
+    connect(normalizeCheckBox, SIGNAL(toggled(bool)), SLOT(slotToggleAutoNormalize(bool)));
+
+    qtb->addWidget(normalizeCheckBox);
 
     this->addToolBar(Qt::TopToolBarArea, qtb);
 }
@@ -666,7 +676,7 @@ void MainWindow::slotAlpBet() {
     double  len = sqrt(a * a + b.real() * b.real() + b.imag() * b.imag());
     if (not UnitaryMatrix2x2::fuzzyCompare(len, 1.)) {
         auto *dial = new BlochDialog((QWidget *)sender(), DIALOG_TYPE::NORMALIZE);
-        if (dial->exec() == QDialog::Accepted) {
+        if (isAutoNormalize or dial->exec() == QDialog::Accepted) {
             a /= len;
             b = complex(b.real() / len, b.imag() / len);
             alpEd->setText(QString::number(a));
@@ -689,7 +699,7 @@ void MainWindow::slotBloVec() {
     if (not UnitaryMatrix2x2::fuzzyCompare(len, 1.)) {
         // TODO  (QWidget *)sender() ? qt4 fails with "this"
         auto *dial = new BlochDialog((QWidget *)sender(), DIALOG_TYPE::NORMALIZE);
-        if (dial->exec() == QDialog::Accepted) {
+        if (isAutoNormalize or dial->exec() == QDialog::Accepted) {
             x /= len;
             y /= len;
             z /= len;
@@ -902,7 +912,7 @@ void MainWindow::slotSetNewAxOp() {
         if (not UnitaryMatrix2x2::fuzzyCompare(len, 1.)) {
             // TODO  (QWidget *)sender() ? qt4 fails with "this"
             auto *dial = new BlochDialog((QWidget *)sender(), DIALOG_TYPE::NORMALIZE);
-            if (dial->exec() == QDialog::Accepted) {
+            if (isAutoNormalize or dial->exec() == QDialog::Accepted) {
                 va.x /= len;
                 va.y /= len;
                 va.z /= len;
@@ -1100,9 +1110,8 @@ void MainWindow::updateCurOperatorTable() {
 
                                   "</tr></table>");
 }
-void MainWindow::slotToggleRotateVector(bool f){
-    foreach (auto e, spheres){e->setEnabledRotateVector(f);
-}
+void MainWindow::slotToggleRotateVector(bool f) {
+    foreach (auto e, spheres) { e->setEnabledRotateVector(f); }
 }
 
-;
+void MainWindow::slotToggleAutoNormalize(bool f) { isAutoNormalize = f; }

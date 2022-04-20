@@ -76,6 +76,7 @@ public slots:
 
     void slotComplexLineEditChanged(const QString &);
     void slotToggleRotateVector(bool f);
+    void slotToggleAutoNormalize(bool f);
     // TODO change about window
     void slotAbout();
 
@@ -86,6 +87,7 @@ private:
     QVector<Sphere *> spheres;
     MapVectors        vectors;
     MapVectors        savedVectors;
+    bool isAutoNormalize = true;
 
     QWidget *controlWidget = nullptr;
 
