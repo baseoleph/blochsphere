@@ -244,14 +244,14 @@ void MainWindow::createSideWidget() {
     auto leftWid = new QWidget();
     auto mainLay = new QVBoxLayout();
 
-    sphereLabel = new QLabel("Spheres: 1");
+    sphereLabel = new QLabel("Sphere:");
     spherePlusBut = new QPushButton("+");
     spherePlusBut->setFixedWidth(50);
     sphereMinusBut = new QPushButton("-");
     sphereMinusBut->setFixedWidth(50);
     sphereMinusBut->setEnabled(false);
 
-    vectorLabel = new QLabel("Vectors: 1");
+    vectorLabel = new QLabel("Vector:");
     vectorPlusBut = new QPushButton("+");
     vectorPlusBut->setFixedWidth(50);
     vectorMinusBut = new QPushButton("-");

@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
         //        w.resize(1200, 1024);
         w.resize(1200, 800);
     } else {
-        w.resize(1000, 700);
+        w.resize(1100, 800);
     }
 
     int x = (desktop->width() - w.width()) / 2;
