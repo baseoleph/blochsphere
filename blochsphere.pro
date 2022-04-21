@@ -32,7 +32,8 @@ SOURCES += \
     src/opitem.cpp \
     src/blochdialog.cpp \
     src/unitaryMatrix2x2.cpp \
-    src/vector.cpp
+    src/vector.cpp \
+    src/VectorWidget.cpp
 
 
 HEADERS += \
@@ -45,7 +46,8 @@ HEADERS += \
     src/qubit.hpp \
     src/sphere.hpp \
     src/unitaryMatrix2x2.hpp \
-    src/vector.hpp
+    src/vector.hpp \
+    src/VectorWidget.h
 
 #LIBS += libopengl32 libglu32 c:\Users\baseoleph\git\blochsphere\bloch2\glut32.dll
 LIBS += libopengl32

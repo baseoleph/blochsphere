@@ -35,14 +35,13 @@ QRegExpValidator
 QRegExpValidator axisValid(QRegExp("^-?[\\d]*\\.?[\\d]*;?-?[\\d]*\\.?[\\d]*;?-?[\\d]*\\.?[\\d]*$"));
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
+    createSphere();
     createActions();
     createMenu();
     createStatusBar();
     createTopBar();
     createSideWidget();
     createOpQueWidget();
-    createSphere();
-    addVector(new Vector(0., 0.), vectors, spheres[0]);
 }
 
 void MainWindow::addVector(Vector *v, MapVectors &mp) {
@@ -78,11 +77,13 @@ void MainWindow::removeAllVectors(MapVectors &mp) {
 
 void MainWindow::timerEvent(QTimerEvent *timerEvent) {
     bool isNowAnimate = false;
-    foreach (auto &e, vectors.keys()) {
-        isNowAnimate |= e->isNowAnimate();
-        statusBar()->showMessage(QString::number(e->isNowAnimate()) +
+    foreach (auto e, topTabWid->findChildren<VectorWidget *>()) {
+        isNowAnimate |= e->getVector()->isNowAnimate();
+        statusBar()->showMessage(QString::number(e->getVector()->isNowAnimate()) +
                                  QString::number(isNowAnimate) + QTime::currentTime().toString());
-        fillFieldsOfVector(e->getSpike());
+        if (e->getVector() != nullptr) {
+            e->fillFieldsOfVector(e->getVector()->getSpike());
+        }
     }
 
     if (not isNowAnimate) {
@@ -128,15 +129,15 @@ void MainWindow::createActions() {
     aboutAct = new QAction("About program", this);
     connect(aboutAct, SIGNAL(triggered()), SLOT(slotAbout()));
 
-    saveState = new QAction("Save state", this);
-    connect(saveState, SIGNAL(triggered()), SLOT(slotSaveState()));
-
-    recallState = new QAction("Recall state", this);
-    recallState->setEnabled(false);
-    connect(recallState, SIGNAL(triggered()), SLOT(slotRecallState()));
-
-    resetAct = new QAction("Reset", this);
-    connect(resetAct, SIGNAL(triggered()), SLOT(slotReset()));
+    //    saveState = new QAction("Save state", this);
+    //    connect(saveState, SIGNAL(triggered()), SLOT(slotSaveState()));
+    //
+    //    recallState = new QAction("Recall state", this);
+    //    recallState->setEnabled(false);
+    //    connect(recallState, SIGNAL(triggered()), SLOT(slotRecallState()));
+    //
+    //    resetAct = new QAction("Reset", this);
+    //    connect(resetAct, SIGNAL(triggered()), SLOT(slotReset()));
 
     showTAct = new QAction("Show trace", this);
     showTAct->setCheckable(true);
@@ -167,10 +168,10 @@ void MainWindow::createMenu() {
 
 void MainWindow::createTopBar() {
     auto *qtb = new QToolBar("Tool bar");
-    qtb->addAction(saveState);
-    qtb->addAction(recallState);
-    qtb->addAction(resetAct);
-    qtb->addSeparator();
+    //    qtb->addAction(saveState);
+    //    qtb->addAction(recallState);
+    //    qtb->addAction(resetAct);
+    //    qtb->addSeparator();
     qtb->addAction(showTAct);
     qtb->addAction(clearTAct);
 
@@ -251,17 +252,17 @@ void MainWindow::createSideWidget() {
     sphereMinusBut->setFixedWidth(50);
     sphereMinusBut->setEnabled(false);
 
-    vectorLabel = new QLabel("Vector:");
-    vectorPlusBut = new QPushButton("+");
-    vectorPlusBut->setFixedWidth(50);
-    vectorMinusBut = new QPushButton("-");
-    vectorMinusBut->setFixedWidth(50);
-    vectorMinusBut->setEnabled(false);
+    //    vectorLabel = new QLabel("Vector:");
+    //    vectorPlusBut = new QPushButton("+");
+    //    vectorPlusBut->setFixedWidth(50);
+    //    vectorMinusBut = new QPushButton("-");
+    //    vectorMinusBut->setFixedWidth(50);
+    //    vectorMinusBut->setEnabled(false);
 
     connect(spherePlusBut, SIGNAL(clicked()), SLOT(slotPlusSphere()));
     connect(sphereMinusBut, SIGNAL(clicked()), SLOT(slotMinusSphere()));
-    connect(vectorPlusBut, SIGNAL(clicked()), SLOT(slotPlusVector()));
-    connect(vectorMinusBut, SIGNAL(clicked()), SLOT(slotMinusVector()));
+    //    connect(vectorPlusBut, SIGNAL(clicked()), SLOT(slotPlusVector()));
+    //    connect(vectorMinusBut, SIGNAL(clicked()), SLOT(slotMinusVector()));
 
     auto vectorSphereCreatorWid = new QWidget();
     auto vectorSphereLay = new QHBoxLayout();
@@ -270,22 +271,21 @@ void MainWindow::createSideWidget() {
     vectorSphereLay->addWidget(sphereLabel);
     vectorSphereLay->addWidget(spherePlusBut);
     vectorSphereLay->addWidget(sphereMinusBut);
-    vectorSphereLay->addWidget(vectorLabel);
-    vectorSphereLay->addWidget(vectorPlusBut);
-    vectorSphereLay->addWidget(vectorMinusBut);
+    //    vectorSphereLay->addWidget(vectorLabel);
+    //    vectorSphereLay->addWidget(vectorPlusBut);
+    //    vectorSphereLay->addWidget(vectorMinusBut);
     vectorSphereCreatorWid->setLayout(vectorSphereLay);
 
-    auto topTabWid = new QTabWidget();
-    auto topWid = new QWidget();
-    auto topLay = new QGridLayout();
-    topLay->addWidget(makeThePhiWid(), 0, 0);
-    topLay->addWidget(makeAlpBetWid(), 0, 1);
-    topLay->addWidget(makeBloVecWid(), 0, 2);
-    topLay->setMargin(0);
-    topLay->setSpacing(0);
-    topWid->setLayout(topLay);
+    topTabWid = new QTabWidget();
+    topTabWid->setFixedHeight(115);
 
-    topTabWid->addTab(topWid, "1");
+
+    // TODO maybe better use function for it
+    auto vct = new Vector(0., 0.);
+    addVector(vct, vectors, spheres[0]);
+    auto vectorWidget = new VectorWidget(topTabWid, vct);
+
+    topTabWid->addTab(vectorWidget, "1");
     mainLay->addWidget(vectorSphereCreatorWid);
     mainLay->addWidget(topTabWid);
     mainLay->addWidget(makeRXYZWid());
@@ -303,132 +303,6 @@ void MainWindow::createSideWidget() {
     qtb->setAllowedAreas(Qt::LeftToolBarArea | Qt::RightToolBarArea);
 
     this->addToolBar(Qt::LeftToolBarArea, qtb);
-}
-
-QWidget *MainWindow::makeThePhiWid() {
-    theEd = new QLineEdit("0");
-    phiEd = new QLineEdit("0");
-    auto *theLab = new QLabel("<font face=symbol size=5>q</font>");
-    auto *phiLab = new QLabel("<font face=symbol size=5>f</font>");
-
-    theEd->setMaximumWidth(55);
-    theEd->setValidator(new QDoubleValidator);
-
-    phiEd->setMaximumWidth(55);
-    phiEd->setValidator(new QDoubleValidator);
-
-    auto *thePhiButton = new QPushButton("Set");
-    thePhiButton->setFixedWidth(55);
-    connect(thePhiButton, SIGNAL(clicked()), SLOT(slotThePhi()));
-
-    auto *tpW = new QWidget();
-    tpW->setFixedHeight(90);
-
-    auto *qfThePhi = new QFrame(tpW);
-    qfThePhi->setFrameStyle(QFrame::Panel | QFrame::Raised);
-    qfThePhi->move(0, 0);
-    qfThePhi->setFixedSize(tpW->size());
-
-    auto *tpLay = new QGridLayout();
-    tpLay->addWidget(theLab, 0, 0);
-    tpLay->addWidget(theEd, 0, 1, 1, 3);
-    tpLay->addWidget(phiLab, 1, 0);
-    tpLay->addWidget(phiEd, 1, 1, 1, 3);
-    tpLay->addWidget(thePhiButton, 4, 1, 1, 2);
-    tpLay->setSpacing(2);
-    tpLay->setContentsMargins(5, 5, 5, 5);
-    tpW->setLayout(tpLay);
-
-    return tpW;
-}
-
-QWidget *MainWindow::makeAlpBetWid() {
-    alpEd = new QLineEdit("1");
-    betEd = new QLineEdit("0");
-    auto *alpLab = new QLabel("<font face=symbol size=5>a</font>");
-    auto *betLab = new QLabel("<font face=symbol size=5>b</font>");
-
-    alpEd->setFixedWidth(90);
-    alpEd->setValidator(new QDoubleValidator);
-
-    betEd->setFixedWidth(90);
-    betEd->setValidator(&compValid);
-
-    connect(betEd, SIGNAL(textEdited(const QString &)),
-            SLOT(slotComplexLineEditChanged(const QString &)));
-
-    auto *bPsi = new QPushButton("Set");
-    bPsi->setFixedWidth(60);
-    connect(bPsi, SIGNAL(clicked()), SLOT(slotAlpBet()));
-
-    auto *bRandPsi = new QPushButton("Random");
-    bRandPsi->setFixedWidth(60);
-    connect(bRandPsi, SIGNAL(clicked()), SLOT(slotSetRandomPsi()));
-
-    auto *abW = new QWidget();
-    abW->setFixedHeight(90);
-
-    auto *qfAlpBet = new QFrame(abW);
-    qfAlpBet->setFrameStyle(QFrame::Panel | QFrame::Raised);
-    qfAlpBet->move(0, 0);
-    qfAlpBet->setFixedSize(abW->size());
-
-    auto *abLay = new QGridLayout();
-    abLay->addWidget(alpLab, 1, 0);
-    abLay->addWidget(alpEd, 1, 1, 1, 3);
-    abLay->addWidget(betLab, 2, 0);
-    abLay->addWidget(betEd, 2, 1, 1, 3);
-    abLay->addWidget(bRandPsi, 4, 0, 1, 2);
-    abLay->addWidget(bPsi, 4, 2);
-    abLay->setContentsMargins(10, 5, 5, 5);
-    abLay->setSpacing(2);
-    abW->setLayout(abLay);
-
-    return abW;
-}
-
-QWidget *MainWindow::makeBloVecWid() {
-    xEd = new QLineEdit("0");
-    yEd = new QLineEdit("0");
-    zEd = new QLineEdit("1");
-
-    auto *xLab = new QLabel("<font size=4>x</font>");
-    auto *yLab = new QLabel("<font size=4>y</font>");
-    auto *zLab = new QLabel("<font size=4>z</font>");
-
-    xEd->setFixedWidth(90);
-    xEd->setValidator(new QDoubleValidator);
-    yEd->setFixedWidth(90);
-    yEd->setValidator(new QDoubleValidator);
-    zEd->setFixedWidth(90);
-    zEd->setValidator(new QDoubleValidator);
-
-    auto *bXyz = new QPushButton("Set");
-    bXyz->setFixedWidth(60);
-    connect(bXyz, SIGNAL(clicked()), SLOT(slotBloVec()));
-
-    auto *xyzW = new QWidget();
-    xyzW->setFixedHeight(90);
-
-    auto *qfAlpBet = new QFrame(xyzW);
-    qfAlpBet->setFrameStyle(QFrame::Panel | QFrame::Raised);
-    qfAlpBet->move(0, 0);
-    qfAlpBet->setFixedSize(xyzW->size());
-
-    auto *abLay = new QGridLayout();
-    abLay->addWidget(xLab, 1, 0);
-    abLay->addWidget(xEd, 1, 1, 1, 3);
-    abLay->addWidget(yLab, 2, 0);
-    abLay->addWidget(yEd, 2, 1, 1, 3);
-    abLay->addWidget(zLab, 3, 0);
-    abLay->addWidget(zEd, 3, 1, 1, 3);
-    abLay->addWidget(bXyz, 4, 2);
-
-    abLay->setContentsMargins(10, 5, 5, 5);
-    abLay->setSpacing(2);
-    xyzW->setLayout(abLay);
-
-    return xyzW;
 }
 
 QWidget *MainWindow::makeRXYZWid() {
@@ -695,75 +569,6 @@ QPushButton *MainWindow::makeOpButton(QString str) {
     return newOpBut;
 }
 
-// TODO add check ranges
-// DOTO push while animating
-void MainWindow::slotThePhi() {
-    double the = qDegreesToRadians(theEd->text().toDouble());
-    double phi = qDegreesToRadians(phiEd->text().toDouble());
-    Spike  sp = Vector::createSpike(the, phi);
-    foreach (auto &e, vectors.keys()) { e->changeVector(sp); }
-
-    fillFieldsOfVector(sp, FIELD::THEPHI);
-}
-
-// TODO add check if normalized
-// DOTO push while animating
-void MainWindow::slotAlpBet() {
-    double  a = alpEd->text().toDouble();
-    complex b = parseStrToComplex(betEd->text());
-    double  len = sqrt(a * a + b.real() * b.real() + b.imag() * b.imag());
-    if (not UnitaryMatrix2x2::fuzzyCompare(len, 1.)) {
-        auto *dial = new BlochDialog((QWidget *)sender(), DIALOG_TYPE::NORMALIZE);
-        if (isAutoNormalize or dial->exec() == QDialog::Accepted) {
-            a /= len;
-            b = complex(b.real() / len, b.imag() / len);
-            alpEd->setText(QString::number(a));
-            betEd->setText(parseComplexToStr(b));
-        } else {
-            return;
-        }
-    }
-    Spike sp = Vector::createSpike(a, b);
-    foreach (auto &e, vectors.keys()) { e->changeVector(sp); }
-
-    fillFieldsOfVector(sp, FIELD::ALPBET);
-}
-
-void MainWindow::slotBloVec() {
-    double x = xEd->text().toDouble();
-    double y = yEd->text().toDouble();
-    double z = zEd->text().toDouble();
-    double len = sqrt(x * x + y * y + z * z);
-    if (not UnitaryMatrix2x2::fuzzyCompare(len, 1.)) {
-        // TODO  (QWidget *)sender() ? qt4 fails with "this"
-        auto *dial = new BlochDialog((QWidget *)sender(), DIALOG_TYPE::NORMALIZE);
-        if (isAutoNormalize or dial->exec() == QDialog::Accepted) {
-            x /= len;
-            y /= len;
-            z /= len;
-            xEd->setText(QString::number(x));
-            yEd->setText(QString::number(y));
-            zEd->setText(QString::number(z));
-        } else {
-            return;
-        }
-    }
-    Spike sp = Vector::createSpike(x, y, z);
-    foreach (auto &e, vectors.keys()) { e->changeVector(sp); }
-
-    fillFieldsOfVector(sp, FIELD::BLOVEC);
-}
-
-void MainWindow::slotSetRandomPsi() {
-    double the = random(0, 180);
-    double phi = random(0, 360);
-
-    Spike sp = Vector::createSpike(the, phi);
-    foreach (auto &e, vectors.keys()) { e->changeVector(sp); }
-
-    fillFieldsOfVector(sp);
-}
-
 void MainWindow::slotSaveState() {
     removeAllVectors(savedVectors);
     foreach (auto &e, vectors.keys()) { savedVectors.insert(e->getCopyState(), vectors[e]); }
@@ -774,7 +579,11 @@ void MainWindow::slotRecallState() {
     removeAllVectors(vectors);
     vectors.clear();
     foreach (auto &e, savedVectors.keys()) { addVector(e->getCopyState(), vectors); }
-    fillFieldsOfVector(vectors.keys().last()->getSpike());
+    foreach (auto e, topTabWid->findChildren<VectorWidget *>()) {
+        if (e->getVector() != nullptr) {
+            e->fillFieldsOfVector(e->getVector()->getSpike());
+        }
+    }
 }
 
 void MainWindow::slotShowTrace() {
@@ -1088,37 +897,23 @@ void MainWindow::slotAbout() {
         "nibh. Sed id lorem sit amet arcu egestas pulvinar.");
 }
 
-void MainWindow::fillFieldsOfVector(Spike sp, FIELD exclude) {
-    Vector v;
-    v.changeVector(sp);
-
-    if (exclude != FIELD::THEPHI) {
-        theEd->setText(numberToStr(qRadiansToDegrees(v.the())));
-        phiEd->setText(numberToStr(qRadiansToDegrees(v.phi())));
-    }
-
-    if (exclude != FIELD::ALPBET) {
-        // TODO maybe should create function that converts double to str
-        alpEd->setText(numberToStr(v.a().real()));
-        betEd->setText(numberToStr(v.b().real()) + (v.b().imag() >= 0 ? "+" : "") +
-                       numberToStr(v.b().imag()) + "i");
-    }
-
-    if (exclude != FIELD::BLOVEC) {
-        xEd->setText(numberToStr(v.x()));
-        yEd->setText(numberToStr(v.y()));
-        zEd->setText(numberToStr(v.z()));
-    }
-}
-
+// TODO check
 void MainWindow::slotReset() {
-    removeAllVectors(vectors);
-    addVector(new Vector(0., 0.), vectors);
-    fillFieldsOfVector(vectors.keys().last()->getSpike());
+    while (not spheres.empty()) {
+        foreach (auto e, vectors.keys()) {
+            if (vectors[e].indexOf(spheres.last()) != -1) {
+                removeVector(e, vectors);
+            }
+        }
+        spheres.last()->~Sphere();
+        spheres.pop_back();
+        topTabWid->removeTab(spheres.size());
+    }
+
+    slotPlusSphere();
 }
 
 void MainWindow::slotComplexLineEditChanged(const QString &) {
-    updateComplexLineEdit(betEd);
     updateComplexLineEdit(mat[0][0]);
     updateComplexLineEdit(mat[0][1]);
     updateComplexLineEdit(mat[1][0]);
@@ -1154,15 +949,15 @@ void MainWindow::slotToggleRotateVector(bool f) {
 
 void MainWindow::slotToggleAutoNormalize(bool f) { isAutoNormalize = f; }
 
-void MainWindow::slotPlusVector() { qDebug() << "slotPlusVector"; }
-
-void MainWindow::slotMinusVector() { qDebug() << "slotMinusVector"; }
-
 void MainWindow::slotPlusSphere() {
-
     if (spheres.size() < MAX_COUNT_SPHERES) {
         spheres.append(new Sphere(controlWidget));
         controlLayout->addWidget(spheres.last(), 0, spheres.size());
+
+        auto vct = new Vector(0., 0.);
+        addVector(vct, vectors, spheres.last());
+        auto vectorWidget = new VectorWidget(topTabWid, vct);
+        topTabWid->addTab(vectorWidget, QString::number(spheres.size()));
     }
 
     spherePlusBut->setEnabled(spheres.size() < MAX_COUNT_SPHERES);
@@ -1171,8 +966,14 @@ void MainWindow::slotPlusSphere() {
 
 void MainWindow::slotMinusSphere() {
     if (not spheres.empty()) {
+        foreach (auto e, vectors.keys()) {
+            if (vectors[e].indexOf(spheres.last()) != -1) {
+                removeVector(e, vectors);
+            }
+        }
         spheres.last()->~Sphere();
         spheres.pop_back();
+        topTabWid->removeTab(spheres.size());
     }
 
     spherePlusBut->setEnabled(spheres.size() < MAX_COUNT_SPHERES);

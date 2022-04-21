@@ -53,6 +53,8 @@ set(PROJECT_SOURCES
         src/unitaryMatrix2x2.hpp
         src/blochUtility.cpp
         src/blochUtility.h
+        src/VectorWidget.cpp
+        src/VectorWidget.h
         )
 
 add_executable(blochsphere ${PROJECT_SOURCES} src/blochUtility.cpp src/blochUtility.h)

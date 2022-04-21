@@ -17,6 +17,7 @@
 #ifndef MAINWINDOW_HPP
 #define MAINWINDOW_HPP
 
+#include "VectorWidget.h"
 #include "blochUtility.h"
 #include "operator.hpp"
 #include "opitem.hpp"
@@ -36,8 +37,6 @@
 
 typedef QMap<Vector *, QVector<Sphere *>> MapVectors;
 
-enum FIELD { NOTHIN = 0, THEPHI, ALPBET, BLOVEC };
-
 typedef QVector<Spike> (Operator::*CurDecompFun)(Spike);
 
 class MainWindow : public QMainWindow {
@@ -50,11 +49,6 @@ public slots:
     void addVector(Vector *v, MapVectors &mp, Sphere *sph);
     void removeVector(Vector *v, MapVectors &mp);
     void removeAllVectors(MapVectors &mp);
-
-    void slotThePhi();
-    void slotAlpBet();
-    void slotBloVec();
-    void slotSetRandomPsi();
 
     void slotSetOperatorClicked();
     void slotSetMatrixOp();
@@ -75,14 +69,13 @@ public slots:
     void slotClearTrace();
     void slotTraceColor(int index);
 
+    // TODO duplicates
     void slotComplexLineEditChanged(const QString &);
     void slotToggleRotateVector(bool f);
     void slotToggleAutoNormalize(bool f);
     // TODO change about window
     void slotAbout();
 
-    void slotPlusVector();
-    void slotMinusVector();
     void slotPlusSphere();
     void slotMinusSphere();
 
@@ -98,43 +91,33 @@ private:
     QWidget     *controlWidget = nullptr;
     QGridLayout *controlLayout = nullptr;
 
-    void         createSideWidget();
-    void         createSphere();
-    void         createMenu();
-    void         createActions();
-    void         createStatusBar();
-    void         createTopBar();
-    void         createOpQueWidget();
-    void         fillFieldsOfVector(Spike sp, FIELD exclude = FIELD::NOTHIN);
+    void createSideWidget();
+    void createSphere();
+    void createMenu();
+    void createActions();
+    void createStatusBar();
+    void createTopBar();
+    void createOpQueWidget();
+
+    // TODO merge duplicates
     void         updateComplexLineEdit(QLineEdit *lineEdit);
     void         startMove(Vector *v, CurDecompFun getDec);
     CurDecompFun getCurrentDecomposition();
     void         updateCurOperatorTable();
     void         updateOp();
 
-    QWidget *makeThePhiWid();
-    QWidget *makeAlpBetWid();
-    QWidget *makeBloVecWid();
     QWidget *makeRXYZWid();
     QWidget *makeRZYWid();
     QWidget *makeRZXWid();
     QWidget *makeRXYWid();
     QWidget *makeOpWid();
 
+    QTabWidget *topTabWid = nullptr;
+
     QPushButton *makeOpButton(QString str);
     QPushButton *appBut = nullptr;
     QPushButton *appQueBut = nullptr;
     QLabel      *currentOperatorLabel = nullptr;
-
-    QLineEdit *theEd = nullptr;
-    QLineEdit *phiEd = nullptr;
-
-    QLineEdit *alpEd = nullptr;
-    QLineEdit *betEd = nullptr;
-
-    QLineEdit *xEd = nullptr;
-    QLineEdit *yEd = nullptr;
-    QLineEdit *zEd = nullptr;
 
     QTabWidget *rxyzTab = nullptr;
 
@@ -158,9 +141,6 @@ private:
     QLabel      *sphereLabel = nullptr;
     QPushButton *spherePlusBut = nullptr;
     QPushButton *sphereMinusBut = nullptr;
-    QLabel      *vectorLabel = nullptr;
-    QPushButton *vectorPlusBut = nullptr;
-    QPushButton *vectorMinusBut = nullptr;
 
     Operator curOperator;
     Operator singleOperator;

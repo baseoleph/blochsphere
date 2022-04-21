@@ -20,7 +20,12 @@
 
 Sphere::Sphere(QWidget *parent) : QGLWidget{parent} { startTimer(10); }
 
-void Sphere::deleteVector(Vector *v) { vectors.removeOne(v); }
+void Sphere::deleteVector(Vector *v) {
+    if (vectors.indexOf(v) != -1) {
+        vectors.removeOne(v);
+    }
+}
+
 
 void Sphere::initializeGL() {
     // TODO why I use it?
