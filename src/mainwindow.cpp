@@ -23,6 +23,7 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QScrollArea>
 #include <QStatusBar>
 #include <QString>
 #include <QTime>
@@ -123,7 +124,6 @@ void MainWindow::createSphere() {
     controlWidget->setFocus();
 }
 
-//    QRandomGenerator64 rd(seed);
 void MainWindow::createActions() {
     aboutAct = new QAction("About program", this);
     connect(aboutAct, SIGNAL(triggered()), SLOT(slotAbout()));
@@ -261,9 +261,13 @@ void MainWindow::createSideWidget() {
     leftWid->setLayout(mainLay);
     leftWid->setFixedWidth(400);
 
-    auto *qtb = new QToolBar("Control panel");
-    qtb->addWidget(leftWid);
+    auto scrollArea = new QScrollArea(this);
+    scrollArea->setWidget(leftWid);
+
+    auto qtb = new QToolBar("Control panel");
+    qtb->addWidget(scrollArea);
     qtb->setAllowedAreas(Qt::LeftToolBarArea | Qt::RightToolBarArea);
+
     this->addToolBar(Qt::LeftToolBarArea, qtb);
 }
 
