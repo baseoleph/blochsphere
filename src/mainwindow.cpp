@@ -114,11 +114,11 @@ void MainWindow::timerEvent(QTimerEvent *timerEvent) {
 void MainWindow::createSphere() {
     controlWidget = new QWidget(this);
     setCentralWidget(controlWidget);
-    auto *layout = new QGridLayout(controlWidget);
+    controlLayout = new QGridLayout(controlWidget);
     for (int i = 0; i < 1; ++i) {
         for (int j = 1; j < 2; ++j) {
             spheres.append(new Sphere(controlWidget));
-            layout->addWidget(spheres.last(), i, j);
+            controlLayout->addWidget(spheres.last(), i, j);
         }
     }
     controlWidget->setFocus();
@@ -241,19 +241,53 @@ void MainWindow::createStatusBar() {
 }
 
 void MainWindow::createSideWidget() {
-    auto *leftWid = new QWidget();
-    auto *mainLay = new QVBoxLayout();
+    auto leftWid = new QWidget();
+    auto mainLay = new QVBoxLayout();
 
-    auto *topWid = new QWidget();
-    auto *topLay = new QHBoxLayout();
-    topLay->addWidget(makeThePhiWid());
-    topLay->addWidget(makeAlpBetWid());
-    topLay->addWidget(makeBloVecWid());
+    sphereLabel = new QLabel("Spheres: 1");
+    spherePlusBut = new QPushButton("+");
+    spherePlusBut->setFixedWidth(50);
+    sphereMinusBut = new QPushButton("-");
+    sphereMinusBut->setFixedWidth(50);
+    sphereMinusBut->setEnabled(false);
+
+    vectorLabel = new QLabel("Vectors: 1");
+    vectorPlusBut = new QPushButton("+");
+    vectorPlusBut->setFixedWidth(50);
+    vectorMinusBut = new QPushButton("-");
+    vectorMinusBut->setFixedWidth(50);
+    vectorMinusBut->setEnabled(false);
+
+    connect(spherePlusBut, SIGNAL(clicked()), SLOT(slotPlusSphere()));
+    connect(sphereMinusBut, SIGNAL(clicked()), SLOT(slotMinusSphere()));
+    connect(vectorPlusBut, SIGNAL(clicked()), SLOT(slotPlusVector()));
+    connect(vectorMinusBut, SIGNAL(clicked()), SLOT(slotMinusVector()));
+
+    auto vectorSphereCreatorWid = new QWidget();
+    auto vectorSphereLay = new QHBoxLayout();
+    //    vectorSphereLay->setSpacing(0);
+    vectorSphereLay->setMargin(0);
+    vectorSphereLay->addWidget(sphereLabel);
+    vectorSphereLay->addWidget(spherePlusBut);
+    vectorSphereLay->addWidget(sphereMinusBut);
+    vectorSphereLay->addWidget(vectorLabel);
+    vectorSphereLay->addWidget(vectorPlusBut);
+    vectorSphereLay->addWidget(vectorMinusBut);
+    vectorSphereCreatorWid->setLayout(vectorSphereLay);
+
+    auto topTabWid = new QTabWidget();
+    auto topWid = new QWidget();
+    auto topLay = new QGridLayout();
+    topLay->addWidget(makeThePhiWid(), 0, 0);
+    topLay->addWidget(makeAlpBetWid(), 0, 1);
+    topLay->addWidget(makeBloVecWid(), 0, 2);
     topLay->setMargin(0);
     topLay->setSpacing(0);
     topWid->setLayout(topLay);
 
-    mainLay->addWidget(topWid);
+    topTabWid->addTab(topWid, "1");
+    mainLay->addWidget(vectorSphereCreatorWid);
+    mainLay->addWidget(topTabWid);
     mainLay->addWidget(makeRXYZWid());
     mainLay->addWidget(makeOpWid());
     mainLay->setSpacing(0);
@@ -1119,3 +1153,28 @@ void MainWindow::slotToggleRotateVector(bool f) {
 }
 
 void MainWindow::slotToggleAutoNormalize(bool f) { isAutoNormalize = f; }
+
+void MainWindow::slotPlusVector() { qDebug() << "slotPlusVector"; }
+
+void MainWindow::slotMinusVector() { qDebug() << "slotMinusVector"; }
+
+void MainWindow::slotPlusSphere() {
+
+    if (spheres.size() < MAX_COUNT_SPHERES) {
+        spheres.append(new Sphere(controlWidget));
+        controlLayout->addWidget(spheres.last(), 0, spheres.size());
+    }
+
+    spherePlusBut->setEnabled(spheres.size() < MAX_COUNT_SPHERES);
+    sphereMinusBut->setEnabled(spheres.size() > 1);
+}
+
+void MainWindow::slotMinusSphere() {
+    if (not spheres.empty()) {
+        spheres.last()->~Sphere();
+        spheres.pop_back();
+    }
+
+    spherePlusBut->setEnabled(spheres.size() < MAX_COUNT_SPHERES);
+    sphereMinusBut->setEnabled(spheres.size() > 1);
+}

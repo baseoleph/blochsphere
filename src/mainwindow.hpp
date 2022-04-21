@@ -25,6 +25,7 @@
 #include <QActionGroup>
 #include <QComboBox>
 #include <QDialog>
+#include <QGridLayout>
 #include <QLabel>
 #include <QListWidgetItem>
 #include <QMainWindow>
@@ -80,6 +81,11 @@ public slots:
     // TODO change about window
     void slotAbout();
 
+    void slotPlusVector();
+    void slotMinusVector();
+    void slotPlusSphere();
+    void slotMinusSphere();
+
 protected:
     void timerEvent(QTimerEvent *) override;
 
@@ -87,9 +93,10 @@ private:
     QVector<Sphere *> spheres;
     MapVectors        vectors;
     MapVectors        savedVectors;
-    bool isAutoNormalize = true;
+    bool              isAutoNormalize = true;
 
-    QWidget *controlWidget = nullptr;
+    QWidget     *controlWidget = nullptr;
+    QGridLayout *controlLayout = nullptr;
 
     void         createSideWidget();
     void         createSphere();
@@ -147,6 +154,13 @@ private:
     QLineEdit *rXYDelEd = nullptr;
 
     QTabWidget *stackW = nullptr;
+
+    QLabel      *sphereLabel = nullptr;
+    QPushButton *spherePlusBut = nullptr;
+    QPushButton *sphereMinusBut = nullptr;
+    QLabel      *vectorLabel = nullptr;
+    QPushButton *vectorPlusBut = nullptr;
+    QPushButton *vectorMinusBut = nullptr;
 
     Operator curOperator;
     Operator singleOperator;
