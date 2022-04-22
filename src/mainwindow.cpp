@@ -465,8 +465,8 @@ QWidget *MainWindow::makeOpWid() {
         for (int j = 0; j < 2; j++) {
             mat[i][j] = new QLineEdit(QString::number(i == j));
             mat[i][j]->setValidator(&compValid);
-            connect(mat[i][j], SIGNAL(textEdited(const QString &)),
-                    SLOT(slotComplexLineEditChanged(const QString &)));
+            connect(mat[i][j], SIGNAL(textEdited(QString)),
+                    SLOT(slotComplexLineEditChanged(QString)));
         }
     }
 
@@ -560,7 +560,7 @@ QWidget *MainWindow::makeOpWid() {
     return opW;
 }
 
-QPushButton *MainWindow::makeOpButton(QString str) {
+QPushButton *MainWindow::makeOpButton(const QString &str) {
     auto *newOpBut = new QPushButton(str);
     newOpBut->setFixedHeight(26);
     connect(newOpBut, SIGNAL(clicked()), SLOT(slotSetOperatorClicked()));
@@ -679,7 +679,7 @@ void MainWindow::slotSetRXYZOp() {
         dec.delta = rZYDelEd->text().toDouble();
         if (not curOperator.setOperatorByZYDecomposition(dec)) {
             // TODO it's impossible; inspect
-            QMessageBox::warning(0, "Error", "error");
+            QMessageBox::warning(this, "Error", "error");
             return;
         }
         break;
@@ -690,7 +690,7 @@ void MainWindow::slotSetRXYZOp() {
         dec.delta = rZXDelEd->text().toDouble();
         if (not curOperator.setOperatorByZXDecomposition(dec)) {
             // TODO it's impossible; inspect
-            QMessageBox::warning(0, "Error", "error");
+            QMessageBox::warning(this, "Error", "error");
             return;
         }
         break;
@@ -701,7 +701,7 @@ void MainWindow::slotSetRXYZOp() {
         dec.delta = rXYDelEd->text().toDouble();
         if (not curOperator.setOperatorByXYDecomposition(dec)) {
             // TODO it's impossible; inspect
-            QMessageBox::warning(0, "Error", "error");
+            QMessageBox::warning(this, "Error", "error");
             return;
         }
         break;
@@ -717,14 +717,14 @@ void MainWindow::slotSetMatrixOp() {
             try {
                 res.push_back(parseStrToComplex(mat[i][j]->text()));
             } catch (int e) {
-                QMessageBox::warning(0, "Error",
+                QMessageBox::warning(this, "Error",
                                      QString("Wrong input: Matrix(%1,%2)").arg(i).arg(j));
                 return;
             }
         }
     UnitaryMatrix2x2 matrixOp;
     if (not matrixOp.updateMatrix({res[0], res[1], res[2], res[3]})) {
-        QMessageBox::warning(0, "Error", "Matrix must be unitary");
+        QMessageBox::warning(this, "Error", "Matrix must be unitary");
         return;
     }
     curOpName = "U";
@@ -881,21 +881,10 @@ CurDecompFun MainWindow::getCurrentDecomposition() {
     } else if (rxyRb->isChecked()) {
         return &Operator::applyXYDecomposition;
     }
+    return &Operator::applyZYDecomposition;
 }
 
-void MainWindow::slotAbout() {
-    QMessageBox::about(
-        this, "About program",
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi volutpat quis nibh mollis "
-        "tristique. Duis ac mi id turpis laoreet pretium. Nullam consequat pretium ipsum, sit amet "
-        "congue purus. Sed id justo eget velit interdum malesuada. Donec vel ultricies eros. Nam "
-        "facilisis elit a augue vestibulum, ac hendrerit nisl vehicula. Proin viverra arcu eget "
-        "sapien sagittis congue. Pellentesque accumsan eros eu sem volutpat malesuada. Integer leo "
-        "tellus, rutrum porta ullamcorper at, blandit mollis ante. In ex ipsum, accumsan in dictum "
-        "eu, pretium luctus purus. Praesent quam quam, mattis ut euismod a, volutpat ut quam. "
-        "Etiam faucibus nec lacus eu tempor. Donec eu ligula tempus, aliquam diam a, dignissim "
-        "nibh. Sed id lorem sit amet arcu egestas pulvinar.");
-}
+void MainWindow::slotAbout() { QMessageBox::about(this, "About program", "blochsphere"); }
 
 // TODO check
 void MainWindow::slotReset() {

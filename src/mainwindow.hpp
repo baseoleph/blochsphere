@@ -47,10 +47,10 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
 
 public slots:
-    void addVector(Vector *v, MapVectors &mp);
-    void addVector(Vector *v, MapVectors &mp, Sphere *sph);
-    void removeVector(Vector *v, MapVectors &mp);
-    void removeAllVectors(MapVectors &mp);
+    void        addVector(Vector *v, MapVectors &mp);
+    static void addVector(Vector *v, MapVectors &mp, Sphere *sph);
+    static void removeVector(Vector *v, MapVectors &mp);
+    static void removeAllVectors(MapVectors &mp);
 
     void slotSetOperatorClicked();
     void slotSetMatrixOp();
@@ -107,7 +107,7 @@ private:
     void setEnabledWidgets(bool f);
 
     // TODO merge duplicates
-    void         updateComplexLineEdit(QLineEdit *lineEdit);
+    static void         updateComplexLineEdit(QLineEdit *lineEdit);
     void         startMove(Vector *v, CurDecompFun getDec);
     CurDecompFun getCurrentDecomposition();
     void         updateCurOperatorTable();
@@ -121,7 +121,7 @@ private:
 
     QTabWidget *topTabWid = nullptr;
 
-    QPushButton *makeOpButton(QString str);
+    QPushButton *makeOpButton(const QString& str);
     QPushButton *appBut = nullptr;
     QPushButton *appQueBut = nullptr;
     QLabel      *currentOperatorLabel = nullptr;
