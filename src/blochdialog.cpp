@@ -78,5 +78,4 @@ void BlochDialog::suggestNormalize() {
 
     lay->addLayout(lay1);
     setLayout(lay);
-    setWindowTitle(((QPushButton *)this->parent())->text());
 }
