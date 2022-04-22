@@ -947,7 +947,12 @@ void MainWindow::slotToggleRotateVector(bool f) {
     foreach (auto e, spheres) { e->setEnabledRotateVector(f); }
 }
 
-void MainWindow::slotToggleAutoNormalize(bool f) { isAutoNormalize = f; }
+void MainWindow::slotToggleAutoNormalize(bool f) {
+    isAutoNormalize = f;
+    foreach (auto e, topTabWid->findChildren<VectorWidget *>()) {
+        e->setAutoNormalise(isAutoNormalize);
+    }
+}
 
 void MainWindow::slotPlusSphere() {
     if (spheres.size() < MAX_COUNT_SPHERES) {
