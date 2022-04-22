@@ -57,7 +57,7 @@ set(PROJECT_SOURCES
         src/VectorWidget.h
         )
 
-add_executable(blochsphere ${PROJECT_SOURCES} src/blochUtility.cpp src/blochUtility.h)
+add_executable(blochsphere ${PROJECT_SOURCES})
 
 target_link_libraries(blochsphere PRIVATE
         Qt5::Core
