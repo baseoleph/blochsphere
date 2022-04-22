@@ -333,7 +333,7 @@ QWidget *MainWindow::makeRZYWid() {
     auto *rZYALab = new QLabel("Alpha");
     auto *rZYBLab = new QLabel("Rz(Beta)");
     auto *rZYGLab = new QLabel("Ry(Gamma)");
-    auto *rZYDLab = new QLabel("Ry(Delta)");
+    auto *rZYDLab = new QLabel("Rz(Delta)");
 
     rZYAlpEd->setMaximumWidth(60);
     rZYBetEd->setMaximumWidth(60);
