@@ -24,6 +24,7 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QScrollArea>
+#include <QScrollBar>
 #include <QStatusBar>
 #include <QString>
 #include <QTime>
@@ -286,13 +287,14 @@ void MainWindow::createSideWidget() {
     mainLay->addWidget(topTabWid);
     mainLay->addWidget(makeRXYZWid());
     mainLay->addWidget(makeOpWid());
+    mainLay->setContentsMargins(5, 11, 20, 11);
     mainLay->setSpacing(0);
-    mainLay->setMargin(0);
     leftWid->setLayout(mainLay);
     leftWid->setFixedWidth(400);
 
     auto scrollArea = new QScrollArea(this);
     scrollArea->setWidget(leftWid);
+    scrollArea->horizontalScrollBar()->setHidden(true);
 
     auto qtb = new QToolBar("Control panel");
     qtb->addWidget(scrollArea);
