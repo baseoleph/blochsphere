@@ -27,7 +27,7 @@
 QRegExpValidator
     compValid2(QRegExp(QString::fromUtf8("^[+-]?[0-9]*\\.?[0-9]*[+-]?[0-9]*\\.?[0-9]*[iIшШ]?$")));
 
-VectorWidget::VectorWidget(QWidget *parent, Vector *v) : QTabWidget(parent), _v(v) {
+VectorWidget::VectorWidget(QWidget *parent, Vector *v) : QWidget(parent), _v(v) {
     auto topLay = new QGridLayout();
     topLay->addWidget(makeThePhiWid(), 0, 0);
     topLay->addWidget(makeAlpBetWid(), 0, 1);

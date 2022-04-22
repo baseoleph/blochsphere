@@ -106,6 +106,7 @@ Spike Vector::createSpike(double a, complex b) {
     Qubit q(a, b);
     return createSpike(q.x(), q.y(), q.z());
 }
+
 QVector<Spike> Vector::normalizePath(const QVector<Spike> &s) {
     QVector<Spike> newS;
     int            dur = DURATION;
@@ -117,6 +118,7 @@ QVector<Spike> Vector::normalizePath(const QVector<Spike> &s) {
     newS.append(s.last());
     return newS;
 }
+
 Vector *Vector::getCopyState() {
     auto v = new Vector();
 

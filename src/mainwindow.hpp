@@ -79,14 +79,14 @@ public slots:
     void slotPlusSphere();
     void slotMinusSphere();
 
-protected:
-    void timerEvent(QTimerEvent *) override;
+    void slotTimer();
 
 private:
     QVector<Sphere *> spheres;
     MapVectors        vectors;
     MapVectors        savedVectors;
     bool              isAutoNormalize = true;
+    QTimer           *tm = nullptr;
 
     QWidget     *controlWidget = nullptr;
     QGridLayout *controlLayout = nullptr;
@@ -98,6 +98,11 @@ private:
     void createStatusBar();
     void createTopBar();
     void createOpQueWidget();
+
+    void startTimer();
+    void stopTimer();
+
+    void setEnabledWidgets(bool f);
 
     // TODO merge duplicates
     void         updateComplexLineEdit(QLineEdit *lineEdit);

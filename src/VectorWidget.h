@@ -23,7 +23,7 @@
 
 enum FIELD { NOTHIN = 0, THEPHI, ALPBET, BLOVEC };
 
-class VectorWidget : public QTabWidget {
+class VectorWidget : public QWidget {
     Q_OBJECT
 public:
     VectorWidget(QWidget *parent, Vector *v);

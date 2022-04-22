@@ -27,6 +27,7 @@
 #include <QStatusBar>
 #include <QString>
 #include <QTime>
+#include <QTimer>
 #include <QToolBar>
 
 // TODO move to another place
@@ -42,6 +43,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
     createTopBar();
     createSideWidget();
     createOpQueWidget();
+
+    tm = new QTimer(this);
+    connect(tm, SIGNAL(timeout()), SLOT(slotTimer()));
 }
 
 void MainWindow::addVector(Vector *v, MapVectors &mp) {
@@ -75,12 +79,10 @@ void MainWindow::removeAllVectors(MapVectors &mp) {
     }
 }
 
-void MainWindow::timerEvent(QTimerEvent *timerEvent) {
+void MainWindow::slotTimer() {
     bool isNowAnimate = false;
     foreach (auto e, topTabWid->findChildren<VectorWidget *>()) {
         isNowAnimate |= e->getVector()->isNowAnimate();
-        statusBar()->showMessage(QString::number(e->getVector()->isNowAnimate()) +
-                                 QString::number(isNowAnimate) + QTime::currentTime().toString());
         if (e->getVector() != nullptr) {
             e->fillFieldsOfVector(e->getVector()->getSpike());
         }
@@ -95,19 +97,13 @@ void MainWindow::timerEvent(QTimerEvent *timerEvent) {
                 curOperator = opQueue.last()->getOp();
                 updateOp();
                 slotApplyOp();
-                appBut->setEnabled(false);
-                appQueBut->setEnabled(false);
             } else {
-                this->killTimer(timerEvent->timerId());
+                stopTimer();
                 curOperator = singleOperator;
-                appBut->setEnabled(true);
-                appQueBut->setEnabled(true);
                 isQueueAnimation = false;
             }
         } else {
-            this->killTimer(timerEvent->timerId());
-            appBut->setEnabled(true);
-            appQueBut->setEnabled(true);
+            stopTimer();
         }
     }
 }
@@ -135,9 +131,9 @@ void MainWindow::createActions() {
     //    recallState = new QAction("Recall state", this);
     //    recallState->setEnabled(false);
     //    connect(recallState, SIGNAL(triggered()), SLOT(slotRecallState()));
-    //
-    //    resetAct = new QAction("Reset", this);
-    //    connect(resetAct, SIGNAL(triggered()), SLOT(slotReset()));
+
+    resetAct = new QAction("Reset", this);
+    connect(resetAct, SIGNAL(triggered()), SLOT(slotReset()));
 
     showTAct = new QAction("Show trace", this);
     showTAct->setCheckable(true);
@@ -170,8 +166,8 @@ void MainWindow::createTopBar() {
     auto *qtb = new QToolBar("Tool bar");
     //    qtb->addAction(saveState);
     //    qtb->addAction(recallState);
-    //    qtb->addAction(resetAct);
-    //    qtb->addSeparator();
+    qtb->addAction(resetAct);
+    qtb->addSeparator();
     qtb->addAction(showTAct);
     qtb->addAction(clearTAct);
 
@@ -278,7 +274,6 @@ void MainWindow::createSideWidget() {
 
     topTabWid = new QTabWidget();
     topTabWid->setFixedHeight(115);
-
 
     // TODO maybe better use function for it
     auto vct = new Vector(0., 0.);
@@ -577,7 +572,6 @@ void MainWindow::slotSaveState() {
 
 void MainWindow::slotRecallState() {
     removeAllVectors(vectors);
-    vectors.clear();
     foreach (auto &e, savedVectors.keys()) { addVector(e->getCopyState(), vectors); }
     foreach (auto e, topTabWid->findChildren<VectorWidget *>()) {
         if (e->getVector() != nullptr) {
@@ -841,10 +835,12 @@ void MainWindow::slotAddToQue() {
 }
 
 void MainWindow::slotApplyOp() {
+    stopTimer();
     foreach (auto e, vectors.keys()) { startMove(e, getCurrentDecomposition()); }
 }
 
 void MainWindow::slotApplyQue() {
+    stopTimer();
     isQueueAnimation = true;
     singleOperator = curOperator;
     for (int i = 0; i < opQueWid->count(); ++i) {
@@ -854,11 +850,8 @@ void MainWindow::slotApplyQue() {
     if (not opQueue.isEmpty()) {
         curOperator = opQueue.last()->getOp();
         opQueue.last()->setBackground(QBrush(Qt::red));
-        appBut->setEnabled(false);
-        appQueBut->setEnabled(false);
         updateOp();
         slotApplyOp();
-        this->startTimer(50);
     }
 }
 
@@ -867,7 +860,7 @@ void MainWindow::startMove(Vector *v, CurDecompFun getDec) {
     appBut->setEnabled(false);
     appQueBut->setEnabled(false);
     if (not isQueueAnimation) {
-        this->startTimer(50);
+        startTimer();
     }
 }
 
@@ -899,6 +892,7 @@ void MainWindow::slotAbout() {
 
 // TODO check
 void MainWindow::slotReset() {
+    stopTimer();
     while (not spheres.empty()) {
         foreach (auto e, vectors.keys()) {
             if (vectors[e].indexOf(spheres.last()) != -1) {
@@ -907,6 +901,8 @@ void MainWindow::slotReset() {
         }
         spheres.last()->~Sphere();
         spheres.pop_back();
+
+        delete topTabWid->widget(spheres.size());
         topTabWid->removeTab(spheres.size());
     }
 
@@ -978,9 +974,31 @@ void MainWindow::slotMinusSphere() {
         }
         spheres.last()->~Sphere();
         spheres.pop_back();
+
+        delete topTabWid->widget(spheres.size());
         topTabWid->removeTab(spheres.size());
     }
 
     spherePlusBut->setEnabled(spheres.size() < MAX_COUNT_SPHERES);
     sphereMinusBut->setEnabled(spheres.size() > 1);
+}
+void MainWindow::startTimer() {
+    if (not tm->isActive()) {
+        statusBar()->showMessage("start");
+        qDebug() << "start";
+        tm->start(50);
+    }
+    setEnabledWidgets(false);
+}
+void MainWindow::stopTimer() {
+    tm->stop();
+    statusBar()->showMessage("stop");
+    qDebug() << "stop";
+    setEnabledWidgets(true);
+}
+void MainWindow::setEnabledWidgets(bool f) {
+    appBut->setEnabled(f);
+    appQueBut->setEnabled(f);
+    spherePlusBut->setEnabled(f and spheres.size() < MAX_COUNT_SPHERES);
+    sphereMinusBut->setEnabled(f and spheres.size() > 1);
 }
