@@ -56,7 +56,7 @@ public slots:
     void slotSetMatrixOp();
     void slotSetRandomOp();
     void slotSetRXYZOp();
-    void slotSetNewAxOp();
+    void slotSetAxOp();
     void slotQueItemClicked(QListWidgetItem *it);
     void slotOpItemDelete();
 
@@ -107,7 +107,7 @@ private:
     void setEnabledWidgets(bool f);
 
     // TODO merge duplicates
-    static void         updateComplexLineEdit(QLineEdit *lineEdit);
+    static void  updateComplexLineEdit(QLineEdit *lineEdit);
     void         startMove(Vector *v, CurDecompFun getDec);
     CurDecompFun getCurrentDecomposition();
     void         updateCurOperatorTable();
@@ -121,7 +121,7 @@ private:
 
     QTabWidget *topTabWid = nullptr;
 
-    QPushButton *makeOpButton(const QString& str);
+    QPushButton *makeOpButton(const QString &str);
     QPushButton *appBut = nullptr;
     QPushButton *appQueBut = nullptr;
     QLabel      *currentOperatorLabel = nullptr;

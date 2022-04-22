@@ -20,8 +20,8 @@
 #include <QDoubleValidator>
 #include <QGridLayout>
 #include <QLabel>
+#include <QMessageBox>
 #include <QPushButton>
-#include <QRegExpValidator>
 
 // TODO duplicate
 QRegExpValidator
@@ -179,7 +179,11 @@ void VectorWidget::slotThePhi() {
 void VectorWidget::slotAlpBet() {
     double  a = alpEd->text().toDouble();
     complex b = parseStrToComplex(betEd->text());
-    double  len = sqrt(a * a + b.real() * b.real() + b.imag() * b.imag());
+    if (a + abs(b) < EPSILON) {
+        QMessageBox::warning(this, "Warning", "Vector must be non-zero");
+        return;
+    }
+    double len = sqrt(a * a + b.real() * b.real() + b.imag() * b.imag());
     if (not UnitaryMatrix2x2::fuzzyCompare(len, 1.)) {
         auto *dial = new BlochDialog((QWidget *)sender(), DIALOG_TYPE::NORMALIZE);
         if (isAutoNormalize or dial->exec() == QDialog::Accepted) {
@@ -201,6 +205,10 @@ void VectorWidget::slotBloVec() {
     double x = xEd->text().toDouble();
     double y = yEd->text().toDouble();
     double z = zEd->text().toDouble();
+    if (x + y + z < EPSILON) {
+        QMessageBox::warning(this, "Warning", "Vector must be non-zero");
+        return;
+    }
     double len = sqrt(x * x + y * y + z * z);
     if (not UnitaryMatrix2x2::fuzzyCompare(len, 1.)) {
         // TODO  (QWidget *)sender() ? qt4 fails with "this"

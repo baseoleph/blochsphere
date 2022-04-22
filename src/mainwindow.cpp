@@ -495,7 +495,7 @@ QWidget *MainWindow::makeOpWid() {
     ngRnEd->setValidator(new QDoubleValidator);
 
     auto *axOpBut = new QPushButton("Ok");
-    connect(axOpBut, SIGNAL(clicked()), SLOT(slotSetNewAxOp()));
+    connect(axOpBut, SIGNAL(clicked()), SLOT(slotSetAxOp()));
 
     auto *rNwLay = new QGridLayout();
     rNwLay->addWidget(new QLabel("Vector"), 0, 0);
@@ -740,7 +740,7 @@ void MainWindow::slotSetRandomOp() {
     updateOp();
 }
 
-void MainWindow::slotSetNewAxOp() {
+void MainWindow::slotSetAxOp() {
     QRegExp rxp("^(-?[\\d]*\\.?[\\d]*e?[+-]?[\\d]*);(-?[\\d]*\\.?[\\d]*e?[+-]?[\\d]*);(-?[\\d]*\\.?"
                 "[\\d]*e?[+-]?[\\d]*)$");
     if (axRnEd->text().contains(rxp)) {
@@ -749,6 +749,10 @@ void MainWindow::slotSetNewAxOp() {
         va.x = rxp.capturedTexts()[1].toDouble();
         va.y = rxp.capturedTexts()[2].toDouble();
         va.z = rxp.capturedTexts()[3].toDouble();
+        if (va.x + va.y + va.z < EPSILON) {
+            QMessageBox::warning(this, "Warning", "Vector must be non-zero");
+            return;
+        }
 
         double len = sqrt(va.x * va.x + va.y * va.y + va.z * va.z);
         if (not UnitaryMatrix2x2::fuzzyCompare(len, 1.)) {
