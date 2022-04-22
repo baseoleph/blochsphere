@@ -206,6 +206,7 @@ void MainWindow::createOpQueWidget() {
     opQueWid->addAction(delAct);
     connect(delAct, SIGNAL(triggered()), SLOT(slotOpItemDelete()));
     opQueWid->setContextMenuPolicy(Qt::ActionsContextMenu);
+    opQueWid->setFixedHeight(39);
 
     appQueBut = new QPushButton("Apply queue");
     appQueBut->setFixedSize(70, 40);
@@ -219,7 +220,7 @@ void MainWindow::createOpQueWidget() {
     qtb->addWidget(appQueBut);
     qtb->addWidget(clrQueBut);
     qtb->setAllowedAreas(Qt::BottomToolBarArea | Qt::TopToolBarArea);
-    qtb->setFixedHeight(40);
+    qtb->setFixedHeight(41);
     this->addToolBar(Qt::BottomToolBarArea, qtb);
 }
 
