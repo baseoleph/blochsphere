@@ -728,15 +728,13 @@ void MainWindow::slotSetMatrixOp() {
     curOpName = "U";
     curOperator.setOperator(matrixOp);
 
-    // TODO may change matrix fields
-    updateOp();
+    updateOp(OPERATOR_FORM::MATRIX);
 }
 
 void MainWindow::slotSetRandomOp() {
     curOpName = "U";
     curOperator.setOperator(Operator::genRandUnitaryMatrix(time(nullptr)));
 
-    // TODO may change matrix fields
     updateOp();
 }
 
@@ -774,14 +772,14 @@ void MainWindow::slotSetNewAxOp() {
         }
 
         curOpName = "U";
-        updateOp();
+        updateOp(OPERATOR_FORM::VECTOR);
     } else {
         QMessageBox::warning(this, "Error", "Wrong input: Vector (x;y;z)");
         return;
     }
 }
 
-void MainWindow::updateOp() {
+void MainWindow::updateOp(OPERATOR_FORM exclude) {
     decomposition zyDec = curOperator.zyDecomposition();
     rZYAlpEd->setText(numberToStr(zyDec.alpha));
     rZYBetEd->setText(numberToStr(zyDec.beta));
@@ -800,18 +798,24 @@ void MainWindow::updateOp() {
     rXYGamEd->setText(numberToStr(xyDec.gamma));
     rXYDelEd->setText(numberToStr(xyDec.delta));
 
-    mat[0][0]->setText(parseComplexToStr(curOperator.getOperator().a()));
-    mat[0][1]->setText(parseComplexToStr(curOperator.getOperator().b()));
-    mat[1][0]->setText(parseComplexToStr(curOperator.getOperator().c()));
-    mat[1][1]->setText(parseComplexToStr(curOperator.getOperator().d()));
+    if (exclude != OPERATOR_FORM::MATRIX) {
+        mat[0][0]->setText(parseComplexToStr(curOperator.getOperator().a()));
+        mat[0][1]->setText(parseComplexToStr(curOperator.getOperator().b()));
+        mat[1][0]->setText(parseComplexToStr(curOperator.getOperator().c()));
+        mat[1][1]->setText(parseComplexToStr(curOperator.getOperator().d()));
+        updateCurOperatorTable();
+    }
 
     vectorangle va = curOperator.vectorAngleDec();
-    axRnEd->setText(
-        QString("%1;%2;%3").arg(roundNumber(va.x)).arg(roundNumber(va.y)).arg(roundNumber(va.z)));
-    ngRnEd->setText(QString("%1").arg(roundNumber(va.angle * 180 / M_PI)));
-
     foreach (auto e, spheres) { e->setRotateVector(QVector3D(va.x, va.y, va.z)); }
-    updateCurOperatorTable();
+
+    if (exclude != OPERATOR_FORM::VECTOR) {
+        axRnEd->setText(QString("%1;%2;%3")
+                            .arg(roundNumber(va.x))
+                            .arg(roundNumber(va.y))
+                            .arg(roundNumber(va.z)));
+        ngRnEd->setText(QString("%1").arg(roundNumber(va.angle * 180 / M_PI)));
+    }
 }
 
 // TODO check

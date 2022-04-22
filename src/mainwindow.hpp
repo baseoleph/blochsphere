@@ -35,6 +35,8 @@
 #include <QRadioButton>
 #include <QVector>
 
+enum OPERATOR_FORM { NOTHING = 0, MATRIX, VECTOR };
+
 typedef QMap<Vector *, QVector<Sphere *>> MapVectors;
 
 typedef QVector<Spike> (Operator::*CurDecompFun)(Spike);
@@ -109,7 +111,7 @@ private:
     void         startMove(Vector *v, CurDecompFun getDec);
     CurDecompFun getCurrentDecomposition();
     void         updateCurOperatorTable();
-    void         updateOp();
+    void         updateOp(OPERATOR_FORM exclude = OPERATOR_FORM::NOTHING);
 
     QWidget *makeRXYZWid();
     QWidget *makeRZYWid();
