@@ -113,10 +113,11 @@ private:
     void         updateCurOperatorTable();
     void         updateOp(OPERATOR_FORM exclude = OPERATOR_FORM::NOTHING);
 
-    QWidget *makeRXYZWid();
-    QWidget *makeRZYWid();
-    QWidget *makeRZXWid();
-    QWidget *makeRXYWid();
+    QWidget *makeDecompWid();
+    QWidget *makeZyWid();
+    QWidget *makeZxWid();
+    QWidget *makeXyWid();
+    QWidget *makeZyxWid();
     QWidget *makeOpWid();
 
     QTabWidget *topTabWid = nullptr;
@@ -128,20 +129,25 @@ private:
 
     QTabWidget *rxyzTab = nullptr;
 
-    QLineEdit *rZYAlpEd = nullptr;
-    QLineEdit *rZYBetEd = nullptr;
-    QLineEdit *rZYGamEd = nullptr;
-    QLineEdit *rZYDelEd = nullptr;
+    QLineEdit *rZyAlpEd = nullptr;
+    QLineEdit *rZyBetEd = nullptr;
+    QLineEdit *rZyGamEd = nullptr;
+    QLineEdit *rZyDelEd = nullptr;
 
-    QLineEdit *rZXAlpEd = nullptr;
-    QLineEdit *rZXBetEd = nullptr;
-    QLineEdit *rZXGamEd = nullptr;
-    QLineEdit *rZXDelEd = nullptr;
+    QLineEdit *rZxAlpEd = nullptr;
+    QLineEdit *rZxBetEd = nullptr;
+    QLineEdit *rZxGamEd = nullptr;
+    QLineEdit *rZxDelEd = nullptr;
 
-    QLineEdit *rXYAlpEd = nullptr;
-    QLineEdit *rXYBetEd = nullptr;
-    QLineEdit *rXYGamEd = nullptr;
-    QLineEdit *rXYDelEd = nullptr;
+    QLineEdit *rXyAlpEd = nullptr;
+    QLineEdit *rXyBetEd = nullptr;
+    QLineEdit *rXyGamEd = nullptr;
+    QLineEdit *rXyDelEd = nullptr;
+
+    QLineEdit *rZyxAlpEd = nullptr;
+    QLineEdit *rZyxBetEd = nullptr;
+    QLineEdit *rZyxGamEd = nullptr;
+    QLineEdit *rZyxDelEd = nullptr;
 
     QTabWidget *stackW = nullptr;
 
@@ -157,9 +163,10 @@ private:
 
     QLineEdit    *axRnEd = nullptr;
     QLineEdit    *ngRnEd = nullptr;
-    QRadioButton *rzyRb = nullptr;
-    QRadioButton *rzxRb = nullptr;
-    QRadioButton *rxyRb = nullptr;
+    QRadioButton *rZyRb = nullptr;
+    QRadioButton *rZxRb = nullptr;
+    QRadioButton *rXyRb = nullptr;
+    QRadioButton *rZyxRb = nullptr;
     QRadioButton *rtRb = nullptr;
 
     QLabel           *xyzStLab = nullptr;

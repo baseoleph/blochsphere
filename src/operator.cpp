@@ -42,7 +42,7 @@ QVector<Spike> Operator::rZRotate(Spike s, double gamma) {
     return rotate(s, QVector3D(0, 0, 1), gamma);
 }
 
-QVector<Spike> Operator::applyZXDecomposition(Spike s, UnitaryMatrix2x2 op) {
+QVector<Spike> Operator::applyZxDecomposition(Spike s, UnitaryMatrix2x2 op) {
     QVector<Spike> spike = {s};
     decomposition  dec = zxDecomposition(op);
 
@@ -71,7 +71,7 @@ QVector<Spike> Operator::applyZXDecomposition(Spike s, UnitaryMatrix2x2 op) {
     return spike;
 }
 
-QVector<Spike> Operator::applyZYDecomposition(Spike s, UnitaryMatrix2x2 op) {
+QVector<Spike> Operator::applyZyDecomposition(Spike s, UnitaryMatrix2x2 op) {
     QVector<Spike> spike = {s};
     decomposition  dec = zyDecomposition(op);
     if (dec.delta != 0) {
@@ -99,7 +99,7 @@ QVector<Spike> Operator::applyZYDecomposition(Spike s, UnitaryMatrix2x2 op) {
     return spike;
 }
 
-QVector<Spike> Operator::applyXYDecomposition(Spike s, UnitaryMatrix2x2 op) {
+QVector<Spike> Operator::applyXyDecomposition(Spike s, UnitaryMatrix2x2 op) {
     QVector<Spike> spike = {s};
     decomposition  dec = xyDecomposition(op);
 
@@ -119,6 +119,35 @@ QVector<Spike> Operator::applyXYDecomposition(Spike s, UnitaryMatrix2x2 op) {
 
     if (dec.beta != 0) {
         QVector<Spike> vct = rXRotate(spike.last(), dec.beta);
+        for (auto &e : vct) {
+            spike.append(e);
+        }
+    }
+
+    std::reverse(spike.begin(), spike.end());
+    return spike;
+}
+
+QVector<Spike> Operator::applyZyxDecomposition(Spike s, UnitaryMatrix2x2 op) {
+    QVector<Spike> spike = {s};
+    decomposition  dec = zyxDecomposition(op);
+
+    if (dec.delta != 0) {
+        QVector<Spike> vct = rXRotate(spike.last(), dec.delta);
+        for (auto &e : vct) {
+            spike.append(e);
+        }
+    }
+
+    if (dec.gamma != 0) {
+        QVector<Spike> vct = rYRotate(spike.last(), dec.gamma);
+        for (auto &e : vct) {
+            spike.append(e);
+        }
+    }
+
+    if (dec.beta != 0) {
+        QVector<Spike> vct = rZRotate(spike.last(), dec.beta);
         for (auto &e : vct) {
             spike.append(e);
         }
@@ -413,17 +442,26 @@ decomposition Operator::xyDecomposition(UnitaryMatrix2x2 op) {
 decomposition Operator::xyDecomposition() { return xyDecomposition(_op); }
 
 decomposition Operator::zyxDecomposition(UnitaryMatrix2x2 op) {
-    //  Compiler: Borland C++ 3.1
-    //  Author  : Швецкий Михаил Владимирович (28.12.2014,14:36-23:00;
-    //                                         01.04-10.05.2018;
-    //                                         07.06.2018,04:35)
-    if (abs(d) > EPS)
-        if (abs(1 + a / conj(d)) < EPS)
+    //  Author  : Швецкий Михаил Владимирович
+    //  Original: 7e3567036330e10d948873364cde38d51eb12897
+
+    complex i = complex(0, 1);
+    double  alpha = 0;
+    double  beta = 0;
+    double  delta = 0;
+    double  gamma = 0;
+    complex a = op.a();
+    complex b = op.b();
+    complex c = op.c();
+    complex d = op.d();
+
+    if (abs(d) > EPSILON)
+        if (abs(complex(1, 0) + a / conj(d)) < EPSILON)
             alpha = M_PI / 2.0;
         else
             alpha = arg(a / conj(d)) / 2.0;
-    else if (abs(c) > EPS)
-        if (abs(1 - b / conj(c)) < EPS)
+    else if (abs(c) > EPSILON)
+        if (abs(complex(1, 0) - b / conj(c)) < EPSILON)
             alpha = M_PI / 2.0;
         else
             alpha = arg(-b / conj(c)) / 2.0;
@@ -431,24 +469,14 @@ decomposition Operator::zyxDecomposition(UnitaryMatrix2x2 op) {
     complex A, B;
     A = (exp(-i * alpha) * (a + b) + exp(i * alpha) * (conj(c) + conj(d))) / 2.0;
     B = (exp(-i * alpha) * (a + b) - exp(i * alpha) * (conj(c) + conj(d))) / 2.0;
-    cout << "Определитель полученной специальной матрицы: " << A * conj(A) + B * conj(B) << endl
-         << endl;
-    getch();
     double a1, a2, b1, b2;
     a1 = real(A);
     a2 = imag(A);
     b1 = real(B);
     b2 = imag(B);
     // ----------------------------------------------------
-    cout << "Контрольный вывод a1+b1, a2-b2, a1-b1, a2+b2:" << endl
-         << endl
-         << a1 + b1 << ", " << a2 - b2 << ", " << a1 - b1 << ", " << a2 + b2 << endl
-         << endl;
     // --------------------------------------------
-    if (fabs(a1 + b1) < EPS && fabs(a2 + b2) < EPS && fabs(a2 - b2) > EPS) {
-        cout << "Случай (1). "
-             << "Внимание! Эффект Gimble lock, gamma=pi/2" << endl
-             << endl;
+    if (fabs(a1 + b1) < EPSILON && fabs(a2 + b2) < EPSILON && fabs(a2 - b2) > EPSILON) {
         gamma = M_PI / 2.0;
         delta = 0; // delta - любое из R
         if (a1 - b1 > 0)
@@ -456,10 +484,7 @@ decomposition Operator::zyxDecomposition(UnitaryMatrix2x2 op) {
         else
             beta = 2.0 * M_PI - delta - 2.0 * asin(-1.0 / sqrt(2.0) * (a2 - b2));
     } else {
-        if (fabs(a1 + b1) < EPS && fabs(a2 + b2) < EPS && fabs(a1 - b1) > EPS) {
-            cout << "Случай (2). "
-                 << "Внимание! Эффект Gimble lock, gamma=pi/2" << endl
-                 << endl;
+        if (fabs(a1 + b1) < EPSILON && fabs(a2 + b2) < EPSILON && fabs(a1 - b1) > EPSILON) {
             gamma = M_PI / 2.0;
             delta = 0; // delta - любое из R
             if (-a2 + b2 > 0)
@@ -470,37 +495,31 @@ decomposition Operator::zyxDecomposition(UnitaryMatrix2x2 op) {
             ;
     }
     // ------------------------------------
-    if (fabs(a2 - b2) < EPS && fabs(a1 - b1) < EPS)
-        if (abs(a1 + b1) > EPS) {
-            cout << "Случай (3). "
-                 << "Внимание! Эффект Gimble lock, gamma=-pi/2" << endl
-                 << endl;
+    if (fabs(a2 - b2) < EPSILON && fabs(a1 - b1) < EPSILON)
+        if (abs(a1 + b1) > EPSILON) {
             gamma = -M_PI / 2; // или gamma=3*M_PI/2;
             delta = 0;         // delta - любое из R
             beta = -delta - 2.0 * atan((a2 + b2) / (a1 + b1));
-        } else if (fabs(a2 + b2) > EPS) {
-            cout << "Случай (4). "
-                 << "Внимание! Эффект Gimble lock, gamma=-pi/2" << endl
-                 << endl;
+        } else if (fabs(a2 + b2) > EPSILON) {
             gamma = -M_PI / 2.0;
             delta = M_PI; // delta - любое из R
             beta = 2.0 * atan((a1 + b1) / (a2 + b2));
         } else
             ;
     // -----------------------------------
-    if (fabs(a1 + b1) < EPS && fabs(a2 - b2) > EPS && fabs(a1 - b1) < EPS && fabs(a2 + b2) > EPS) {
-        cout << "Случай (5)." << endl;
+    if (fabs(a1 + b1) < EPSILON && fabs(a2 - b2) > EPSILON && fabs(a1 - b1) < EPSILON &&
+        fabs(a2 + b2) > EPSILON) {
         beta = M_PI;
         delta = 0;
-        if (-a2 > 0 || fabs(a2) < EPS)
+        if (-a2 > 0 || fabs(a2) < EPSILON)
             gamma = 2.0 * asin(b2);
         else
             gamma = 2.0 * M_PI - 2.0 * asin(b2);
     } else
         ;
     // -----------------------------------
-    if (fabs(a1 + b1) > EPS && fabs(a2 - b2) > EPS && fabs(a1 - b1) < EPS && fabs(a2 + b2) < EPS) {
-        cout << "Случай (6)." << endl;
+    if (fabs(a1 + b1) > EPSILON && fabs(a2 - b2) > EPSILON && fabs(a1 - b1) < EPSILON &&
+        fabs(a2 + b2) < EPSILON) {
         beta = M_PI / 2.0;
         delta = -M_PI / 2.0;
         if (a1 + b1 > 0)
@@ -518,8 +537,8 @@ decomposition Operator::zyxDecomposition(UnitaryMatrix2x2 op) {
     } else
         ;
     // -----------------------------------
-    if (fabs(a1 + b1) > EPS && fabs(a2 - b2) < EPS && fabs(a1 - b1) > EPS && fabs(a2 + b2) < EPS) {
-        cout << "Случай (7)." << endl;
+    if (fabs(a1 + b1) > EPSILON && fabs(a2 - b2) < EPSILON && fabs(a1 - b1) > EPSILON &&
+        fabs(a2 + b2) < EPSILON) {
         beta = 0;
         delta = 0;
         // ---------------------------------------------
@@ -528,17 +547,16 @@ decomposition Operator::zyxDecomposition(UnitaryMatrix2x2 op) {
         //  sin(gamma/2)=-b1;
         //  cos(gamma/2)= a1
         // ----------------------
-        if (a1 > 0 || fabs(a1) < EPS)
+        if (a1 > 0 || fabs(a1) < EPSILON)
             gamma = 2.0 * asin(-b1);
         else
             gamma = 2.0 * M_PI - 2.0 * asin(-b1);
     } else
         ;
     // -------------------------------------------------------
-    if (fabs(a1 + b1) > EPS && fabs(a1 - b1) > EPS && fabs(a2 + b2) > EPS)
-    // && fabs(a2-b2)>EPS)
+    if (fabs(a1 + b1) > EPSILON && fabs(a1 - b1) > EPSILON && fabs(a2 + b2) > EPSILON)
+    // && fabs(a2-b2)>EPSILON)
     {
-        cout << "Случай (8)." << endl;
         beta = -atan((a2 + b2) / (a1 + b1)) - atan((a2 - b2) / (a1 - b1));
         delta = -atan((a2 + b2) / (a1 + b1)) + atan((a2 - b2) / (a1 - b1));
 
@@ -552,7 +570,13 @@ decomposition Operator::zyxDecomposition(UnitaryMatrix2x2 op) {
         }
     } else
         ;
-    // clang-format on
+
+    decomposition dec;
+    dec.alpha = alpha * (180 / M_PI);
+    dec.beta = beta * (180 / M_PI);
+    dec.delta = delta * (180 / M_PI);
+    dec.gamma = gamma * (180 / M_PI);
+    return dec;
 }
 
 decomposition Operator::zyxDecomposition() { return zyxDecomposition(_op); }
@@ -645,11 +669,12 @@ void Operator::toXrotate(double the) { _op = UnitaryMatrix2x2::getXrotate(the); 
 void Operator::toYrotate(double the) { _op = UnitaryMatrix2x2::getYrotate(the); }
 void Operator::toZrotate(double the) { _op = UnitaryMatrix2x2::getZrotate(the); }
 
-QVector<Spike> Operator::applyZXDecomposition(Spike s) { return applyZXDecomposition(s, _op); }
-QVector<Spike> Operator::applyZYDecomposition(Spike s) { return applyZYDecomposition(s, _op); }
-QVector<Spike> Operator::applyXYDecomposition(Spike s) { return applyXYDecomposition(s, _op); }
+QVector<Spike> Operator::applyZxDecomposition(Spike s) { return applyZxDecomposition(s, _op); }
+QVector<Spike> Operator::applyZyDecomposition(Spike s) { return applyZyDecomposition(s, _op); }
+QVector<Spike> Operator::applyXyDecomposition(Spike s) { return applyXyDecomposition(s, _op); }
+QVector<Spike> Operator::applyZyxDecomposition(Spike s) { return applyZyxDecomposition(s, _op); }
 
-bool Operator::setOperatorByZXDecomposition(decomposition dec) {
+bool Operator::setOperatorByZxDecomposition(decomposition dec) {
     UnitaryMatrix2x2 matrixOp;
     if (not matrixOp.updateMatrix(getMatrixByZxDec(dec))) {
         return false;
@@ -658,7 +683,7 @@ bool Operator::setOperatorByZXDecomposition(decomposition dec) {
     return true;
 }
 
-bool Operator::setOperatorByZYDecomposition(decomposition dec) {
+bool Operator::setOperatorByZyDecomposition(decomposition dec) {
     UnitaryMatrix2x2 matrixOp;
     if (not matrixOp.updateMatrix(getMatrixByZyDec(dec))) {
         return false;
@@ -667,9 +692,18 @@ bool Operator::setOperatorByZYDecomposition(decomposition dec) {
     return true;
 }
 
-bool Operator::setOperatorByXYDecomposition(decomposition dec) {
+bool Operator::setOperatorByXyDecomposition(decomposition dec) {
     UnitaryMatrix2x2 matrixOp;
     if (not matrixOp.updateMatrix(getMatrixByXyDec(dec))) {
+        return false;
+    }
+    setOperator(matrixOp);
+    return true;
+}
+
+bool Operator::setOperatorByZyxDecomposition(decomposition dec) {
+    UnitaryMatrix2x2 matrixOp;
+    if (not matrixOp.updateMatrix(getMatrixByZyxDec(dec))) {
         return false;
     }
     setOperator(matrixOp);
@@ -729,6 +763,23 @@ matrix2x2 Operator::getMatrixByXyDec(decomposition dec) {
     matrix.b = exp(i * alpha) * (-sin(v) * cos(u) - i * cos(v) * sin(w));
     matrix.c = exp(i * alpha) * (sin(v) * cos(u) - i * cos(v) * sin(w));
     matrix.d = exp(i * alpha) * (cos(v) * cos(w) + i * sin(v) * sin(u));
+    return matrix;
+}
+
+matrix2x2 Operator::getMatrixByZyxDec(decomposition dec) {
+    double    alpha = dec.alpha * M_PI / 180;
+    double    beta = dec.beta * M_PI / 180;
+    double    delta = dec.delta * M_PI / 180;
+    double    gamma = dec.gamma * M_PI / 180;
+    matrix2x2 matrix;
+    complex   i{0, 1};
+    double    g = gamma / 2.0;
+    double    d1 = delta / 2.0;
+
+    matrix.a = exp(i * alpha - i * beta / 2.0) * (cos(g) * cos(d1) + i * sin(g) * sin(d1));
+    matrix.b = exp(i * alpha - i * beta / 2.0) * (-sin(g) * cos(d1) - i * cos(g) * sin(d1));
+    matrix.c = exp(i * alpha + i * beta / 2.0) * (sin(g) * cos(d1) - i * cos(g) * sin(d1));
+    matrix.d = exp(i * alpha + i * beta / 2.0) * (cos(g) * cos(d1) - i * sin(g) * sin(d1));
     return matrix;
 }
 

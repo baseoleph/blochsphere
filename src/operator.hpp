@@ -60,12 +60,14 @@ public:
     static QVector<Spike> rYRotate(Spike s, double gamma);
     static QVector<Spike> rZRotate(Spike s, double gamma);
 
-    static QVector<Spike> applyZXDecomposition(Spike s, UnitaryMatrix2x2 op);
-    QVector<Spike>        applyZXDecomposition(Spike s);
-    static QVector<Spike> applyZYDecomposition(Spike s, UnitaryMatrix2x2 op);
-    QVector<Spike>        applyZYDecomposition(Spike s);
-    static QVector<Spike> applyXYDecomposition(Spike s, UnitaryMatrix2x2 op);
-    QVector<Spike>        applyXYDecomposition(Spike s);
+    static QVector<Spike> applyZxDecomposition(Spike s, UnitaryMatrix2x2 op);
+    QVector<Spike>        applyZxDecomposition(Spike s);
+    static QVector<Spike> applyZyDecomposition(Spike s, UnitaryMatrix2x2 op);
+    QVector<Spike>        applyZyDecomposition(Spike s);
+    static QVector<Spike> applyXyDecomposition(Spike s, UnitaryMatrix2x2 op);
+    QVector<Spike>        applyXyDecomposition(Spike s);
+    static QVector<Spike> applyZyxDecomposition(Spike s, UnitaryMatrix2x2 op);
+    QVector<Spike>        applyZyxDecomposition(Spike s);
     static QVector<Spike> applyOperator(Spike s, UnitaryMatrix2x2 op);
     QVector<Spike>        applyOperator(Spike s);
     static QVector<Spike> applyVectorRotation(Spike s, UnitaryMatrix2x2 op);
@@ -85,11 +87,13 @@ public:
     static matrix2x2 getMatrixByZxDec(decomposition dec);
     static matrix2x2 getMatrixByZyDec(decomposition dec);
     static matrix2x2 getMatrixByXyDec(decomposition dec);
+    static matrix2x2 getMatrixByZyxDec(decomposition dec);
     static matrix2x2 getMatrixByVecAng(vectorangle va);
 
-    bool setOperatorByZXDecomposition(decomposition dec);
-    bool setOperatorByZYDecomposition(decomposition dec);
-    bool setOperatorByXYDecomposition(decomposition dec);
+    bool setOperatorByZxDecomposition(decomposition dec);
+    bool setOperatorByZyDecomposition(decomposition dec);
+    bool setOperatorByXyDecomposition(decomposition dec);
+    bool setOperatorByZyxDecomposition(decomposition dec);
     bool setOperatorByVectorAngle(vectorangle va);
     void setOperator(UnitaryMatrix2x2 op);
 

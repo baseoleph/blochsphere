@@ -290,7 +290,7 @@ void MainWindow::createSideWidget() {
     topTabWid->addTab(vectorWidget, "1");
     mainLay->addWidget(vectorSphereCreatorWid);
     mainLay->addWidget(topTabWid);
-    mainLay->addWidget(makeRXYZWid());
+    mainLay->addWidget(makeDecompWid());
     mainLay->addWidget(makeOpWid());
     mainLay->setContentsMargins(5, 11, 20, 11);
     mainLay->setSpacing(0);
@@ -308,11 +308,12 @@ void MainWindow::createSideWidget() {
     this->addToolBar(Qt::LeftToolBarArea, qtb);
 }
 
-QWidget *MainWindow::makeRXYZWid() {
+QWidget *MainWindow::makeDecompWid() {
     rxyzTab = new QTabWidget;
-    rxyzTab->insertTab(0, makeRZYWid(), "Z-Y");
-    rxyzTab->insertTab(1, makeRZXWid(), "Z-X");
-    rxyzTab->insertTab(2, makeRXYWid(), "X-Y");
+    rxyzTab->insertTab(0, makeZyWid(), "Z-Y");
+    rxyzTab->insertTab(1, makeZxWid(), "Z-X");
+    rxyzTab->insertTab(2, makeXyWid(), "X-Y");
+    rxyzTab->insertTab(3, makeZyxWid(), "Z-Y-X");
     rxyzTab->setCurrentIndex(0);
 
     auto *bRotXYZ = new QPushButton("Set");
@@ -331,33 +332,33 @@ QWidget *MainWindow::makeRXYZWid() {
     return rtW;
 }
 
-QWidget *MainWindow::makeRZYWid() {
-    rZYAlpEd = new QLineEdit("0");
-    rZYBetEd = new QLineEdit("0");
-    rZYGamEd = new QLineEdit("0");
-    rZYDelEd = new QLineEdit("0");
+QWidget *MainWindow::makeZyWid() {
+    rZyAlpEd = new QLineEdit("0");
+    rZyBetEd = new QLineEdit("0");
+    rZyGamEd = new QLineEdit("0");
+    rZyDelEd = new QLineEdit("0");
 
     auto *rZYALab = new QLabel("Alpha");
     auto *rZYBLab = new QLabel("Rz(Beta)");
     auto *rZYGLab = new QLabel("Ry(Gamma)");
     auto *rZYDLab = new QLabel("Rz(Delta)");
 
-    rZYAlpEd->setMaximumWidth(60);
-    rZYBetEd->setMaximumWidth(60);
-    rZYGamEd->setMaximumWidth(60);
-    rZYDelEd->setMaximumWidth(60);
+    rZyAlpEd->setMaximumWidth(60);
+    rZyBetEd->setMaximumWidth(60);
+    rZyGamEd->setMaximumWidth(60);
+    rZyDelEd->setMaximumWidth(60);
 
     auto *rzW = new QWidget();
 
     auto *rzLay = new QGridLayout();
     rzLay->addWidget(rZYALab, 1, 2);
-    rzLay->addWidget(rZYAlpEd, 1, 3);
+    rzLay->addWidget(rZyAlpEd, 1, 3);
     rzLay->addWidget(rZYBLab, 2, 2);
-    rzLay->addWidget(rZYBetEd, 2, 3);
+    rzLay->addWidget(rZyBetEd, 2, 3);
     rzLay->addWidget(rZYGLab, 3, 2);
-    rzLay->addWidget(rZYGamEd, 3, 3);
+    rzLay->addWidget(rZyGamEd, 3, 3);
     rzLay->addWidget(rZYDLab, 4, 2);
-    rzLay->addWidget(rZYDelEd, 4, 3);
+    rzLay->addWidget(rZyDelEd, 4, 3);
     rzLay->setContentsMargins(20, 5, 20, 5);
     rzLay->setSpacing(2);
     rzW->setLayout(rzLay);
@@ -365,33 +366,33 @@ QWidget *MainWindow::makeRZYWid() {
     return rzW;
 }
 
-QWidget *MainWindow::makeRZXWid() {
-    rZXAlpEd = new QLineEdit("0");
-    rZXBetEd = new QLineEdit("0");
-    rZXGamEd = new QLineEdit("0");
-    rZXDelEd = new QLineEdit("0");
+QWidget *MainWindow::makeZxWid() {
+    rZxAlpEd = new QLineEdit("0");
+    rZxBetEd = new QLineEdit("0");
+    rZxGamEd = new QLineEdit("0");
+    rZxDelEd = new QLineEdit("0");
 
     auto *rZXALab = new QLabel("Alpha");
     auto *rZXBLab = new QLabel("Rz(Beta)");
     auto *rZXGLab = new QLabel("Rx(Gamma)");
     auto *rZXDLab = new QLabel("Rz(Delta)");
 
-    rZXAlpEd->setMaximumWidth(60);
-    rZXBetEd->setMaximumWidth(60);
-    rZXGamEd->setMaximumWidth(60);
-    rZXDelEd->setMaximumWidth(60);
+    rZxAlpEd->setMaximumWidth(60);
+    rZxBetEd->setMaximumWidth(60);
+    rZxGamEd->setMaximumWidth(60);
+    rZxDelEd->setMaximumWidth(60);
 
     auto *rzW = new QWidget();
 
     auto *rzLay = new QGridLayout();
     rzLay->addWidget(rZXALab, 1, 2);
-    rzLay->addWidget(rZXAlpEd, 1, 3);
+    rzLay->addWidget(rZxAlpEd, 1, 3);
     rzLay->addWidget(rZXBLab, 2, 2);
-    rzLay->addWidget(rZXBetEd, 2, 3);
+    rzLay->addWidget(rZxBetEd, 2, 3);
     rzLay->addWidget(rZXGLab, 3, 2);
-    rzLay->addWidget(rZXGamEd, 3, 3);
+    rzLay->addWidget(rZxGamEd, 3, 3);
     rzLay->addWidget(rZXDLab, 4, 2);
-    rzLay->addWidget(rZXDelEd, 4, 3);
+    rzLay->addWidget(rZxDelEd, 4, 3);
     rzLay->setContentsMargins(20, 5, 20, 5);
     rzLay->setSpacing(2);
     rzW->setLayout(rzLay);
@@ -399,33 +400,67 @@ QWidget *MainWindow::makeRZXWid() {
     return rzW;
 }
 
-QWidget *MainWindow::makeRXYWid() {
-    rXYAlpEd = new QLineEdit("0");
-    rXYBetEd = new QLineEdit("0");
-    rXYGamEd = new QLineEdit("0");
-    rXYDelEd = new QLineEdit("0");
+QWidget *MainWindow::makeXyWid() {
+    rXyAlpEd = new QLineEdit("0");
+    rXyBetEd = new QLineEdit("0");
+    rXyGamEd = new QLineEdit("0");
+    rXyDelEd = new QLineEdit("0");
 
     auto *rXYALab = new QLabel("Alpha");
     auto *rXYBLab = new QLabel("Rx(Beta)");
     auto *rXYGLab = new QLabel("Ry(Gamma)");
     auto *rXYDLab = new QLabel("Rx(Delta)");
 
-    rXYAlpEd->setMaximumWidth(60);
-    rXYBetEd->setMaximumWidth(60);
-    rXYGamEd->setMaximumWidth(60);
-    rXYDelEd->setMaximumWidth(60);
+    rXyAlpEd->setMaximumWidth(60);
+    rXyBetEd->setMaximumWidth(60);
+    rXyGamEd->setMaximumWidth(60);
+    rXyDelEd->setMaximumWidth(60);
 
     auto *rzW = new QWidget();
 
     auto *rzLay = new QGridLayout();
     rzLay->addWidget(rXYALab, 1, 2);
-    rzLay->addWidget(rXYAlpEd, 1, 3);
+    rzLay->addWidget(rXyAlpEd, 1, 3);
     rzLay->addWidget(rXYBLab, 2, 2);
-    rzLay->addWidget(rXYBetEd, 2, 3);
+    rzLay->addWidget(rXyBetEd, 2, 3);
     rzLay->addWidget(rXYGLab, 3, 2);
-    rzLay->addWidget(rXYGamEd, 3, 3);
+    rzLay->addWidget(rXyGamEd, 3, 3);
     rzLay->addWidget(rXYDLab, 4, 2);
-    rzLay->addWidget(rXYDelEd, 4, 3);
+    rzLay->addWidget(rXyDelEd, 4, 3);
+    rzLay->setContentsMargins(20, 5, 20, 5);
+    rzLay->setSpacing(2);
+    rzW->setLayout(rzLay);
+
+    return rzW;
+}
+
+QWidget *MainWindow::makeZyxWid() {
+    rZyxAlpEd = new QLineEdit("0");
+    rZyxBetEd = new QLineEdit("0");
+    rZyxGamEd = new QLineEdit("0");
+    rZyxDelEd = new QLineEdit("0");
+
+    auto *rZyxALab = new QLabel("Alpha");
+    auto *rZyxBLab = new QLabel("Rz(Beta)");
+    auto *rZyxGLab = new QLabel("Ry(Gamma)");
+    auto *rZyxDLab = new QLabel("Rx(Delta)");
+
+    rZyxAlpEd->setMaximumWidth(60);
+    rZyxBetEd->setMaximumWidth(60);
+    rZyxGamEd->setMaximumWidth(60);
+    rZyxDelEd->setMaximumWidth(60);
+
+    auto *rzW = new QWidget();
+
+    auto *rzLay = new QGridLayout();
+    rzLay->addWidget(rZyxALab, 1, 2);
+    rzLay->addWidget(rZyxAlpEd, 1, 3);
+    rzLay->addWidget(rZyxBLab, 2, 2);
+    rzLay->addWidget(rZyxBetEd, 2, 3);
+    rzLay->addWidget(rZyxGLab, 3, 2);
+    rzLay->addWidget(rZyxGamEd, 3, 3);
+    rzLay->addWidget(rZyxDLab, 4, 2);
+    rzLay->addWidget(rZyxDelEd, 4, 3);
     rzLay->setContentsMargins(20, 5, 20, 5);
     rzLay->setSpacing(2);
     rzW->setLayout(rzLay);
@@ -516,22 +551,22 @@ QWidget *MainWindow::makeOpWid() {
 
     auto *qGb = new QGroupBox("Rotation");
 
-    rzyRb = new QRadioButton("ZY-decomposition");
-    rzyRb->toggle();
+    rZyRb = new QRadioButton("ZY-decomposition");
+    rZyRb->toggle();
 
-    rzxRb = new QRadioButton("ZX-decomposition");
-
-    rxyRb = new QRadioButton("XY-decomposition");
-
+    rZxRb = new QRadioButton("ZX-decomposition");
+    rXyRb = new QRadioButton("XY-decomposition");
+    rZyxRb = new QRadioButton("ZYX-decomposition");
     rtRb = new QRadioButton("Rotation about vector");
 
     connect(rtRb, SIGNAL(toggled(bool)), SLOT(slotToggleRotateVector(bool)));
 
     auto *gbLay = new QVBoxLayout();
     qGb->setFixedHeight(120);
-    gbLay->addWidget(rzyRb);
-    gbLay->addWidget(rzxRb);
-    gbLay->addWidget(rxyRb);
+    gbLay->addWidget(rZyRb);
+    gbLay->addWidget(rZxRb);
+    gbLay->addWidget(rXyRb);
+    gbLay->addWidget(rZyxRb);
     gbLay->addWidget(rtRb);
     gbLay->setSpacing(5);
     qGb->setLayout(gbLay);
@@ -678,39 +713,51 @@ void MainWindow::slotSetRXYZOp() {
     decomposition dec;
     switch (rxyzTab->currentIndex()) {
     case 0:
-        dec.alpha = rZYAlpEd->text().toDouble();
-        dec.beta = rZYBetEd->text().toDouble();
-        dec.gamma = rZYGamEd->text().toDouble();
-        dec.delta = rZYDelEd->text().toDouble();
-        if (not curOperator.setOperatorByZYDecomposition(dec)) {
+        dec.alpha = rZyAlpEd->text().toDouble();
+        dec.beta = rZyBetEd->text().toDouble();
+        dec.gamma = rZyGamEd->text().toDouble();
+        dec.delta = rZyDelEd->text().toDouble();
+        if (not curOperator.setOperatorByZyDecomposition(dec)) {
             // TODO it's impossible; inspect
             QMessageBox::warning(this, "Error", "error");
             return;
         }
         break;
     case 1:
-        dec.alpha = rZXAlpEd->text().toDouble();
-        dec.beta = rZXBetEd->text().toDouble();
-        dec.gamma = rZXGamEd->text().toDouble();
-        dec.delta = rZXDelEd->text().toDouble();
-        if (not curOperator.setOperatorByZXDecomposition(dec)) {
+        dec.alpha = rZxAlpEd->text().toDouble();
+        dec.beta = rZxBetEd->text().toDouble();
+        dec.gamma = rZxGamEd->text().toDouble();
+        dec.delta = rZxDelEd->text().toDouble();
+        if (not curOperator.setOperatorByZxDecomposition(dec)) {
             // TODO it's impossible; inspect
             QMessageBox::warning(this, "Error", "error");
             return;
         }
         break;
     case 2:
-        dec.alpha = rXYAlpEd->text().toDouble();
-        dec.beta = rXYBetEd->text().toDouble();
-        dec.gamma = rXYGamEd->text().toDouble();
-        dec.delta = rXYDelEd->text().toDouble();
-        if (not curOperator.setOperatorByXYDecomposition(dec)) {
+        dec.alpha = rXyAlpEd->text().toDouble();
+        dec.beta = rXyBetEd->text().toDouble();
+        dec.gamma = rXyGamEd->text().toDouble();
+        dec.delta = rXyDelEd->text().toDouble();
+        if (not curOperator.setOperatorByXyDecomposition(dec)) {
+            // TODO it's impossible; inspect
+            QMessageBox::warning(this, "Error", "error");
+            return;
+        }
+        break;
+    case 3:
+        dec.alpha = rZyxAlpEd->text().toDouble();
+        dec.beta = rZyxBetEd->text().toDouble();
+        dec.gamma = rZyxGamEd->text().toDouble();
+        dec.delta = rZyxDelEd->text().toDouble();
+        if (not curOperator.setOperatorByZyxDecomposition(dec)) {
             // TODO it's impossible; inspect
             QMessageBox::warning(this, "Error", "error");
             return;
         }
         break;
     }
+
     curOpName = "U";
     updateOp();
 }
@@ -792,22 +839,28 @@ void MainWindow::slotSetAxOp() {
 
 void MainWindow::updateOp(OPERATOR_FORM exclude) {
     decomposition zyDec = curOperator.zyDecomposition();
-    rZYAlpEd->setText(numberToStr(zyDec.alpha));
-    rZYBetEd->setText(numberToStr(zyDec.beta));
-    rZYGamEd->setText(numberToStr(zyDec.gamma));
-    rZYDelEd->setText(numberToStr(zyDec.delta));
+    rZyAlpEd->setText(numberToStr(zyDec.alpha));
+    rZyBetEd->setText(numberToStr(zyDec.beta));
+    rZyGamEd->setText(numberToStr(zyDec.gamma));
+    rZyDelEd->setText(numberToStr(zyDec.delta));
 
     decomposition zxDec = curOperator.zxDecomposition();
-    rZXAlpEd->setText(numberToStr(zxDec.alpha));
-    rZXBetEd->setText(numberToStr(zxDec.beta));
-    rZXGamEd->setText(numberToStr(zxDec.gamma));
-    rZXDelEd->setText(numberToStr(zxDec.delta));
+    rZxAlpEd->setText(numberToStr(zxDec.alpha));
+    rZxBetEd->setText(numberToStr(zxDec.beta));
+    rZxGamEd->setText(numberToStr(zxDec.gamma));
+    rZxDelEd->setText(numberToStr(zxDec.delta));
 
     decomposition xyDec = curOperator.xyDecomposition();
-    rXYAlpEd->setText(numberToStr(xyDec.alpha));
-    rXYBetEd->setText(numberToStr(xyDec.beta));
-    rXYGamEd->setText(numberToStr(xyDec.gamma));
-    rXYDelEd->setText(numberToStr(xyDec.delta));
+    rXyAlpEd->setText(numberToStr(xyDec.alpha));
+    rXyBetEd->setText(numberToStr(xyDec.beta));
+    rXyGamEd->setText(numberToStr(xyDec.gamma));
+    rXyDelEd->setText(numberToStr(xyDec.delta));
+
+    decomposition zyxDec = curOperator.zyxDecomposition();
+    rZyxAlpEd->setText(numberToStr(zyxDec.alpha));
+    rZyxBetEd->setText(numberToStr(zyxDec.beta));
+    rZyxGamEd->setText(numberToStr(zyxDec.gamma));
+    rZyxDelEd->setText(numberToStr(zyxDec.delta));
 
     if (exclude != OPERATOR_FORM::MATRIX) {
         mat[0][0]->setText(parseComplexToStr(curOperator.getOperator().a()));
@@ -882,14 +935,16 @@ void MainWindow::startMove(Vector *v, CurDecompFun getDec) {
 CurDecompFun MainWindow::getCurrentDecomposition() {
     if (rtRb->isChecked()) {
         return &Operator::applyVectorRotation;
-    } else if (rzyRb->isChecked()) {
-        return &Operator::applyZYDecomposition;
-    } else if (rzxRb->isChecked()) {
-        return &Operator::applyZXDecomposition;
-    } else if (rxyRb->isChecked()) {
-        return &Operator::applyXYDecomposition;
+    } else if (rZyRb->isChecked()) {
+        return &Operator::applyZyDecomposition;
+    } else if (rZxRb->isChecked()) {
+        return &Operator::applyZxDecomposition;
+    } else if (rXyRb->isChecked()) {
+        return &Operator::applyXyDecomposition;
+    } else if (rZyxRb->isChecked()) {
+        return &Operator::applyZyxDecomposition;
     }
-    return &Operator::applyZYDecomposition;
+    return &Operator::applyZyDecomposition;
 }
 
 void MainWindow::slotAbout() { QMessageBox::about(this, "About program", "blochsphere"); }

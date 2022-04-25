@@ -78,6 +78,14 @@ TEST(Operator, xyDecompositionRandom) {
     randomTestDecomposition(Operator::xyDecomposition, Operator::getMatrixByXyDec);
 }
 
+TEST(Operator, zyxDecompositionStatic) {
+    staticTestDecomposition(Operator::zyxDecomposition, Operator::getMatrixByZyxDec);
+}
+
+TEST(Operator, zyxDecompositionRandom) {
+    randomTestDecomposition(Operator::zyxDecomposition, Operator::getMatrixByZyxDec);
+}
+
 TEST(Operator, vectorAngleStatic) {
     QVector<UnitaryMatrix2x2> ops = unitaryOperators2x2();
 
