@@ -56,6 +56,8 @@ private:
     QWidget *makeThePhiWid();
     QWidget *makeAlpBetWid();
     QWidget *makeBloVecWid();
+
+    void         emptyToZeroLineEdit(QLineEdit *lineEdit);
 };
 
 #endif // VECTORTABWIDGET_H

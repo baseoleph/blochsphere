@@ -166,6 +166,9 @@ QWidget *VectorWidget::makeBloVecWid() {
 // TODO add check ranges
 // DOTO push while animating
 void VectorWidget::slotThePhi() {
+    emptyToZeroLineEdit(theEd);
+    emptyToZeroLineEdit(phiEd);
+
     double the = qDegreesToRadians(theEd->text().toDouble());
     double phi = qDegreesToRadians(phiEd->text().toDouble());
     Spike  sp = Vector::createSpike(the, phi);
@@ -177,6 +180,9 @@ void VectorWidget::slotThePhi() {
 // TODO add check if normalized
 // DOTO push while animating
 void VectorWidget::slotAlpBet() {
+    emptyToZeroLineEdit(alpEd);
+    emptyToZeroLineEdit(betEd);
+
     double  a = alpEd->text().toDouble();
     complex b = parseStrToComplex(betEd->text());
     if (abs(a) + abs(b) < EPSILON) {
@@ -202,6 +208,10 @@ void VectorWidget::slotAlpBet() {
 }
 
 void VectorWidget::slotBloVec() {
+    emptyToZeroLineEdit(xEd);
+    emptyToZeroLineEdit(yEd);
+    emptyToZeroLineEdit(zEd);
+
     double x = xEd->text().toDouble();
     double y = yEd->text().toDouble();
     double z = zEd->text().toDouble();
@@ -265,5 +275,11 @@ void VectorWidget::fillFieldsOfVector(Spike sp, FIELD exclude) {
         xEd->setText(numberToStr(v.x()));
         yEd->setText(numberToStr(v.y()));
         zEd->setText(numberToStr(v.z()));
+    }
+}
+
+void VectorWidget::emptyToZeroLineEdit(QLineEdit *lineEdit) {
+    if (lineEdit->text() == "") {
+        lineEdit->setText("0");
     }
 }
