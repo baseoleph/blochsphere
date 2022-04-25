@@ -45,20 +45,23 @@ QVector<Spike> Operator::rZRotate(Spike s, double gamma) {
 QVector<Spike> Operator::applyZXDecomposition(Spike s, UnitaryMatrix2x2 op) {
     QVector<Spike> spike = {s};
     decomposition  dec = zxDecomposition(op);
-    if (dec.beta != 0) {
-        QVector<Spike> vct = rZRotate(spike.last(), dec.beta);
+
+    if (dec.delta != 0) {
+        QVector<Spike> vct = rZRotate(spike.last(), dec.delta);
         for (auto &e : vct) {
             spike.append(e);
         }
     }
+
     if (dec.gamma != 0) {
         QVector<Spike> vct = rXRotate(spike.last(), dec.gamma);
         for (auto &e : vct) {
             spike.append(e);
         }
     }
-    if (dec.delta != 0) {
-        QVector<Spike> vct = rZRotate(spike.last(), dec.delta);
+
+    if (dec.beta != 0) {
+        QVector<Spike> vct = rZRotate(spike.last(), dec.beta);
         for (auto &e : vct) {
             spike.append(e);
         }
@@ -71,20 +74,22 @@ QVector<Spike> Operator::applyZXDecomposition(Spike s, UnitaryMatrix2x2 op) {
 QVector<Spike> Operator::applyZYDecomposition(Spike s, UnitaryMatrix2x2 op) {
     QVector<Spike> spike = {s};
     decomposition  dec = zyDecomposition(op);
-    if (dec.beta != 0) {
-        QVector<Spike> vct = rZRotate(spike.last(), dec.beta);
+    if (dec.delta != 0) {
+        QVector<Spike> vct = rZRotate(spike.last(), dec.delta);
         for (auto &e : vct) {
             spike.append(e);
         }
     }
+
     if (dec.gamma != 0) {
         QVector<Spike> vct = rYRotate(spike.last(), dec.gamma);
         for (auto &e : vct) {
             spike.append(e);
         }
     }
-    if (dec.delta != 0) {
-        QVector<Spike> vct = rZRotate(spike.last(), dec.delta);
+
+    if (dec.beta != 0) {
+        QVector<Spike> vct = rZRotate(spike.last(), dec.beta);
         for (auto &e : vct) {
             spike.append(e);
         }
@@ -97,20 +102,23 @@ QVector<Spike> Operator::applyZYDecomposition(Spike s, UnitaryMatrix2x2 op) {
 QVector<Spike> Operator::applyXYDecomposition(Spike s, UnitaryMatrix2x2 op) {
     QVector<Spike> spike = {s};
     decomposition  dec = xyDecomposition(op);
-    if (dec.beta != 0) {
-        QVector<Spike> vct = rXRotate(spike.last(), dec.beta);
+
+    if (dec.delta != 0) {
+        QVector<Spike> vct = rXRotate(spike.last(), dec.delta);
         for (auto &e : vct) {
             spike.append(e);
         }
     }
+
     if (dec.gamma != 0) {
         QVector<Spike> vct = rYRotate(spike.last(), dec.gamma);
         for (auto &e : vct) {
             spike.append(e);
         }
     }
-    if (dec.delta != 0) {
-        QVector<Spike> vct = rZRotate(spike.last(), dec.delta);
+
+    if (dec.beta != 0) {
+        QVector<Spike> vct = rXRotate(spike.last(), dec.beta);
         for (auto &e : vct) {
             spike.append(e);
         }
