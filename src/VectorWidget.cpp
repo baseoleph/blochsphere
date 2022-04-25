@@ -179,7 +179,7 @@ void VectorWidget::slotThePhi() {
 void VectorWidget::slotAlpBet() {
     double  a = alpEd->text().toDouble();
     complex b = parseStrToComplex(betEd->text());
-    if (a + abs(b) < EPSILON) {
+    if (abs(a) + abs(b) < EPSILON) {
         QMessageBox::warning(this, "Warning", "Vector must be non-zero");
         return;
     }
@@ -205,7 +205,7 @@ void VectorWidget::slotBloVec() {
     double x = xEd->text().toDouble();
     double y = yEd->text().toDouble();
     double z = zEd->text().toDouble();
-    if (x + y + z < EPSILON) {
+    if (abs(x) + abs(y) + abs(z) < EPSILON) {
         QMessageBox::warning(this, "Warning", "Vector must be non-zero");
         return;
     }
