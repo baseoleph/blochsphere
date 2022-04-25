@@ -85,6 +85,9 @@ void MainWindow::slotTimer() {
     foreach (auto e, topTabWid->findChildren<VectorWidget *>()) {
         isNowAnimate |= e->getVector()->isNowAnimate();
         if (e->getVector() != nullptr) {
+            if (e->getVector()->isNowAnimate()) {
+                e->getVector()->takeStep();
+            }
             e->fillFieldsOfVector(e->getVector()->getSpike());
         }
     }
@@ -107,6 +110,8 @@ void MainWindow::slotTimer() {
             stopTimer();
         }
     }
+
+    foreach (auto e, spheres) { e->update(); }
 }
 
 void MainWindow::createSphere() {
@@ -868,11 +873,10 @@ void MainWindow::slotApplyQue() {
 
 void MainWindow::startMove(Vector *v, CurDecompFun getDec) {
     v->changeVector((curOperator.*getDec)(v->getSpike()));
+    v->setAnimateState(true);
     appBut->setEnabled(false);
     appQueBut->setEnabled(false);
-    if (not isQueueAnimation) {
-        startTimer();
-    }
+    startTimer();
 }
 
 CurDecompFun MainWindow::getCurrentDecomposition() {
@@ -984,16 +988,12 @@ void MainWindow::slotMinusSphere() {
 }
 void MainWindow::startTimer() {
     if (not tm->isActive()) {
-        statusBar()->showMessage("start");
-        qDebug() << "start";
-        tm->start(50);
+        tm->start(10);
     }
     setEnabledWidgets(false);
 }
 void MainWindow::stopTimer() {
     tm->stop();
-    statusBar()->showMessage("stop");
-    qDebug() << "stop";
     setEnabledWidgets(true);
 }
 void MainWindow::setEnabledWidgets(bool f) {

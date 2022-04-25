@@ -33,18 +33,6 @@ Spike Vector::getSpike() const {
     }
 }
 
-void Vector::timerEvent(QTimerEvent *t) {
-    this->setAnimateState(false);
-    if (hasPath()) {
-        popPath();
-        this->setAnimateState(true);
-    }
-
-    if (not isNowAnimate()) {
-        this->killTimer(t->timerId());
-    }
-}
-
 // TODO Q_ASSERT works incorrect
 void Vector::popPath() {
     Q_ASSERT(not path_.isEmpty());
@@ -131,6 +119,13 @@ Vector *Vector::getCopyState() {
     v->isNowAnimate_ = isNowAnimate_;
 
     return v;
+}
+void Vector::takeStep() {
+    if (hasPath()) {
+        popPath();
+    } else {
+        isNowAnimate_ = false;
+    }
 }
 
 #if QT_VERSION < 0x050000

@@ -18,14 +18,13 @@
 #include <QMouseEvent>
 #include <QQuaternion>
 
-Sphere::Sphere(QWidget *parent) : QGLWidget{parent} { startTimer(10); }
+Sphere::Sphere(QWidget *parent) : QGLWidget{parent} {}
 
 void Sphere::deleteVector(Vector *v) {
     if (vectors.indexOf(v) != -1) {
         vectors.removeOne(v);
     }
 }
-
 
 void Sphere::initializeGL() {
     // TODO why I use it?
@@ -102,8 +101,6 @@ void Sphere::wheelEvent(QWheelEvent *pe) {
 
     updateGL();
 }
-
-void Sphere::timerEvent(QTimerEvent *) { update(); }
 
 // TODO optimize function. remove c-style cast
 void Sphere::drawSphere(int lats, int longs) {
@@ -251,10 +248,6 @@ void Sphere::drawVectors() {
 
         glBegin(GL_LINES);
         glVertex3f(0, 0, 0);
-
-        if (e->hasPath() && not e->isNowAnimate()) {
-            e->startTimer(ANIMATION_INTERVAL);
-        }
 
         QVector3D vertex = e->getSpike().point;
 

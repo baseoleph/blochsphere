@@ -28,7 +28,6 @@
 // TODO change logic duration of animation
 #define DURATION 1000.
 #define MAX_COUNT_SPHERES 5
-#define MAX_COUNT_VECTORS 10
 
 typedef std::complex<double> complex;
 

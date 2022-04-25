@@ -39,11 +39,9 @@ protected:
     void mousePressEvent(QMouseEvent *pe) override;
     void mouseMoveEvent(QMouseEvent *pe) override;
     void wheelEvent(QWheelEvent *pe) override;
-    void timerEvent(QTimerEvent *) override;
 
 private:
     const GLfloat sphereRadius = 1;
-    const int     ANIMATION_INTERVAL = 10; // ms
     // TODO I don't like this font
     const QFont font = QFont("System", 11);
     // TODO better create functions with pattern views
