@@ -77,6 +77,8 @@ public:
     decomposition        zyDecomposition();
     static decomposition xyDecomposition(UnitaryMatrix2x2 op);
     decomposition        xyDecomposition();
+    static decomposition zyxDecomposition(UnitaryMatrix2x2 op);
+    decomposition        zyxDecomposition();
     static vectorangle   vectorAngleDec(UnitaryMatrix2x2 op);
     vectorangle          vectorAngleDec();
 

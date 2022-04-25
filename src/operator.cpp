@@ -412,6 +412,151 @@ decomposition Operator::xyDecomposition(UnitaryMatrix2x2 op) {
 
 decomposition Operator::xyDecomposition() { return xyDecomposition(_op); }
 
+decomposition Operator::zyxDecomposition(UnitaryMatrix2x2 op) {
+    //  Compiler: Borland C++ 3.1
+    //  Author  : Швецкий Михаил Владимирович (28.12.2014,14:36-23:00;
+    //                                         01.04-10.05.2018;
+    //                                         07.06.2018,04:35)
+    if (abs(d) > EPS)
+        if (abs(1 + a / conj(d)) < EPS)
+            alpha = M_PI / 2.0;
+        else
+            alpha = arg(a / conj(d)) / 2.0;
+    else if (abs(c) > EPS)
+        if (abs(1 - b / conj(c)) < EPS)
+            alpha = M_PI / 2.0;
+        else
+            alpha = arg(-b / conj(c)) / 2.0;
+    // -----------------------------------
+    complex A, B;
+    A = (exp(-i * alpha) * (a + b) + exp(i * alpha) * (conj(c) + conj(d))) / 2.0;
+    B = (exp(-i * alpha) * (a + b) - exp(i * alpha) * (conj(c) + conj(d))) / 2.0;
+    cout << "Определитель полученной специальной матрицы: " << A * conj(A) + B * conj(B) << endl
+         << endl;
+    getch();
+    double a1, a2, b1, b2;
+    a1 = real(A);
+    a2 = imag(A);
+    b1 = real(B);
+    b2 = imag(B);
+    // ----------------------------------------------------
+    cout << "Контрольный вывод a1+b1, a2-b2, a1-b1, a2+b2:" << endl
+         << endl
+         << a1 + b1 << ", " << a2 - b2 << ", " << a1 - b1 << ", " << a2 + b2 << endl
+         << endl;
+    // --------------------------------------------
+    if (fabs(a1 + b1) < EPS && fabs(a2 + b2) < EPS && fabs(a2 - b2) > EPS) {
+        cout << "Случай (1). "
+             << "Внимание! Эффект Gimble lock, gamma=pi/2" << endl
+             << endl;
+        gamma = M_PI / 2.0;
+        delta = 0; // delta - любое из R
+        if (a1 - b1 > 0)
+            beta = delta + 2.0 * asin(-1.0 / sqrt(2.0) * (a2 - b2));
+        else
+            beta = 2.0 * M_PI - delta - 2.0 * asin(-1.0 / sqrt(2.0) * (a2 - b2));
+    } else {
+        if (fabs(a1 + b1) < EPS && fabs(a2 + b2) < EPS && fabs(a1 - b1) > EPS) {
+            cout << "Случай (2). "
+                 << "Внимание! Эффект Gimble lock, gamma=pi/2" << endl
+                 << endl;
+            gamma = M_PI / 2.0;
+            delta = 0; // delta - любое из R
+            if (-a2 + b2 > 0)
+                beta = delta + 2.0 * acos(1.0 / sqrt(2.0) * (a1 - b1));
+            else
+                beta = delta - 2.0 * acos(1.0 / sqrt(2.0) * (a1 - b1));
+        } else
+            ;
+    }
+    // ------------------------------------
+    if (fabs(a2 - b2) < EPS && fabs(a1 - b1) < EPS)
+        if (abs(a1 + b1) > EPS) {
+            cout << "Случай (3). "
+                 << "Внимание! Эффект Gimble lock, gamma=-pi/2" << endl
+                 << endl;
+            gamma = -M_PI / 2; // или gamma=3*M_PI/2;
+            delta = 0;         // delta - любое из R
+            beta = -delta - 2.0 * atan((a2 + b2) / (a1 + b1));
+        } else if (fabs(a2 + b2) > EPS) {
+            cout << "Случай (4). "
+                 << "Внимание! Эффект Gimble lock, gamma=-pi/2" << endl
+                 << endl;
+            gamma = -M_PI / 2.0;
+            delta = M_PI; // delta - любое из R
+            beta = 2.0 * atan((a1 + b1) / (a2 + b2));
+        } else
+            ;
+    // -----------------------------------
+    if (fabs(a1 + b1) < EPS && fabs(a2 - b2) > EPS && fabs(a1 - b1) < EPS && fabs(a2 + b2) > EPS) {
+        cout << "Случай (5)." << endl;
+        beta = M_PI;
+        delta = 0;
+        if (-a2 > 0 || fabs(a2) < EPS)
+            gamma = 2.0 * asin(b2);
+        else
+            gamma = 2.0 * M_PI - 2.0 * asin(b2);
+    } else
+        ;
+    // -----------------------------------
+    if (fabs(a1 + b1) > EPS && fabs(a2 - b2) > EPS && fabs(a1 - b1) < EPS && fabs(a2 + b2) < EPS) {
+        cout << "Случай (6)." << endl;
+        beta = M_PI / 2.0;
+        delta = -M_PI / 2.0;
+        if (a1 + b1 > 0)
+            gamma = -M_PI / 2.0 + 2 * asin(sqrt(2.0) / 2.0 * (-a2 + b2));
+        else
+            gamma = 2.0 * M_PI - (-M_PI / 2.0 + 2 * asin(sqrt(2.0) / 2.0 * (-a2 + b2)));
+        /*
+          // -----------------------------
+          // Вариант вычислений угла gamma
+          // -----------------------------
+          if (a1+b1-a2+b2>0)
+            gamma=2.0*asin(-(a1+b1+a2-b2)/2.0);
+          else gamma=2.0*M_PI-2.0*asin(-(a1+b1+a2-b2)/2.0);
+        */
+    } else
+        ;
+    // -----------------------------------
+    if (fabs(a1 + b1) > EPS && fabs(a2 - b2) < EPS && fabs(a1 - b1) > EPS && fabs(a2 + b2) < EPS) {
+        cout << "Случай (7)." << endl;
+        beta = 0;
+        delta = 0;
+        // ---------------------------------------------
+        // Решение системы тригонометрических уравнений:
+        //
+        //  sin(gamma/2)=-b1;
+        //  cos(gamma/2)= a1
+        // ----------------------
+        if (a1 > 0 || fabs(a1) < EPS)
+            gamma = 2.0 * asin(-b1);
+        else
+            gamma = 2.0 * M_PI - 2.0 * asin(-b1);
+    } else
+        ;
+    // -------------------------------------------------------
+    if (fabs(a1 + b1) > EPS && fabs(a1 - b1) > EPS && fabs(a2 + b2) > EPS)
+    // && fabs(a2-b2)>EPS)
+    {
+        cout << "Случай (8)." << endl;
+        beta = -atan((a2 + b2) / (a1 + b1)) - atan((a2 - b2) / (a1 - b1));
+        delta = -atan((a2 + b2) / (a1 + b1)) + atan((a2 - b2) / (a1 - b1));
+
+        if (sqrt(2.0) / 2.0 * (a1 - b1) / cos(beta / 2.0 - delta / 2.0) > 0)
+            gamma = M_PI / 2.0 +
+                    2.0 * asin(sqrt(2.0) / 2.0 * (a2 + b2) / sin(beta / 2.0 + delta / 2.0));
+        else {
+            gamma = M_PI / 2.0 -
+                    2.0 * asin(sqrt(2.0) / 2.0 * (a2 + b2) / sin(beta / 2.0 + delta / 2.0));
+            alpha = alpha + M_PI;
+        }
+    } else
+        ;
+    // clang-format on
+}
+
+decomposition Operator::zyxDecomposition() { return zyxDecomposition(_op); }
+
 vectorangle Operator::vectorAngleDec(UnitaryMatrix2x2 op) {
     decomposition zyDec = Operator::zyDecomposition(op);
 
