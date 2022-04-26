@@ -95,11 +95,16 @@ public:
     bool setOperatorByXyDecomposition(decomposition dec);
     bool setOperatorByZyxDecomposition(decomposition dec);
     bool setOperatorByVectorAngle(vectorangle va);
-    void setOperator(UnitaryMatrix2x2 op);
+    void setOperator(UnitaryMatrix2x2 op, QString opName);
 
-    static UnitaryMatrix2x2 genRandUnitaryMatrix(qint64 seed);
+    static UnitaryMatrix2x2 genRandUnitaryMatrix(qint64 seed = 0);
 
     UnitaryMatrix2x2 getOperator() { return _op; }
+
+    static QString getCurOperatorMatrixStr(UnitaryMatrix2x2 op);
+    QString        getCurOperatorMatrixStr();
+    static QString getOperatorName(UnitaryMatrix2x2 op);
+    QString        getOperatorName();
 
     void toX();
     void toY();
@@ -113,6 +118,7 @@ public:
     void toZrotate(double the);
     void toId();
     void toRnRotate(vectorangle);
+    void toRandUnitaryMatrix();
 
     complex a() { return _op.a(); }
     complex b() { return _op.b(); }
@@ -121,6 +127,7 @@ public:
 
 private:
     UnitaryMatrix2x2 _op;
+    QString          _opName;
 };
 
 #endif // OPERATOR_HPP

@@ -115,6 +115,7 @@ UnitaryMatrix2x2 UnitaryMatrix2x2::operator*(const UnitaryMatrix2x2 &op) {
     return UnitaryMatrix2x2({a, b, c, d});
 }
 
+UnitaryMatrix2x2 UnitaryMatrix2x2::getId() { return UnitaryMatrix2x2({1, 0, 0, 1}); }
 UnitaryMatrix2x2 UnitaryMatrix2x2::getX() { return UnitaryMatrix2x2({0, 1, 1, 0}); }
 UnitaryMatrix2x2 UnitaryMatrix2x2::getY() {
     return UnitaryMatrix2x2({0, -complex(0, 1), complex(0, 1), 0});

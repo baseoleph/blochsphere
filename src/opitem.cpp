@@ -23,9 +23,8 @@
 #include <QTime>
 #include <QToolBar>
 
-OpItem::OpItem(const QString &str, Operator op) : QListWidgetItem(str), oper(op) {
-    this->setToolTip(parseComplexToStr(op.a()) + "\t" + parseComplexToStr(op.b()) + "\n" +
-                     parseComplexToStr(op.c()) + "\t" + parseComplexToStr(op.d()));
+OpItem::OpItem(const QString &opName, Operator op) : QListWidgetItem(opName), oper(op) {
+    this->setToolTip(op.getCurOperatorMatrixStr());
 }
 
 Operator OpItem::getOp() { return oper; }

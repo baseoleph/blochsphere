@@ -65,6 +65,7 @@ public:
     QString cStr() const { return parseComplexToStr(_matrix.c); }
     QString dStr() const { return parseComplexToStr(_matrix.d); }
 
+    static UnitaryMatrix2x2 getId();
     static UnitaryMatrix2x2 getX();
     static UnitaryMatrix2x2 getY();
     static UnitaryMatrix2x2 getZ();

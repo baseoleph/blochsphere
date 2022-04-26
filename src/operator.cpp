@@ -16,7 +16,7 @@
 
 #include "operator.hpp"
 
-Operator::Operator() {}
+Operator::Operator() { toId(); }
 
 QVector<Spike> Operator::rotate(Spike s, QVector3D v, double gamma) {
     QVector<Spike> trace;
@@ -615,7 +615,11 @@ UnitaryMatrix2x2 Operator::genRandUnitaryMatrix(qint64 seed) {
     // DOTO get rid of c-style rand, must use c++-style
     complex i{0, 1};
     double  a1, a2, b1, b2, moda, modb, phi;
-    srand(time(nullptr) * rand());
+
+    if (seed == 0) {
+        seed = time(nullptr) * rand();
+    }
+    srand(seed);
     moda = rand() / double(RAND_MAX);
     a1 = random(0., 1.);
     a2 = random(0., 1. - a1 * a1);
@@ -639,7 +643,10 @@ UnitaryMatrix2x2 Operator::genRandUnitaryMatrix(qint64 seed) {
     return op;
 }
 
-void Operator::setOperator(UnitaryMatrix2x2 op) { _op = op; }
+void Operator::setOperator(UnitaryMatrix2x2 op, QString opName) {
+    _op = op;
+    _opName = opName;
+}
 
 QVector<Spike> Operator::applyOperator(Spike s) { return applyOperator(s, _op); }
 
@@ -658,16 +665,26 @@ QVector<Spike> Operator::applyVectorRotation(Spike s, UnitaryMatrix2x2 op) {
 
 QVector<Spike> Operator::applyVectorRotation(Spike s) { return applyVectorRotation(s, _op); }
 
-void Operator::toX() { _op = UnitaryMatrix2x2::getX(); }
-void Operator::toY() { _op = UnitaryMatrix2x2::getY(); }
-void Operator::toZ() { _op = UnitaryMatrix2x2::getZ(); }
-void Operator::toH() { _op = UnitaryMatrix2x2::getH(); }
-void Operator::toS() { _op = UnitaryMatrix2x2::getS(); }
-void Operator::toT() { _op = UnitaryMatrix2x2::getT(); }
-void Operator::toPhi(double gamma) { _op = UnitaryMatrix2x2::getPhi(gamma); }
-void Operator::toXrotate(double the) { _op = UnitaryMatrix2x2::getXrotate(the); }
-void Operator::toYrotate(double the) { _op = UnitaryMatrix2x2::getYrotate(the); }
-void Operator::toZrotate(double the) { _op = UnitaryMatrix2x2::getZrotate(the); }
+void Operator::toId() { setOperator(UnitaryMatrix2x2::getId(), "Id"); }
+void Operator::toX() { setOperator(UnitaryMatrix2x2::getX(), "X"); }
+void Operator::toY() { setOperator(UnitaryMatrix2x2::getY(), "Y"); }
+void Operator::toZ() { setOperator(UnitaryMatrix2x2::getZ(), "Z"); }
+void Operator::toH() { setOperator(UnitaryMatrix2x2::getH(), "H"); }
+void Operator::toS() { setOperator(UnitaryMatrix2x2::getS(), "S"); }
+void Operator::toT() { setOperator(UnitaryMatrix2x2::getT(), "T"); }
+void Operator::toPhi(double gamma) {
+    setOperator(UnitaryMatrix2x2::getPhi(gamma),
+                "Phi(" + QString::number(gamma * 180 / M_PI) + ")");
+}
+void Operator::toXrotate(double the) {
+    setOperator(UnitaryMatrix2x2::getXrotate(the), "Rx(" + QString::number(the * 180 / M_PI) + ")");
+}
+void Operator::toYrotate(double the) {
+    setOperator(UnitaryMatrix2x2::getYrotate(the), "Ry(" + QString::number(the * 180 / M_PI) + ")");
+}
+void Operator::toZrotate(double the) {
+    setOperator(UnitaryMatrix2x2::getZrotate(the), "Rz(" + QString::number(the * 180 / M_PI) + ")");
+}
 
 QVector<Spike> Operator::applyZxDecomposition(Spike s) { return applyZxDecomposition(s, _op); }
 QVector<Spike> Operator::applyZyDecomposition(Spike s) { return applyZyDecomposition(s, _op); }
@@ -679,7 +696,7 @@ bool Operator::setOperatorByZxDecomposition(decomposition dec) {
     if (not matrixOp.updateMatrix(getMatrixByZxDec(dec))) {
         return false;
     }
-    setOperator(matrixOp);
+    setOperator(matrixOp, getOperatorName(matrixOp));
     return true;
 }
 
@@ -688,7 +705,7 @@ bool Operator::setOperatorByZyDecomposition(decomposition dec) {
     if (not matrixOp.updateMatrix(getMatrixByZyDec(dec))) {
         return false;
     }
-    setOperator(matrixOp);
+    setOperator(matrixOp, getOperatorName(matrixOp));
     return true;
 }
 
@@ -697,7 +714,7 @@ bool Operator::setOperatorByXyDecomposition(decomposition dec) {
     if (not matrixOp.updateMatrix(getMatrixByXyDec(dec))) {
         return false;
     }
-    setOperator(matrixOp);
+    setOperator(matrixOp, getOperatorName(matrixOp));
     return true;
 }
 
@@ -706,7 +723,7 @@ bool Operator::setOperatorByZyxDecomposition(decomposition dec) {
     if (not matrixOp.updateMatrix(getMatrixByZyxDec(dec))) {
         return false;
     }
-    setOperator(matrixOp);
+    setOperator(matrixOp, getOperatorName(matrixOp));
     return true;
 }
 
@@ -715,11 +732,9 @@ bool Operator::setOperatorByVectorAngle(vectorangle va) {
     if (not matrixOp.updateMatrix(getMatrixByVecAng(va))) {
         return false;
     }
-    setOperator(matrixOp);
+    setOperator(matrixOp, getOperatorName(matrixOp));
     return true;
 }
-
-void Operator::toId() { _op = UnitaryMatrix2x2(); }
 
 matrix2x2 Operator::getMatrixByZxDec(decomposition dec) {
     double    alpha = dec.alpha * M_PI / 180;
@@ -803,3 +818,57 @@ void Operator::toRnRotate(vectorangle) {
     //        curOperator = cos(ng / 2.0) * Iop - C_I * sin(ng / 2.0) * (nX * Xop + nY * Yop + nZ *
     //        Zop);
 }
+
+QString Operator::getCurOperatorMatrixStr(UnitaryMatrix2x2 op) {
+    return "<style>"
+           "table, th, td {"
+           "border: 1px solid black;"
+           "border-collapse: collapse;"
+           "padding: 5px;"
+           "white-space: nowrap;"
+           "}"
+           "</style>"
+           "<table>"
+           "<tr>"
+           "<td>" +
+           op.aStr() +
+           "</td>"
+           "<td>" +
+           op.bStr() +
+           "</td>"
+           "</tr><tr>"
+           "<td>" +
+           op.cStr() +
+           "</td>"
+           "<td>" +
+           op.dStr() +
+           "</td>"
+           "</tr></table>";
+}
+
+QString Operator::getCurOperatorMatrixStr() { return getCurOperatorMatrixStr(_op); }
+
+QString Operator::getOperatorName(UnitaryMatrix2x2 op) {
+    QString opName = "U";
+    if (UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2::getId(), op)) {
+        opName = "Id";
+    } else if (UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2::getX(), op)) {
+        opName = "X";
+    } else if (UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2::getY(), op)) {
+        opName = "Y";
+    } else if (UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2::getZ(), op)) {
+        opName = "Z";
+    } else if (UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2::getH(), op)) {
+        opName = "H";
+    } else if (UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2::getS(), op)) {
+        opName = "S";
+    } else if (UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2::getT(), op)) {
+        opName = "T";
+    }
+    return opName;
+}
+void Operator::toRandUnitaryMatrix() {
+    UnitaryMatrix2x2 matrix = genRandUnitaryMatrix();
+    setOperator(matrix, getOperatorName(matrix));
+}
+QString Operator::getOperatorName() { return _opName; }

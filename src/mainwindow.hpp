@@ -110,7 +110,6 @@ private:
     static void  updateComplexLineEdit(QLineEdit *lineEdit);
     void         startMove(Vector *v, CurDecompFun getDec);
     CurDecompFun getCurrentDecomposition();
-    void         updateCurOperatorTable();
     void         updateOp(OPERATOR_FORM exclude = OPERATOR_FORM::NOTHING);
 
     QWidget *makeDecompWid();
@@ -125,7 +124,6 @@ private:
     QPushButton *makeOpButton(const QString &str);
     QPushButton *appBut = nullptr;
     QPushButton *appQueBut = nullptr;
-    QLabel      *currentOperatorLabel = nullptr;
 
     QTabWidget *rxyzTab = nullptr;
 
@@ -157,7 +155,6 @@ private:
 
     Operator curOperator;
     Operator singleOperator;
-    QString  curOpName;
 
     QLineEdit *mat[2][2];
 

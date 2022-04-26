@@ -16,6 +16,7 @@
 
 #include "mainwindow.hpp"
 #include "blochdialog.hpp"
+#include "operator.hpp"
 #include <QCheckBox>
 #include <QGridLayout>
 #include <QGroupBox>
@@ -571,16 +572,14 @@ QWidget *MainWindow::makeOpWid() {
     gbLay->setSpacing(5);
     qGb->setLayout(gbLay);
 
-    appBut = new QPushButton("Apply operator");
+    appBut = new QPushButton("Apply Id");
+    appBut->setToolTip(curOperator.getCurOperatorMatrixStr());
     appBut->setFixedHeight(35);
     connect(appBut, SIGNAL(clicked()), SLOT(slotApplyOp()));
 
     auto *addToQueBut = new QPushButton("Add to queue");
     addToQueBut->setFixedHeight(35);
     connect(addToQueBut, SIGNAL(clicked()), SLOT(slotAddToQue()));
-
-    currentOperatorLabel = new QLabel();
-    updateCurOperatorTable();
 
     auto *horLay = new QHBoxLayout;
     horLay->addWidget(appBut);
@@ -589,7 +588,6 @@ QWidget *MainWindow::makeOpWid() {
     auto *pLay = new QVBoxLayout();
     pLay->addWidget(stackW);
     pLay->addWidget(qGb);
-    pLay->addWidget(currentOperatorLabel);
     pLay->addStretch();
     pLay->addLayout(horLay);
 
@@ -705,7 +703,6 @@ void MainWindow::slotSetOperatorClicked() {
         delete aIn;
         break;
     }
-    curOpName = str.c_str();
     updateOp();
 }
 
@@ -758,7 +755,6 @@ void MainWindow::slotSetRXYZOp() {
         break;
     }
 
-    curOpName = "U";
     updateOp();
 }
 
@@ -779,15 +775,13 @@ void MainWindow::slotSetMatrixOp() {
         QMessageBox::warning(this, "Error", "Matrix must be unitary");
         return;
     }
-    curOpName = "U";
-    curOperator.setOperator(matrixOp);
+    curOperator.setOperator(matrixOp, Operator::getOperatorName(matrixOp));
 
     updateOp(OPERATOR_FORM::MATRIX);
 }
 
 void MainWindow::slotSetRandomOp() {
-    curOpName = "U";
-    curOperator.setOperator(Operator::genRandUnitaryMatrix(time(nullptr)));
+    curOperator.toRandUnitaryMatrix();
 
     updateOp();
 }
@@ -829,7 +823,6 @@ void MainWindow::slotSetAxOp() {
             return;
         }
 
-        curOpName = "U";
         updateOp(OPERATOR_FORM::VECTOR);
     } else {
         QMessageBox::warning(this, "Error", "Wrong input: Vector (x;y;z)");
@@ -838,6 +831,8 @@ void MainWindow::slotSetAxOp() {
 }
 
 void MainWindow::updateOp(OPERATOR_FORM exclude) {
+    appBut->setText("Apply " + curOperator.getOperatorName());
+
     decomposition zyDec = curOperator.zyDecomposition();
     rZyAlpEd->setText(numberToStr(zyDec.alpha));
     rZyBetEd->setText(numberToStr(zyDec.beta));
@@ -867,7 +862,7 @@ void MainWindow::updateOp(OPERATOR_FORM exclude) {
         mat[0][1]->setText(parseComplexToStr(curOperator.getOperator().b()));
         mat[1][0]->setText(parseComplexToStr(curOperator.getOperator().c()));
         mat[1][1]->setText(parseComplexToStr(curOperator.getOperator().d()));
-        updateCurOperatorTable();
+        appBut->setToolTip(curOperator.getCurOperatorMatrixStr());
     }
 
     vectorangle va = curOperator.vectorAngleDec();
@@ -882,10 +877,8 @@ void MainWindow::updateOp(OPERATOR_FORM exclude) {
     }
 }
 
-// TODO check
 void MainWindow::slotQueItemClicked(QListWidgetItem *it) {
     auto *opi = (OpItem *)it;
-    curOpName = opi->text();
     curOperator = opi->getOp();
     updateOp();
 }
@@ -896,15 +889,15 @@ void MainWindow::slotOpItemDelete() {
 }
 
 void MainWindow::slotAddToQue() {
-    if (curOpName == "") {
-        curOpName = "U";
-    }
-    auto *it = new OpItem(curOpName, curOperator);
+    auto *it = new OpItem(curOperator.getOperatorName(), curOperator);
     opQueWid->insertItem(0, it);
 }
 
 void MainWindow::slotApplyOp() {
     stopTimer();
+    if (curOperator.getOperatorName() == "Id") {
+        return;
+    }
     foreach (auto e, vectors.keys()) { startMove(e, getCurrentDecomposition()); }
 }
 
@@ -978,25 +971,6 @@ void MainWindow::slotComplexLineEditChanged(const QString &) {
 void MainWindow::updateComplexLineEdit(QLineEdit *lineEdit) {
     QRegExp re(QString::fromUtf8("[IШш]"));
     lineEdit->setText(lineEdit->text().replace(re, "i"));
-}
-void MainWindow::updateCurOperatorTable() {
-    currentOperatorLabel->setText("<table>"
-                                  "<tr>"
-                                  "<td>" +
-                                  curOperator.getOperator().aStr() +
-                                  "</td>"
-                                  "<td>" +
-                                  curOperator.getOperator().bStr() +
-                                  "</td>"
-                                  "</tr><tr>"
-                                  "<td>" +
-                                  curOperator.getOperator().cStr() +
-                                  "</td>"
-                                  "<td>" +
-                                  curOperator.getOperator().dStr() +
-                                  "</td>"
-
-                                  "</tr></table>");
 }
 void MainWindow::slotToggleRotateVector(bool f) {
     foreach (auto e, spheres) { e->setEnabledRotateVector(f); }
