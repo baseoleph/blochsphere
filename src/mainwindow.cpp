@@ -111,6 +111,10 @@ void MainWindow::slotTimer() {
             circuitStepNumber += 1;
             if (circuitStepNumber >= circuit->getSizeOfSteps()) {
                 isCircuitAnimation = false;
+                vectorangle va = curOperator.vectorAngleDec();
+                foreach (auto e, vectors.keys()) {
+                    e->setRotateVector(QVector3D(va.x, va.y, va.z));
+                }
                 stopTimer();
             } else {
                 nextAnimStepCircuit();
@@ -638,10 +642,12 @@ void MainWindow::slotRecallState() {
 
 void MainWindow::slotShowTrace() {
     foreach (auto &e, vectors.keys()) { e->setEnableTrace(showTAct->isChecked()); }
+    foreach (auto e, spheres) { e->update(); }
 }
 
 void MainWindow::slotClearTrace() {
     foreach (auto &e, vectors.keys()) { e->clearTrace(); }
+    foreach (auto e, spheres) { e->update(); }
 }
 
 void MainWindow::slotTraceColor(int index) {
@@ -881,7 +887,7 @@ void MainWindow::updateOp(OPERATOR_FORM exclude) {
     }
 
     vectorangle va = curOperator.vectorAngleDec();
-    foreach (auto e, spheres) { e->setRotateVector(QVector3D(va.x, va.y, va.z)); }
+    foreach (auto e, vectors.keys()) { e->setRotateVector(QVector3D(va.x, va.y, va.z)); }
 
     if (exclude != OPERATOR_FORM::VECTOR) {
         axRnEd->setText(QString("%1;%2;%3")
@@ -890,6 +896,8 @@ void MainWindow::updateOp(OPERATOR_FORM exclude) {
                             .arg(roundNumber(va.z)));
         ngRnEd->setText(QString("%1").arg(roundNumber(va.angle * 180 / M_PI)));
     }
+
+    foreach (auto e, spheres) { e->update(); }
 }
 
 void MainWindow::slotQueItemClicked(QListWidgetItem *it) {
@@ -939,6 +947,8 @@ void MainWindow::startMove(Vector *v, CurDecompFun getDec) {
 }
 
 void MainWindow::startMove(Vector *v, Operator &op, CurDecompFun getDec) {
+    vectorangle va = op.vectorAngleDec();
+    v->setRotateVector(QVector3D(va.x, va.y, va.z));
     v->changeVector((op.*getDec)(v->getSpike()));
     v->setAnimateState(true);
     startTimer();
@@ -1001,7 +1011,8 @@ void MainWindow::updateComplexLineEdit(QLineEdit *lineEdit) {
     lineEdit->setText(lineEdit->text().replace(re, "i"));
 }
 void MainWindow::slotToggleRotateVector(bool f) {
-    foreach (auto e, spheres) { e->setEnabledRotateVector(f); }
+    foreach (auto e, vectors.keys()) { e->setEnabledRotateVector(f); }
+    foreach (auto e, spheres) { e->update(); }
 }
 
 void MainWindow::slotToggleAutoNormalize(bool f) {
@@ -1018,9 +1029,14 @@ void MainWindow::slotPlusSphere() {
 
         auto vct = new Vector(0., 0.);
         addVector(vct, vectors, spheres.last());
+
         auto vectorWidget = new VectorWidget(topTabWid, vct);
         topTabWid->addTab(vectorWidget, QString::number(spheres.size()));
         circuit->addQubit(vct);
+
+        vectorangle va = curOperator.vectorAngleDec();
+        vct->setRotateVector(QVector3D(va.x, va.y, va.z));
+        vct->setEnabledRotateVector(rtRb->isChecked());
     }
 
     spherePlusBut->setEnabled(spheres.size() < MAX_COUNT_SPHERES);
@@ -1058,6 +1074,7 @@ void MainWindow::stopTimer() {
     tm->stop();
     emit signalAnimating(false);
     setEnabledWidgets(true);
+    foreach (auto e, spheres) { e->update(); }
 }
 
 void MainWindow::setEnabledWidgets(bool f) {

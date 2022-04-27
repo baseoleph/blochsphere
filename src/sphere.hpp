@@ -28,8 +28,6 @@ public:
     // TODO realize safety add end detach vectors
     void addVector(Vector *v) { vectors.append(v); }
     void deleteVector(Vector *v);
-    void setEnabledRotateVector(bool f) { _isRotateVectorEnable = f; }
-    void setRotateVector(QVector3D v) { rotateVector = v; }
 
 protected:
     void initializeGL() override;
@@ -46,12 +44,10 @@ private:
     const QFont font = QFont("System", 11);
     // TODO better create functions with pattern views
     // like default view, xOy vew etc.
-    GLfloat   scaleFactor = 1;
-    GLfloat   xAngle = -60;
-    GLfloat   yAngle = 0;
-    GLfloat   zAngle = -135;
-    QVector3D rotateVector;
-    bool      _isRotateVectorEnable = false;
+    GLfloat scaleFactor = 1;
+    GLfloat xAngle = -60;
+    GLfloat yAngle = 0;
+    GLfloat zAngle = -135;
 
     QList<Vector *> vectors;
 

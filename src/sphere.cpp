@@ -217,14 +217,6 @@ void Sphere::drawAxis() {
     glVertex3f(0.f, -0.025f, axSize - 0.1f);
     glEnd();
     renderText(0, 0, axSize + 0.1f, "z", font);
-
-    if (_isRotateVectorEnable) {
-        qglColor(Qt::blue);
-        glBegin(GL_LINES);
-        glVertex3f(rotateVector.x(), rotateVector.y(), rotateVector.z());
-        glVertex3f(-rotateVector.x(), -rotateVector.y(), -rotateVector.z());
-        glEnd();
-    }
 }
 
 void Sphere::drawVectors() {
@@ -243,6 +235,16 @@ void Sphere::drawVectors() {
             }
             glDisable(GL_DEPTH_TEST);
         }
+
+        if (e->isRotateVectorEnable()) {
+            qglColor(Qt::blue);
+            glLineWidth(3.f);
+            glBegin(GL_LINES);
+            glVertex3f(e->rotateVector().x(), e->rotateVector().y(), e->rotateVector().z());
+            glVertex3f(-e->rotateVector().x(), -e->rotateVector().y(), -e->rotateVector().z());
+            glEnd();
+        }
+
         glColor3f(e->getSelfColor().redF(), e->getSelfColor().greenF(), e->getSelfColor().blueF());
         glLineWidth(2.5f);
 
