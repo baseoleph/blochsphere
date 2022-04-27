@@ -107,6 +107,14 @@ void MainWindow::slotTimer() {
                 curOperator = singleOperator;
                 isQueueAnimation = false;
             }
+        } else if (isCircuitAnimation) {
+            circuitStepNumber += 1;
+            if (circuitStepNumber >= circuit->getSizeOfSteps()) {
+                isCircuitAnimation = false;
+                stopTimer();
+            } else {
+                nextAnimStepCircuit();
+            }
         } else {
             stopTimer();
         }
@@ -125,6 +133,12 @@ void MainWindow::createSphere() {
             controlLayout->addWidget(spheres.last(), i, j);
         }
     }
+    circuit = new Circuit(this);
+    circuit->setFixedHeight(300);
+    connect(this, SIGNAL(signalAnimating(bool)), circuit, SLOT(slotParentAnimating(bool)));
+    connect(circuit, SIGNAL(signalStartAnimation()), this, SLOT(slotStartCircuitMove()));
+    emit signalAnimating(false);
+    controlLayout->addWidget(circuit, 1, 1);
     controlWidget->setFocus();
 }
 
@@ -287,6 +301,7 @@ void MainWindow::createSideWidget() {
     auto vct = new Vector(0., 0.);
     addVector(vct, vectors, spheres[0]);
     auto vectorWidget = new VectorWidget(topTabWid, vct);
+    circuit->addQubit(vct);
 
     topTabWid->addTab(vectorWidget, "1");
     mainLay->addWidget(vectorSphereCreatorWid);
@@ -920,9 +935,21 @@ void MainWindow::slotApplyQue() {
 void MainWindow::startMove(Vector *v, CurDecompFun getDec) {
     v->changeVector((curOperator.*getDec)(v->getSpike()));
     v->setAnimateState(true);
-    appBut->setEnabled(false);
-    appQueBut->setEnabled(false);
     startTimer();
+}
+
+void MainWindow::startMove(Vector *v, Operator &op, CurDecompFun getDec) {
+    v->changeVector((op.*getDec)(v->getSpike()));
+    v->setAnimateState(true);
+    startTimer();
+}
+
+void MainWindow::nextAnimStepCircuit() {
+    stopTimer();
+
+    foreach (auto e, circuit->getQubits()) {
+        startMove(e->getVector(), e->getOperator(circuitStepNumber), getCurrentDecomposition());
+    }
 }
 
 CurDecompFun MainWindow::getCurrentDecomposition() {
@@ -956,6 +983,7 @@ void MainWindow::slotReset() {
 
         delete topTabWid->widget(spheres.size());
         topTabWid->removeTab(spheres.size());
+        circuit->removeQubit();
     }
 
     slotPlusSphere();
@@ -992,6 +1020,7 @@ void MainWindow::slotPlusSphere() {
         addVector(vct, vectors, spheres.last());
         auto vectorWidget = new VectorWidget(topTabWid, vct);
         topTabWid->addTab(vectorWidget, QString::number(spheres.size()));
+        circuit->addQubit(vct);
     }
 
     spherePlusBut->setEnabled(spheres.size() < MAX_COUNT_SPHERES);
@@ -1010,24 +1039,39 @@ void MainWindow::slotMinusSphere() {
 
         delete topTabWid->widget(spheres.size());
         topTabWid->removeTab(spheres.size());
+        circuit->removeQubit();
     }
 
     spherePlusBut->setEnabled(spheres.size() < MAX_COUNT_SPHERES);
     sphereMinusBut->setEnabled(spheres.size() > 1);
 }
+
 void MainWindow::startTimer() {
     if (not tm->isActive()) {
         tm->start(10);
+        emit signalAnimating(true);
     }
     setEnabledWidgets(false);
 }
+
 void MainWindow::stopTimer() {
     tm->stop();
+    emit signalAnimating(false);
     setEnabledWidgets(true);
 }
+
 void MainWindow::setEnabledWidgets(bool f) {
     appBut->setEnabled(f);
     appQueBut->setEnabled(f);
     spherePlusBut->setEnabled(f and spheres.size() < MAX_COUNT_SPHERES);
     sphereMinusBut->setEnabled(f and spheres.size() > 1);
+    circuit->runCircuitBut->setEnabled(f);
+    circuit->addStepBut->setEnabled(f and circuit->getQubits().size() < MAX_COUNT_OF_STEPS);
+    circuit->removeStepBut->setEnabled(f and circuit->getQubits().size() > 1);
+}
+
+void MainWindow::slotStartCircuitMove() {
+    circuitStepNumber = 0;
+    isCircuitAnimation = true;
+    nextAnimStepCircuit();
 }

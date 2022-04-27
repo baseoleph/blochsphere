@@ -17,6 +17,7 @@
 #ifndef MAINWINDOW_HPP
 #define MAINWINDOW_HPP
 
+#include "Circuit.h"
 #include "VectorWidget.h"
 #include "blochUtility.h"
 #include "operator.hpp"
@@ -45,6 +46,9 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
     explicit MainWindow(QWidget *parent = nullptr);
+
+signals:
+    void signalAnimating(bool f);
 
 public slots:
     void        addVector(Vector *v, MapVectors &mp);
@@ -83,12 +87,18 @@ public slots:
 
     void slotTimer();
 
+    void slotStartCircuitMove();
+
 private:
     QVector<Sphere *> spheres;
     MapVectors        vectors;
     MapVectors        savedVectors;
     bool              isAutoNormalize = true;
     QTimer           *tm = nullptr;
+    Circuit          *circuit = nullptr;
+
+    // TODO maybe should move to Circuit
+    int circuitStepNumber = 0;
 
     QWidget     *controlWidget = nullptr;
     QGridLayout *controlLayout = nullptr;
@@ -106,9 +116,12 @@ private:
 
     void setEnabledWidgets(bool f);
 
+    void nextAnimStepCircuit();
+
     // TODO merge duplicates
     static void  updateComplexLineEdit(QLineEdit *lineEdit);
     void         startMove(Vector *v, CurDecompFun getDec);
+    void         startMove(Vector *v, Operator& op, CurDecompFun getDec);
     CurDecompFun getCurrentDecomposition();
     void         updateOp(OPERATOR_FORM exclude = OPERATOR_FORM::NOTHING);
 
@@ -171,6 +184,7 @@ private:
     QLabel           *mtnStLab = nullptr;
     QComboBox        *colorComboBox = nullptr;
     bool              isQueueAnimation = false;
+    bool              isCircuitAnimation = false;
     QVector<OpItem *> opQueue;
 
     QListWidget *opQueWid = nullptr;

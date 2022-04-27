@@ -55,6 +55,12 @@ set(PROJECT_SOURCES
         src/blochUtility.h
         src/VectorWidget.cpp
         src/VectorWidget.h
+        src/Circuit.cpp
+        src/Circuit.h
+        src/CircuitQubit.cpp
+        src/CircuitQubit.h
+        src/CircuitOperator.cpp
+        src/CircuitOperator.h
         )
 
 add_executable(blochsphere ${PROJECT_SOURCES})
