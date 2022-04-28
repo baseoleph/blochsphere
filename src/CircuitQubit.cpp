@@ -20,11 +20,16 @@
 CircuitQubit::CircuitQubit(QWidget *parent, Vector *v, const QString &name, int cntOperators)
     : QWidget(parent), _v(v) {
     mainLayout = new QHBoxLayout(this);
+    mainLayout->setAlignment(Qt::AlignLeft);
+    mainLayout->setSpacing(1);
+    mainLayout->setMargin(0);
 
     updateOperators(cntOperators);
     _name = name;
 
-    mainLayout->addWidget(new QLabel(_name));
+    auto nameLabel = new QLabel(_name);
+    nameLabel->setFixedSize(cellWidth, cellHigh);
+    mainLayout->addWidget(nameLabel);
     foreach (auto e, operators) { mainLayout->addWidget(e); }
 }
 
@@ -35,6 +40,7 @@ void CircuitQubit::updateOperators(int len) {
     if (operators.size() < len) {
         while (operators.size() != len) {
             operators.append(new CircuitOperator(this, Operator()));
+            operators.last()->setFixedSize(cellWidth, cellHigh);
             mainLayout->addWidget(operators.last());
         }
     }

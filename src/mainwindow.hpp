@@ -101,7 +101,8 @@ private:
     int circuitStepNumber = 0;
 
     QWidget     *controlWidget = nullptr;
-    QGridLayout *controlLayout = nullptr;
+    QVBoxLayout *controlLayout = nullptr;
+    QHBoxLayout *sphereLayout = nullptr;
 
     void createSideWidget();
     void createSphere();
@@ -121,7 +122,7 @@ private:
     // TODO merge duplicates
     static void  updateComplexLineEdit(QLineEdit *lineEdit);
     void         startMove(Vector *v, CurDecompFun getDec);
-    void         startMove(Vector *v, Operator& op, CurDecompFun getDec);
+    void         startMove(Vector *v, Operator &op, CurDecompFun getDec);
     CurDecompFun getCurrentDecomposition();
     void         updateOp(OPERATOR_FORM exclude = OPERATOR_FORM::NOTHING);
 

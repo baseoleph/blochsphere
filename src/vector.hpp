@@ -73,10 +73,10 @@ public:
     inline QVector3D toQVector3D() const { return QVector3D(x(), y(), z()); }
     inline bool      hasPath() const { return not path_.empty(); }
 
-    void setEnabledRotateVector(bool f) { _isRotateVectorEnable = f; }
-    void setRotateVector(QVector3D v) { _rotateVector = v; }
-    bool isRotateVectorEnable() const { return _isRotateVectorEnable; }
-    const QVector3D& rotateVector() const { return _rotateVector; }
+    void             setEnabledRotateVector(bool f) { _isRotateVectorEnable = f; }
+    void             setRotateVector(QVector3D v) { _rotateVector = v; }
+    bool             isRotateVectorEnable() const { return _isRotateVectorEnable; }
+    const QVector3D &rotateVector() const { return _rotateVector; }
 
     // TODO when I should use inline?
     void popPath();
@@ -126,7 +126,7 @@ private:
     bool           traceEnabled_ = true;
     bool           isNowAnimate_ = false;
     QVector3D      _rotateVector;
-    bool      _isRotateVectorEnable = false;
+    bool           _isRotateVectorEnable = false;
 
     void                  tracePushBack();
     void                  initialSpike();

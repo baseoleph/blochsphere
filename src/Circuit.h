@@ -33,11 +33,11 @@ public:
 
     QWidget                       *makeButtons();
     const QVector<CircuitQubit *> &getQubits() { return qubits; }
-    int getSizeOfSteps() { return lenOfSteps; }
+    int                            getSizeOfSteps() { return lenOfSteps; }
 
-    QPushButton            *runCircuitBut = nullptr;
-    QPushButton            *addStepBut = nullptr;
-    QPushButton            *removeStepBut = nullptr;
+    QPushButton *runCircuitBut = nullptr;
+    QPushButton *addStepBut = nullptr;
+    QPushButton *removeStepBut = nullptr;
 
 signals:
     void signalStartAnimation();
@@ -50,6 +50,7 @@ public slots:
 
 private:
     QVBoxLayout            *mainLayout = nullptr;
+    QVBoxLayout            *qubitsLayout = nullptr;
     QVector<CircuitQubit *> qubits;
     int                     lenOfSteps = 1;
     bool                    isParentAnimating = true;

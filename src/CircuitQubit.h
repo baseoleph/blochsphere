@@ -40,6 +40,8 @@ private:
     Vector                    *_v;
     QVector<CircuitOperator *> operators;
     QString                    _name;
+    int                        cellHigh = 30;
+    int                        cellWidth = 50;
 };
 
 #endif // CIRCUITQUBIT_H

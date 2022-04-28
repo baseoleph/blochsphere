@@ -130,19 +130,23 @@ void MainWindow::slotTimer() {
 void MainWindow::createSphere() {
     controlWidget = new QWidget(this);
     setCentralWidget(controlWidget);
-    controlLayout = new QGridLayout(controlWidget);
+    controlLayout = new QVBoxLayout(controlWidget);
+    sphereLayout = new QHBoxLayout(controlLayout->widget());
+    auto sphereWidget = new QWidget(controlWidget);
+    sphereWidget->setLayout(sphereLayout);
+
     for (int i = 0; i < 1; ++i) {
         for (int j = 1; j < 2; ++j) {
             spheres.append(new Sphere(controlWidget));
-            controlLayout->addWidget(spheres.last(), i, j);
+            sphereLayout->addWidget(spheres.last());
         }
     }
     circuit = new Circuit(this);
-    circuit->setFixedHeight(300);
     connect(this, SIGNAL(signalAnimating(bool)), circuit, SLOT(slotParentAnimating(bool)));
     connect(circuit, SIGNAL(signalStartAnimation()), this, SLOT(slotStartCircuitMove()));
     emit signalAnimating(false);
-    controlLayout->addWidget(circuit, 1, 1);
+    controlLayout->addWidget(sphereWidget);
+    controlLayout->addWidget(circuit);
     controlWidget->setFocus();
 }
 
@@ -1025,7 +1029,7 @@ void MainWindow::slotToggleAutoNormalize(bool f) {
 void MainWindow::slotPlusSphere() {
     if (spheres.size() < MAX_COUNT_SPHERES) {
         spheres.append(new Sphere(controlWidget));
-        controlLayout->addWidget(spheres.last(), 0, spheres.size());
+        sphereLayout->addWidget(spheres.last());
 
         auto vct = new Vector(0., 0.);
         addVector(vct, vectors, spheres.last());

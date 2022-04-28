@@ -20,7 +20,12 @@
 
 Circuit::Circuit(QWidget *parent) : QWidget(parent) {
     mainLayout = new QVBoxLayout(this);
+    qubitsLayout = new QVBoxLayout(mainLayout->widget());
+    mainLayout->addLayout(qubitsLayout);
     mainLayout->addWidget(makeButtons());
+    mainLayout->setAlignment(Qt::AlignBottom);
+    mainLayout->setSpacing(5);
+    mainLayout->setMargin(0);
     lenOfSteps = 1;
     removeStepBut->setEnabled(lenOfSteps > 1);
 }
@@ -34,11 +39,8 @@ void Circuit::addQubit(Vector *v) {
     auto qbt = new CircuitQubit(
         this, v, CircuitQubit::getPsiHtml(QString::number(qubits.size() + 1)), lenOfSteps);
     qubits.append(qbt);
-    mainLayout->addWidget(qbt);
-
-    qDebug() << "---------------------------------------------------------------------";
-    foreach (auto e, qubits) { e->printOperators(); }
-    qDebug() << "---------------------------------------------------------------------";
+    this->setFixedHeight(50 + 35 * qubits.size());
+    qubitsLayout->addWidget(qbt);
 }
 
 void Circuit::removeQubit() {
@@ -46,14 +48,12 @@ void Circuit::removeQubit() {
         mainLayout->removeWidget(qubits.last());
         delete qubits.last();
         qubits.pop_back();
+        this->setFixedHeight(50 + 35 * qubits.size());
     }
-
-    qDebug() << "---------------------------------------------------------------------";
-    foreach (auto e, qubits) { e->printOperators(); }
-    qDebug() << "---------------------------------------------------------------------";
 }
 QWidget *Circuit::makeButtons() {
     auto wdt = new QWidget(this);
+    wdt->setFixedHeight(50);
     auto layout = new QHBoxLayout(wdt);
 
     addStepBut = new QPushButton("Add step");
