@@ -296,6 +296,8 @@ void MainWindow::createSideWidget() {
     // TODO maybe better use function for it
     auto vct = new Vector(0., 0.);
     addVector(vct, vectors, spheres[0]);
+    vct->setName(QString::number(vectors.size()));
+    vct->setColorByNameIndex();
     auto vectorWidget = new VectorWidget(topTabWid, vct);
     connect(vectorWidget, SIGNAL(signalUpdate()), this, SLOT(slotUpdateSpheres()));
     circuit->addQubit(vct);
@@ -935,6 +937,7 @@ void MainWindow::slotApplyQue() {
 
 void MainWindow::startMove(Vector *v, CurDecompFun getDec) {
     v->changeVector((curOperator.*getDec)(v->getSpike()));
+    v->setOperator(curOperator.getOperatorName());
     v->setAnimateState(true);
     startTimer();
 }
@@ -942,6 +945,7 @@ void MainWindow::startMove(Vector *v, CurDecompFun getDec) {
 void MainWindow::startMove(Vector *v, Operator &op, CurDecompFun getDec) {
     vectorangle va = op.vectorAngleDec();
     v->setRotateVector(QVector3D(va.x, va.y, va.z));
+    v->setOperator(op.getOperatorName());
     v->changeVector((op.*getDec)(v->getSpike()));
     v->setAnimateState(true);
     startTimer();
@@ -1022,6 +1026,8 @@ void MainWindow::slotPlusSphere() {
 
         auto vct = new Vector(0., 0.);
         addVector(vct, vectors, spheres.last());
+        vct->setName(QString::number(vectors.size()));
+        vct->setColorByNameIndex();
 
         auto vectorWidget = new VectorWidget(topTabWid, vct);
         connect(vectorWidget, SIGNAL(signalUpdate()), this, SLOT(slotUpdateSpheres()));
@@ -1066,6 +1072,7 @@ void MainWindow::startTimer() {
 
 void MainWindow::stopTimer() {
     tm->stop();
+    foreach (auto e, vectors.keys()) { e->setOperator(""); }
     emit signalAnimating(false);
     setEnabledWidgets(true);
     slotUpdateSpheres();

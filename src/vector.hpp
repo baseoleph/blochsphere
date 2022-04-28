@@ -61,6 +61,7 @@ public:
 
     inline QColor                getSelfColor() const { return selfColor_; }
     inline void                  setSelfColor(QColor color) { selfColor_ = color; }
+    void                         setColorByNameIndex();
     inline QColor                getTraceColor() const { return traceColor_; }
     inline void                  setTraceColor(QColor color) { traceColor_ = color; }
     inline void                  setEnableTrace(bool b) { traceEnabled_ = b; }
@@ -115,6 +116,10 @@ public:
     static Spike createSpike(double the, double phi);
     static Spike createSpike(double a, complex b);
 
+    void    setName(QString str) { _name = str; }
+    void    setOperator(QString str) { _operator = str; }
+    QString getInfo() { return _name + (_operator == "" ? "" : ": " + _operator); }
+
 private:
     Spike          spike_;
     QVector<Spike> path_;
@@ -125,6 +130,8 @@ private:
     bool           isNowAnimate_ = false;
     QVector3D      _rotateVector;
     bool           _isRotateVectorEnable = false;
+    QString        _name;
+    QString        _operator;
 
     void                  tracePushBack();
     void                  initialSpike();

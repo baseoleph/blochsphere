@@ -127,6 +127,21 @@ void Vector::takeStep() {
         isNowAnimate_ = false;
     }
 }
+void Vector::setColorByNameIndex() {
+    if (_name == "") {
+        setSelfColor(Qt::red);
+    } else if (_name == "1") {
+        setSelfColor(Qt::red);
+    } else if (_name == "2") {
+        setSelfColor(Qt::blue);
+    } else if (_name == "3") {
+        setSelfColor(Qt::green);
+    } else if (_name == "4") {
+        setSelfColor(Qt::yellow);
+    } else if (_name == "5") {
+        setSelfColor(Qt::cyan);
+    }
+}
 
 #if QT_VERSION < 0x050000
 QQuaternion QQuaternionrotationTo(const QVector3D &from, const QVector3D &to) {

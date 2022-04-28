@@ -222,6 +222,7 @@ void Sphere::drawAxis() {
 void Sphere::drawVectors() {
     for (auto &e : vectors) {
         if (e->isTraceEnabled()) {
+            renderText(1.2, -1.2, 1.2, e->getInfo(), font);
             glEnable(GL_DEPTH_TEST);
             for (auto &segment : e->getTrace()) {
                 glColor3f(segment.color.redF(), segment.color.greenF(), segment.color.blueF());
