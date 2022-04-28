@@ -222,6 +222,19 @@ void MainWindow::createTopBar() {
     connect(normalizeCheckBox, SIGNAL(toggled(bool)), SLOT(slotToggleAutoNormalize(bool)));
 
     qtb->addWidget(normalizeCheckBox);
+    qtb->addSeparator();
+
+    speedLabel = new QLabel("Speed: 5 ");
+    qtb->addWidget(speedLabel);
+    speedUpButton = new QPushButton("Up");
+    speedUpButton->setFixedSize(50, 30);
+    speedDownButton = new QPushButton("Down");
+    speedDownButton->setFixedSize(50, 30);
+    qtb->addWidget(speedUpButton);
+    qtb->addWidget(speedDownButton);
+
+    connect(speedUpButton, SIGNAL(clicked()), this, SLOT(slotSpeedUp()));
+    connect(speedDownButton, SIGNAL(clicked()), this, SLOT(slotSpeedDown()));
 
     this->addToolBar(Qt::TopToolBarArea, qtb);
 }
@@ -1093,6 +1106,25 @@ void MainWindow::slotStartCircuitMove() {
     isCircuitAnimation = true;
     nextAnimStepCircuit();
 }
+
 void MainWindow::slotUpdateSpheres() {
     foreach (auto e, spheres) { e->update(); }
+}
+
+void MainWindow::slotSpeedUp() {
+    if (getSpeed() < 10) {
+        setSpeed(getSpeed() + 1);
+    }
+    speedLabel->setText("Speed: " + QString::number(getSpeed()) + " ");
+    speedUpButton->setEnabled(getSpeed() < 10);
+    speedDownButton->setEnabled(getSpeed() > 1);
+}
+
+void MainWindow::slotSpeedDown() {
+    if (getSpeed() > 0) {
+        setSpeed(getSpeed() - 1);
+    }
+    speedLabel->setText("Speed: " + QString::number(getSpeed()) + " ");
+    speedUpButton->setEnabled(getSpeed() < 10);
+    speedDownButton->setEnabled(getSpeed() > 1);
 }

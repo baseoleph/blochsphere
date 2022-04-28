@@ -19,6 +19,10 @@
 #include <QRegExp>
 #include <QStringList>
 
+int speed = 5;
+
+double getDuration() { return DURATION * (11 - speed); }
+
 double roundNumber(double a, double s) {
     a *= s;
     if (a - floor(a) >= 0.5)
@@ -85,3 +89,5 @@ QString parseComplexToStr(complex c, int d) {
 }
 QString numberToStr(double d) { return QString::number(roundNumber(d)); }
 QString numberToStr(long d) { return QString::number(d); }
+double  getSpeed() { return speed; }
+void    setSpeed(int spd) { speed = spd; }

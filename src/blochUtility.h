@@ -25,10 +25,11 @@
 #define C_I complex(0, 1)
 #define C_E complex(EEE, 0.0)
 #define M_PI 3.14159265358979323846
-// TODO change logic duration of animation
-#define DURATION 1000.
+#define DURATION 100.
 #define MAX_COUNT_SPHERES 5
 #define MAX_COUNT_OF_STEPS 100
+
+// TODO it's bad style
 
 typedef std::complex<double> complex;
 
@@ -38,6 +39,9 @@ QString parseComplexToStr(complex c, int d = 1 / EPSILON);
 QString numberToStr(double d);
 QString numberToStr(long d);
 double  roundNumber(double a, double s = 1 / EPSILON);
+double  getDuration();
+double  getSpeed();
+void    setSpeed(int spd);
 
 // TODO must be double
 inline int    random(int min, int max) { return min + rand() % ((max + 1) - min); }

@@ -97,11 +97,13 @@ Spike Vector::createSpike(double a, complex b) {
 
 QVector<Spike> Vector::normalizePath(const QVector<Spike> &s) {
     QVector<Spike> newS;
-    int            dur = DURATION;
-    int            step = s.size() / dur;
+    int            dur = getDuration();
     newS.append(s.first());
-    for (int i = 1; i < s.size() - 1; i += step) {
-        newS.append(s[i]);
+    if (dur != 0) {
+        int step = s.size() / dur;
+        for (int i = 1; i < s.size() - 1; i += step) {
+            newS.append(s[i]);
+        }
     }
     newS.append(s.last());
     return newS;

@@ -75,6 +75,8 @@ public slots:
     void slotShowTrace();
     void slotClearTrace();
     void slotTraceColor(int index);
+    void slotSpeedUp();
+    void slotSpeedDown();
 
     // TODO duplicates
     void slotComplexLineEditChanged(const QString &);
@@ -167,6 +169,10 @@ private:
     QLabel      *sphereLabel = nullptr;
     QPushButton *spherePlusBut = nullptr;
     QPushButton *sphereMinusBut = nullptr;
+
+    QLabel      *speedLabel = nullptr;
+    QPushButton *speedUpButton = nullptr;
+    QPushButton *speedDownButton = nullptr;
 
     Operator curOperator;
     Operator singleOperator;

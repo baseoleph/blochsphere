@@ -21,8 +21,9 @@ Operator::Operator() { toId(); }
 QVector<Spike> Operator::rotate(Spike s, QVector3D v, double gamma) {
     QVector<Spike> trace;
     trace.append(s);
-    for (uint i = 1; i < DURATION; ++i) {
-        QQuaternion q = QQuaternion::fromAxisAndAngle(v, static_cast<float>(i / DURATION * gamma));
+    for (uint i = 1; i < getDuration(); ++i) {
+        QQuaternion q =
+            QQuaternion::fromAxisAndAngle(v, static_cast<float>(i / getDuration() * gamma));
         trace.append(Vector::actOperator(q, s));
     }
     QQuaternion q = QQuaternion::fromAxisAndAngle(v, static_cast<float>(gamma));
@@ -176,8 +177,9 @@ QVector<Spike> Operator::applyOperator(Spike s, UnitaryMatrix2x2 op) {
     }
 
     if (not qFuzzyIsNull(g)) {
-        for (uint i = 1; i < DURATION; ++i) {
-            QQuaternion qq = QQuaternion::fromAxisAndAngle(v, static_cast<float>(i / DURATION * g));
+        for (uint i = 1; i < getDuration(); ++i) {
+            QQuaternion qq =
+                QQuaternion::fromAxisAndAngle(v, static_cast<float>(i / getDuration() * g));
             spike.append(Vector::actOperator(qq, s));
         }
     }
