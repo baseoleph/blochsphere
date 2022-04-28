@@ -95,3 +95,7 @@ void Circuit::slotRun() {
 }
 
 void Circuit::slotParentAnimating(bool f) { isParentAnimating = f; }
+
+void Circuit::slotStop() {
+    foreach (auto e, this->getQubits()) { e->resetState(); }
+}

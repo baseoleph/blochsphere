@@ -21,14 +21,16 @@
 #include <QComboBox>
 
 enum OPERATORS { ID = 0, X, Y, Z, H, S, T };
+enum STATE { ACTIVE = 0, PASSIVE };
 
 class CircuitOperator : public QComboBox {
     Q_OBJECT
 public:
     CircuitOperator(QWidget *parent, Operator op = Operator());
 
-    QString getOperatorName();
-    Operator& getOperator();
+    QString   getOperatorName();
+    Operator &getOperator();
+    void      setState(STATE state);
 
 public slots:
     void slotOperatorChanged(int index);

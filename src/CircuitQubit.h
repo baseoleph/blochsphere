@@ -32,6 +32,7 @@ public:
     static QString getPsiHtml(QString index);
     Operator      &getOperator(int ind);
 
+    void resetState();
     void updateOperators(int len);
     void printOperators();
 
@@ -40,6 +41,7 @@ private:
     Vector                    *_v;
     QVector<CircuitOperator *> operators;
     QString                    _name;
+    CircuitOperator           *lastOperator = nullptr;
     int                        cellHigh = 30;
     int                        cellWidth = 50;
 };

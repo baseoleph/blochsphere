@@ -69,9 +69,7 @@ public:
     Spike                        getSpike() const;
     inline void                  clearTrace() { trace_.clear(); }
 
-    inline QVector3D toQVector3D(Qubit const &q) const { return QVector3D(q.x(), q.y(), q.z()); }
-    inline QVector3D toQVector3D() const { return QVector3D(x(), y(), z()); }
-    inline bool      hasPath() const { return not path_.empty(); }
+    inline bool hasPath() const { return not path_.empty(); }
 
     void             setEnabledRotateVector(bool f) { _isRotateVectorEnable = f; }
     void             setRotateVector(QVector3D v) { _rotateVector = v; }

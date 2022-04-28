@@ -50,4 +50,13 @@ void CircuitOperator::slotOperatorChanged(int index) {
         _op.toId();
     }
 }
+
 Operator &CircuitOperator::getOperator() { return _op; }
+
+void CircuitOperator::setState(STATE state) {
+    if (state == STATE::PASSIVE) {
+        this->setStyleSheet("");
+    } else if (state == STATE::ACTIVE) {
+        this->setStyleSheet("QComboBox { font-weight: bold; }");
+    }
+}

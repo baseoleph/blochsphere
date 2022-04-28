@@ -46,6 +46,7 @@ public slots:
     void slotAddStep();
     void slotRemoveStep();
     void slotRun();
+    void slotStop();
     void slotParentAnimating(bool f);
 
 private:

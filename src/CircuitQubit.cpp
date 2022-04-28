@@ -52,13 +52,25 @@ void CircuitQubit::updateOperators(int len) {
         }
     }
 }
+
 void CircuitQubit::printOperators() {
     QString str = _name + " ";
     foreach (auto e, operators) { str += e->getOperatorName() + " "; }
     qDebug() << str;
 }
+
 Operator &CircuitQubit::getOperator(int ind) {
     assert(ind >= 0 and ind < operators.size());
-
+    if (lastOperator) {
+        lastOperator->setState(STATE::PASSIVE);
+    }
+    operators[ind]->setState(STATE::ACTIVE);
+    lastOperator = operators[ind];
     return operators[ind]->getOperator();
+}
+void CircuitQubit::resetState() {
+    if (lastOperator) {
+        lastOperator->setState(STATE::PASSIVE);
+        lastOperator = nullptr;
+    }
 }

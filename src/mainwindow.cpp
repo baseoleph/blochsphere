@@ -115,6 +115,7 @@ void MainWindow::slotTimer() {
                 foreach (auto e, vectors.keys()) {
                     e->setRotateVector(QVector3D(va.x, va.y, va.z));
                 }
+                circuit->slotStop();
                 stopTimer();
             } else {
                 nextAnimStepCircuit();
