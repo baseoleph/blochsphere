@@ -68,6 +68,7 @@ public slots:
     void slotAddToQue();
     void slotApplyQue();
 
+    void slotUpdateSpheres();
     void slotReset();
     void slotSaveState();
     void slotRecallState();

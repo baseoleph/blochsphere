@@ -174,6 +174,7 @@ void VectorWidget::slotThePhi() {
     Spike  sp = Vector::createSpike(the, phi);
     _v->changeVector(sp);
 
+    emit signalUpdate();
     fillFieldsOfVector(sp, FIELD::THEPHI);
 }
 
@@ -204,6 +205,7 @@ void VectorWidget::slotAlpBet() {
     Spike sp = Vector::createSpike(a, b);
     _v->changeVector(sp);
 
+    emit signalUpdate();
     fillFieldsOfVector(sp, FIELD::ALPBET);
 }
 
@@ -237,6 +239,7 @@ void VectorWidget::slotBloVec() {
     Spike sp = Vector::createSpike(x, y, z);
     _v->changeVector(sp);
 
+    emit signalUpdate();
     fillFieldsOfVector(sp, FIELD::BLOVEC);
 }
 
@@ -247,6 +250,7 @@ void VectorWidget::slotSetRandomPsi() {
     Spike sp = Vector::createSpike(the, phi);
     _v->changeVector(sp);
 
+    emit signalUpdate();
     fillFieldsOfVector(sp);
 }
 

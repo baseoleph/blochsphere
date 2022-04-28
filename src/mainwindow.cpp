@@ -124,7 +124,7 @@ void MainWindow::slotTimer() {
         }
     }
 
-    foreach (auto e, spheres) { e->update(); }
+    slotUpdateSpheres();
 }
 
 void MainWindow::createSphere() {
@@ -278,28 +278,15 @@ void MainWindow::createSideWidget() {
     sphereMinusBut->setFixedWidth(50);
     sphereMinusBut->setEnabled(false);
 
-    //    vectorLabel = new QLabel("Vector:");
-    //    vectorPlusBut = new QPushButton("+");
-    //    vectorPlusBut->setFixedWidth(50);
-    //    vectorMinusBut = new QPushButton("-");
-    //    vectorMinusBut->setFixedWidth(50);
-    //    vectorMinusBut->setEnabled(false);
-
     connect(spherePlusBut, SIGNAL(clicked()), SLOT(slotPlusSphere()));
     connect(sphereMinusBut, SIGNAL(clicked()), SLOT(slotMinusSphere()));
-    //    connect(vectorPlusBut, SIGNAL(clicked()), SLOT(slotPlusVector()));
-    //    connect(vectorMinusBut, SIGNAL(clicked()), SLOT(slotMinusVector()));
 
     auto vectorSphereCreatorWid = new QWidget();
     auto vectorSphereLay = new QHBoxLayout();
-    //    vectorSphereLay->setSpacing(0);
     vectorSphereLay->setMargin(0);
     vectorSphereLay->addWidget(sphereLabel);
     vectorSphereLay->addWidget(spherePlusBut);
     vectorSphereLay->addWidget(sphereMinusBut);
-    //    vectorSphereLay->addWidget(vectorLabel);
-    //    vectorSphereLay->addWidget(vectorPlusBut);
-    //    vectorSphereLay->addWidget(vectorMinusBut);
     vectorSphereCreatorWid->setLayout(vectorSphereLay);
 
     topTabWid = new QTabWidget();
@@ -309,6 +296,7 @@ void MainWindow::createSideWidget() {
     auto vct = new Vector(0., 0.);
     addVector(vct, vectors, spheres[0]);
     auto vectorWidget = new VectorWidget(topTabWid, vct);
+    connect(vectorWidget, SIGNAL(signalUpdate()), this, SLOT(slotUpdateSpheres()));
     circuit->addQubit(vct);
 
     topTabWid->addTab(vectorWidget, "1");
@@ -646,12 +634,12 @@ void MainWindow::slotRecallState() {
 
 void MainWindow::slotShowTrace() {
     foreach (auto &e, vectors.keys()) { e->setEnableTrace(showTAct->isChecked()); }
-    foreach (auto e, spheres) { e->update(); }
+    slotUpdateSpheres();
 }
 
 void MainWindow::slotClearTrace() {
     foreach (auto &e, vectors.keys()) { e->clearTrace(); }
-    foreach (auto e, spheres) { e->update(); }
+    slotUpdateSpheres();
 }
 
 void MainWindow::slotTraceColor(int index) {
@@ -901,7 +889,7 @@ void MainWindow::updateOp(OPERATOR_FORM exclude) {
         ngRnEd->setText(QString("%1").arg(roundNumber(va.angle * 180 / M_PI)));
     }
 
-    foreach (auto e, spheres) { e->update(); }
+    slotUpdateSpheres();
 }
 
 void MainWindow::slotQueItemClicked(QListWidgetItem *it) {
@@ -1016,7 +1004,7 @@ void MainWindow::updateComplexLineEdit(QLineEdit *lineEdit) {
 }
 void MainWindow::slotToggleRotateVector(bool f) {
     foreach (auto e, vectors.keys()) { e->setEnabledRotateVector(f); }
-    foreach (auto e, spheres) { e->update(); }
+    slotUpdateSpheres();
 }
 
 void MainWindow::slotToggleAutoNormalize(bool f) {
@@ -1035,6 +1023,7 @@ void MainWindow::slotPlusSphere() {
         addVector(vct, vectors, spheres.last());
 
         auto vectorWidget = new VectorWidget(topTabWid, vct);
+        connect(vectorWidget, SIGNAL(signalUpdate()), this, SLOT(slotUpdateSpheres()));
         topTabWid->addTab(vectorWidget, QString::number(spheres.size()));
         circuit->addQubit(vct);
 
@@ -1078,7 +1067,7 @@ void MainWindow::stopTimer() {
     tm->stop();
     emit signalAnimating(false);
     setEnabledWidgets(true);
-    foreach (auto e, spheres) { e->update(); }
+    slotUpdateSpheres();
 }
 
 void MainWindow::setEnabledWidgets(bool f) {
@@ -1095,4 +1084,7 @@ void MainWindow::slotStartCircuitMove() {
     circuitStepNumber = 0;
     isCircuitAnimation = true;
     nextAnimStepCircuit();
+}
+void MainWindow::slotUpdateSpheres() {
+    foreach (auto e, spheres) { e->update(); }
 }

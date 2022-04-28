@@ -32,6 +32,9 @@ public:
     void    fillFieldsOfVector(Spike sp, FIELD exclude = FIELD::NOTHIN);
     Vector *getVector() { return _v; }
 
+    signals:
+        void signalUpdate();
+
 public slots:
     void slotThePhi();
     void slotAlpBet();
