@@ -16,6 +16,7 @@
 
 #include "CircuitQubit.h"
 #include <QLabel>
+#include <cassert>
 
 CircuitQubit::CircuitQubit(QWidget *parent, Vector *v, const QString &name, int cntOperators)
     : QWidget(parent), _v(v) {
@@ -33,7 +34,9 @@ CircuitQubit::CircuitQubit(QWidget *parent, Vector *v, const QString &name, int 
     foreach (auto e, operators) { mainLayout->addWidget(e); }
 }
 
-QString CircuitQubit::getPsiHtml(QString index) { return "Psi<sub><big>" + index + "</big></sub>"; }
+QString CircuitQubit::getPsiHtml(QString index) {
+    return "Psi<sub><big>" + index + "</big></sub>";
+}
 
 void CircuitQubit::updateOperators(int len) {
     assert(len > 0);

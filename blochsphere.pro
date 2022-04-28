@@ -33,7 +33,10 @@ SOURCES += \
     src/blochdialog.cpp \
     src/unitaryMatrix2x2.cpp \
     src/vector.cpp \
-    src/VectorWidget.cpp
+    src/VectorWidget.cpp \
+    src/Circuit.cpp \
+    src/CircuitQubit.cpp \
+    src/CircuitOperator.cpp
 
 
 HEADERS += \
@@ -47,7 +50,10 @@ HEADERS += \
     src/sphere.hpp \
     src/unitaryMatrix2x2.hpp \
     src/vector.hpp \
-    src/VectorWidget.h
+    src/VectorWidget.h \
+    src/Circuit.h \
+    src/CircuitQubit.h \
+    src/CircuitOperator.h
 
 #LIBS += libopengl32 libglu32 c:\Users\baseoleph\git\blochsphere\bloch2\glut32.dll
 LIBS += libopengl32
