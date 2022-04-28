@@ -55,6 +55,7 @@ QWidget *Circuit::makeButtons() {
     auto wdt = new QWidget(this);
     wdt->setFixedHeight(50);
     auto layout = new QHBoxLayout(wdt);
+    layout->setAlignment(Qt::AlignLeft);
 
     addStepBut = new QPushButton("Add step");
     layout->addWidget(addStepBut);
