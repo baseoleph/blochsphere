@@ -992,6 +992,7 @@ void MainWindow::slotAbout() { QMessageBox::about(this, "About program", "blochs
 // TODO check
 void MainWindow::slotReset() {
     stopTimer();
+    controlWidget->hide();
     while (not spheres.empty()) {
         foreach (auto e, vectors.keys()) {
             if (vectors[e].indexOf(spheres.last()) != -1) {
@@ -1006,6 +1007,11 @@ void MainWindow::slotReset() {
         circuit->removeQubit();
     }
 
+    while (circuit->getSizeOfSteps() != 1) {
+        circuit->slotRemoveStep();
+    }
+
+    controlWidget->show();
     slotPlusSphere();
 }
 
