@@ -20,7 +20,7 @@
 #include "operator.hpp"
 #include <QComboBox>
 
-enum OPERATORS { ID = 0, X, Y, Z, H, S, T };
+enum OPERATORS { ID = 0, X, Y, Z, H, S, T, PHI, RX, RY, RZ };
 enum STATE { ACTIVE = 0, PASSIVE };
 
 class CircuitOperator : public QComboBox {
@@ -37,6 +37,8 @@ public slots:
 
 private:
     Operator _op;
+    int      lastActivated = 0;
+    void     clearComboBoxNames();
 };
 
 #endif // CIRCUITOPERATOR_H

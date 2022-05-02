@@ -25,7 +25,7 @@ enum DIALOG_TYPE { ANGLE = 0, NORMALIZE };
 class BlochDialog : public QDialog {
     Q_OBJECT
 public:
-    explicit BlochDialog(QWidget *parent, DIALOG_TYPE dt);
+    BlochDialog(QWidget *parent, DIALOG_TYPE dt);
 
     // TODO not safe method
     QString ang() const;
@@ -35,6 +35,6 @@ private:
     void       angleInput();
 
     // TODO show before/after (xyz, ab)
-    void       suggestNormalize();
+    void suggestNormalize();
 };
 #endif // ANGINPUT_HPP

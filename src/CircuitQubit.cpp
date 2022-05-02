@@ -29,14 +29,12 @@ CircuitQubit::CircuitQubit(QWidget *parent, Vector *v, const QString &name, int 
     _name = name;
 
     auto nameLabel = new QLabel(_name);
-    nameLabel->setFixedSize(cellWidth, cellHigh);
+    nameLabel->setFixedSize(50, cellHigh);
     mainLayout->addWidget(nameLabel);
     foreach (auto e, operators) { mainLayout->addWidget(e); }
 }
 
-QString CircuitQubit::getPsiHtml(QString index) {
-    return "Psi<sub><big>" + index + "</big></sub>";
-}
+QString CircuitQubit::getPsiHtml(QString index) { return "Psi<sub><big>" + index + "</big></sub>"; }
 
 void CircuitQubit::updateOperators(int len) {
     assert(len > 0);

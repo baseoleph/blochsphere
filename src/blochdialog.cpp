@@ -58,7 +58,6 @@ void BlochDialog::angleInput() {
 
     lay->addLayout(lay1);
     setLayout(lay);
-    setWindowTitle(((QPushButton *)this->parent())->text());
     setFixedWidth(155);
 }
 void BlochDialog::suggestNormalize() {

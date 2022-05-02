@@ -43,7 +43,7 @@ private:
     QString                    _name;
     CircuitOperator           *lastOperator = nullptr;
     int                        cellHigh = 30;
-    int                        cellWidth = 50;
+    int                        cellWidth = 100;
 };
 
 #endif // CIRCUITQUBIT_H
