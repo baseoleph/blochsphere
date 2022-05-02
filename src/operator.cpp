@@ -160,13 +160,17 @@ QVector<Spike> Operator::applyZyxDecomposition(Spike s, UnitaryMatrix2x2 op) {
 
 QVector<Spike> Operator::applyOperator(Spike s, UnitaryMatrix2x2 op) {
     QVector<Spike> spike = {s};
-    decomposition  dec = zyDecomposition(op);
-    QVector3D      zVector = QVector3D(0, 0, 1);
-    QVector3D      xVector = QVector3D(1, 0, 0);
-    QQuaternion    qz1 = QQuaternion::fromAxisAndAngle(zVector, static_cast<float>(dec.beta));
-    QQuaternion    qx = QQuaternion::fromAxisAndAngle(xVector, static_cast<float>(dec.gamma));
-    QQuaternion    qz2 = QQuaternion::fromAxisAndAngle(zVector, static_cast<float>(dec.delta));
-    QQuaternion    q = qz1 * qx * qz2;
+    if (Operator::getOperatorName(op) == "Id") {
+        return spike;
+    }
+
+    decomposition dec = zyDecomposition(op);
+    QVector3D     zVector = QVector3D(0, 0, 1);
+    QVector3D     xVector = QVector3D(1, 0, 0);
+    QQuaternion   qz1 = QQuaternion::fromAxisAndAngle(zVector, static_cast<float>(dec.beta));
+    QQuaternion   qx = QQuaternion::fromAxisAndAngle(xVector, static_cast<float>(dec.gamma));
+    QQuaternion   qz2 = QQuaternion::fromAxisAndAngle(zVector, static_cast<float>(dec.delta));
+    QQuaternion   q = qz1 * qx * qz2;
 
     // TODO check algorithm. q.scalar < 0; q.scalar < EPSILON + and -
     QVector3D v = q.vector().normalized();
@@ -654,7 +658,11 @@ QVector<Spike> Operator::applyOperator(Spike s) { return applyOperator(s, _op); 
 
 QVector<Spike> Operator::applyVectorRotation(Spike s, UnitaryMatrix2x2 op) {
     QVector<Spike> spike = {s};
-    vectorangle    va = vectorAngleDec(op);
+    if (Operator::getOperatorName(op) == "Id") {
+        return spike;
+    }
+
+    vectorangle va = vectorAngleDec(op);
 
     QVector<Spike> vct = rotate(s, QVector3D(va.x, va.y, va.z), va.angle * 180 / M_PI);
     for (auto &e : vct) {

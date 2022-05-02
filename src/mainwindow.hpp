@@ -141,6 +141,7 @@ private:
     QPushButton *makeOpButton(const QString &str);
     QPushButton *appBut = nullptr;
     QPushButton *appQueBut = nullptr;
+    QPushButton *clrQueBut = nullptr;
 
     QTabWidget *rxyzTab = nullptr;
 

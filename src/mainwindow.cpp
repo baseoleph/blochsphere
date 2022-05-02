@@ -102,10 +102,10 @@ void MainWindow::slotTimer() {
                 curOperator = opQueue.last()->getOp();
                 updateOp();
                 slotApplyOp();
+                isQueueAnimation = true;
             } else {
                 stopTimer();
                 curOperator = singleOperator;
-                isQueueAnimation = false;
             }
         } else if (isCircuitAnimation) {
             circuitStepNumber += 1;
@@ -254,7 +254,7 @@ void MainWindow::createOpQueWidget() {
     appQueBut = new QPushButton("Apply queue");
     appQueBut->setFixedSize(70, 40);
     connect(appQueBut, SIGNAL(clicked()), SLOT(slotApplyQue()));
-    auto *clrQueBut = new QPushButton("Clear queue");
+    clrQueBut = new QPushButton("Clear queue");
     clrQueBut->setFixedSize(70, 40);
     connect(clrQueBut, SIGNAL(clicked()), opQueWid, SLOT(clear()));
 
@@ -926,15 +926,11 @@ void MainWindow::slotAddToQue() {
 
 void MainWindow::slotApplyOp() {
     stopTimer();
-    if (curOperator.getOperatorName() == "Id") {
-        return;
-    }
     foreach (auto e, vectors.keys()) { startMove(e, getCurrentDecomposition()); }
 }
 
 void MainWindow::slotApplyQue() {
     stopTimer();
-    isQueueAnimation = true;
     singleOperator = curOperator;
     for (int i = 0; i < opQueWid->count(); ++i) {
         opQueue.append((OpItem *)(opQueWid->item(i)));
@@ -945,6 +941,7 @@ void MainWindow::slotApplyQue() {
         opQueue.last()->setBackground(QBrush(Qt::red));
         updateOp();
         slotApplyOp();
+        isQueueAnimation = true;
     }
 }
 
@@ -966,6 +963,7 @@ void MainWindow::startMove(Vector *v, Operator &op, CurDecompFun getDec) {
 
 void MainWindow::nextAnimStepCircuit() {
     stopTimer();
+    isCircuitAnimation = true;
 
     foreach (auto e, circuit->getQubits()) {
         startMove(e->getVector(), e->getOperator(circuitStepNumber), getCurrentDecomposition());
@@ -1091,6 +1089,8 @@ void MainWindow::startTimer() {
 
 void MainWindow::stopTimer() {
     tm->stop();
+    isCircuitAnimation = false;
+    isQueueAnimation = false;
     foreach (auto e, vectors.keys()) { e->setOperator(""); }
     emit signalAnimating(false);
     setEnabledWidgets(true);
@@ -1105,11 +1105,11 @@ void MainWindow::setEnabledWidgets(bool f) {
     circuit->runCircuitBut->setEnabled(f);
     circuit->addStepBut->setEnabled(f and circuit->getQubits().size() < MAX_COUNT_OF_STEPS);
     circuit->removeStepBut->setEnabled(f and circuit->getQubits().size() > 1);
+    clrQueBut->setEnabled(f);
 }
 
 void MainWindow::slotStartCircuitMove() {
     circuitStepNumber = 0;
-    isCircuitAnimation = true;
     nextAnimStepCircuit();
 }
 
