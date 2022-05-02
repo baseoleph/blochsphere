@@ -28,6 +28,10 @@ public:
     // TODO realize safety add end detach vectors
     void addVector(Vector *v) { vectors.append(v); }
     void deleteVector(Vector *v);
+    void toYoZ();
+    void toXoY();
+    void toZoX();
+    void toNormal();
 
 protected:
     void initializeGL() override;
@@ -58,9 +62,17 @@ private:
     static void drawSphere(int lats, int longs);
     void        drawCircle();
     void        drawAxis();
-    void        scalePlus() { scaleFactor *= 1.1; }
-    void        scaleMinus() { scaleFactor /= 1.1; }
-    void        drawVectors();
+    void        scalePlus() {
+        if (scaleFactor < 5.) {
+            scaleFactor *= 1.1;
+        }
+    }
+    void scaleMinus() {
+        if (scaleFactor > 0.2) {
+            scaleFactor /= 1.1;
+        }
+    }
+    void drawVectors();
 };
 
 #endif // SPHERE_HPP

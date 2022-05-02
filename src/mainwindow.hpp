@@ -77,6 +77,10 @@ public slots:
     void slotTraceColor(int index);
     void slotSpeedUp();
     void slotSpeedDown();
+    void slotToNormal();
+    void slotToYoZ();
+    void slotToXoY();
+    void slotToZoX();
 
     // TODO duplicates
     void slotComplexLineEditChanged(const QString &);

@@ -75,7 +75,6 @@ void Sphere::mousePressEvent(QMouseEvent *pe) {
 }
 
 void Sphere::mouseMoveEvent(QMouseEvent *pe) {
-    // TODO check theoretical range of xyzAgnles
     xAngle += 180 / scaleFactor * static_cast<GLfloat>(pe->y() - ptrMousePosition.y()) / height();
     zAngle += 180 / scaleFactor * static_cast<GLfloat>(pe->x() - ptrMousePosition.x()) / width();
 
@@ -271,4 +270,36 @@ void Sphere::drawVectors() {
         }
         glEnd();
     }
+}
+
+void Sphere::toYoZ() {
+    scaleFactor = 1;
+    xAngle = -90;
+    yAngle = 0;
+    zAngle = -90;
+    update();
+}
+
+void Sphere::toXoY() {
+    scaleFactor = 1;
+    xAngle = 0;
+    yAngle = 0;
+    zAngle = 0;
+    update();
+}
+
+void Sphere::toZoX() {
+    scaleFactor = 1;
+    xAngle = -90;
+    yAngle = 0;
+    zAngle = -180;
+    update();
+}
+
+void Sphere::toNormal() {
+    scaleFactor = 1;
+    xAngle = -60;
+    yAngle = 0;
+    zAngle = -135;
+    update();
 }

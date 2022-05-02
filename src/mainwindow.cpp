@@ -236,6 +236,25 @@ void MainWindow::createTopBar() {
     connect(speedUpButton, SIGNAL(clicked()), this, SLOT(slotSpeedUp()));
     connect(speedDownButton, SIGNAL(clicked()), this, SLOT(slotSpeedDown()));
 
+    qtb->addSeparator();
+    auto normalViewButton = new QPushButton("XYZ");
+    normalViewButton->setFixedSize(50, 30);
+    qtb->addWidget(normalViewButton);
+    auto yOzViewButton = new QPushButton("yOz");
+    yOzViewButton->setFixedSize(50, 30);
+    qtb->addWidget(yOzViewButton);
+    auto xOyViewButton = new QPushButton("xOy");
+    xOyViewButton->setFixedSize(50, 30);
+    qtb->addWidget(xOyViewButton);
+    auto zOxViewButton = new QPushButton("zOx");
+    zOxViewButton->setFixedSize(50, 30);
+    qtb->addWidget(zOxViewButton);
+
+    connect(normalViewButton, SIGNAL(clicked()), this, SLOT(slotToNormal()));
+    connect(yOzViewButton, SIGNAL(clicked()), this, SLOT(slotToYoZ()));
+    connect(xOyViewButton, SIGNAL(clicked()), this, SLOT(slotToXoY()));
+    connect(zOxViewButton, SIGNAL(clicked()), this, SLOT(slotToZoX()));
+
     this->addToolBar(Qt::TopToolBarArea, qtb);
 }
 
@@ -1133,4 +1152,23 @@ void MainWindow::slotSpeedDown() {
     speedLabel->setText("Speed: " + QString::number(getSpeed()) + " ");
     speedUpButton->setEnabled(getSpeed() < 10);
     speedDownButton->setEnabled(getSpeed() > 1);
+}
+
+void MainWindow::slotToNormal() {
+    foreach (auto e, spheres) { e->toNormal(); }
+}
+
+void MainWindow::slotToYoZ() {
+
+    foreach (auto e, spheres) { e->toYoZ(); }
+}
+
+void MainWindow::slotToXoY() {
+
+    foreach (auto e, spheres) { e->toXoY(); }
+}
+
+void MainWindow::slotToZoX() {
+
+    foreach (auto e, spheres) { e->toZoX(); }
 }
