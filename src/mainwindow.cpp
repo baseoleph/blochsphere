@@ -32,7 +32,6 @@
 #include <QTimer>
 #include <QToolBar>
 
-// TODO move to another place
 QRegExpValidator
     compValid(QRegExp(QString::fromUtf8("^[+-]?[0-9]*\\.?[0-9]*[+-]?[0-9]*\\.?[0-9]*[iIшШ]?$")));
 QRegExpValidator axisValid(QRegExp("^-?[\\d]*\\.?[\\d]*;?-?[\\d]*\\.?[\\d]*;?-?[\\d]*\\.?[\\d]*$"));
@@ -325,7 +324,6 @@ void MainWindow::createSideWidget() {
     topTabWid = new QTabWidget();
     topTabWid->setFixedHeight(115);
 
-    // TODO maybe better use function for it
     auto vct = new Vector(0., 0.);
     addVector(vct, vectors, spheres[0]);
     vct->setName(QString::number(vectors.size()));
@@ -515,7 +513,6 @@ QWidget *MainWindow::makeZyxWid() {
     return rzW;
 }
 
-// TODO split function
 QWidget *MainWindow::makeOpWid() {
     auto *opW = new QWidget();
 
@@ -557,7 +554,6 @@ QWidget *MainWindow::makeOpWid() {
         }
     }
 
-    // TODO move connectors in one function to one place or get rid of qt5 connectors
     auto *applyMat = new QPushButton("Ok");
     connect(applyMat, SIGNAL(clicked()), SLOT(slotSetMatrixOp()));
 
@@ -763,7 +759,6 @@ void MainWindow::slotSetRXYZOp() {
         dec.gamma = rZyGamEd->text().toDouble();
         dec.delta = rZyDelEd->text().toDouble();
         if (not curOperator.setOperatorByZyDecomposition(dec)) {
-            // TODO it's impossible; inspect
             QMessageBox::warning(this, "Error", "error");
             return;
         }
@@ -774,7 +769,6 @@ void MainWindow::slotSetRXYZOp() {
         dec.gamma = rZxGamEd->text().toDouble();
         dec.delta = rZxDelEd->text().toDouble();
         if (not curOperator.setOperatorByZxDecomposition(dec)) {
-            // TODO it's impossible; inspect
             QMessageBox::warning(this, "Error", "error");
             return;
         }
@@ -785,7 +779,6 @@ void MainWindow::slotSetRXYZOp() {
         dec.gamma = rXyGamEd->text().toDouble();
         dec.delta = rXyDelEd->text().toDouble();
         if (not curOperator.setOperatorByXyDecomposition(dec)) {
-            // TODO it's impossible; inspect
             QMessageBox::warning(this, "Error", "error");
             return;
         }
@@ -796,7 +789,6 @@ void MainWindow::slotSetRXYZOp() {
         dec.gamma = rZyxGamEd->text().toDouble();
         dec.delta = rZyxDelEd->text().toDouble();
         if (not curOperator.setOperatorByZyxDecomposition(dec)) {
-            // TODO it's impossible; inspect
             QMessageBox::warning(this, "Error", "error");
             return;
         }
@@ -850,7 +842,6 @@ void MainWindow::slotSetAxOp() {
 
         double len = sqrt(va.x * va.x + va.y * va.y + va.z * va.z);
         if (not UnitaryMatrix2x2::fuzzyCompare(len, 1.)) {
-            // TODO  (QWidget *)sender() ? qt4 fails with "this"
             auto *dial = new BlochDialog((QWidget *)sender(), DIALOG_TYPE::NORMALIZE);
             if (isAutoNormalize or dial->exec() == QDialog::Accepted) {
                 va.x /= len;
@@ -866,7 +857,6 @@ void MainWindow::slotSetAxOp() {
         }
 
         if (not curOperator.setOperatorByVectorAngle(va)) {
-            // TODO it's impossible; inspect
             QMessageBox::warning(this, "Error", "error");
             return;
         }
@@ -1006,7 +996,6 @@ CurDecompFun MainWindow::getCurrentDecomposition() {
 
 void MainWindow::slotAbout() { QMessageBox::about(this, "About program", "blochsphere"); }
 
-// TODO check
 void MainWindow::slotReset() {
     stopTimer();
     controlWidget->hide();

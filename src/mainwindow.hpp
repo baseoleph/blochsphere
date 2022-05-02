@@ -82,11 +82,9 @@ public slots:
     void slotToXoY();
     void slotToZoX();
 
-    // TODO duplicates
     void slotComplexLineEditChanged(const QString &);
     void slotToggleRotateVector(bool f);
     void slotToggleAutoNormalize(bool f);
-    // TODO change about window
     void slotAbout();
 
     void slotPlusSphere();
@@ -104,7 +102,6 @@ private:
     QTimer           *tm = nullptr;
     Circuit          *circuit = nullptr;
 
-    // TODO maybe should move to Circuit
     int circuitStepNumber = 0;
 
     QWidget     *controlWidget = nullptr;
@@ -126,7 +123,6 @@ private:
 
     void nextAnimStepCircuit();
 
-    // TODO merge duplicates
     static void  updateComplexLineEdit(QLineEdit *lineEdit);
     void         startMove(Vector *v, CurDecompFun getDec);
     void         startMove(Vector *v, Operator &op, CurDecompFun getDec);

@@ -23,7 +23,6 @@
 #include <QMessageBox>
 #include <QPushButton>
 
-// TODO duplicate
 QRegExpValidator
     compValid2(QRegExp(QString::fromUtf8("^[+-]?[0-9]*\\.?[0-9]*[+-]?[0-9]*\\.?[0-9]*[iIшШ]?$")));
 
@@ -163,8 +162,6 @@ QWidget *VectorWidget::makeBloVecWid() {
     return xyzW;
 }
 
-// TODO add check ranges
-// DOTO push while animating
 void VectorWidget::slotThePhi() {
     emptyToZeroLineEdit(theEd);
     emptyToZeroLineEdit(phiEd);
@@ -178,8 +175,6 @@ void VectorWidget::slotThePhi() {
     fillFieldsOfVector(sp, FIELD::THEPHI);
 }
 
-// TODO add check if normalized
-// DOTO push while animating
 void VectorWidget::slotAlpBet() {
     emptyToZeroLineEdit(alpEd);
     emptyToZeroLineEdit(betEd);
@@ -223,7 +218,6 @@ void VectorWidget::slotBloVec() {
     }
     double len = sqrt(x * x + y * y + z * z);
     if (not UnitaryMatrix2x2::fuzzyCompare(len, 1.)) {
-        // TODO  (QWidget *)sender() ? qt4 fails with "this"
         auto *dial = new BlochDialog((QWidget *)sender(), DIALOG_TYPE::NORMALIZE);
         if (isAutoNormalize or dial->exec() == QDialog::Accepted) {
             x /= len;
@@ -269,7 +263,6 @@ void VectorWidget::fillFieldsOfVector(Spike sp, FIELD exclude) {
     }
 
     if (exclude != FIELD::ALPBET) {
-        // TODO maybe should create function that converts double to str
         alpEd->setText(numberToStr(v.a().real()));
         betEd->setText(numberToStr(v.b().real()) + (v.b().imag() >= 0 ? "+" : "") +
                        numberToStr(v.b().imag()) + "i");

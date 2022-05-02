@@ -53,8 +53,6 @@ complex parseStrToComplex(const QString &str) {
         else
             return complex(0.0, rxp3.capturedTexts()[1].toDouble());
     }
-    // DOTO nothing try to catch it
-    throw 1;
 }
 
 QString parseComplexToStr(complex c, int d) {
@@ -84,9 +82,8 @@ QString parseComplexToStr(complex c, int d) {
         }
         return str;
     }
-    // DOTO nothing try to catch it
-    throw 1;
 }
+
 QString numberToStr(double d) { return QString::number(roundNumber(d)); }
 QString numberToStr(long d) { return QString::number(d); }
 double  getSpeed() { return speed; }

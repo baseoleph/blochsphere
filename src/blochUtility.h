@@ -29,11 +29,8 @@
 #define MAX_COUNT_SPHERES 5
 #define MAX_COUNT_OF_STEPS 100
 
-// TODO it's bad style
-
 typedef std::complex<double> complex;
 
-// DOTO improve functions; increase accuracy
 complex parseStrToComplex(const QString &str);
 QString parseComplexToStr(complex c, int d = 1 / EPSILON);
 QString numberToStr(double d);
@@ -43,7 +40,6 @@ double  getDuration();
 double  getSpeed();
 void    setSpeed(int spd);
 
-// TODO must be double
 inline int    random(int min, int max) { return min + rand() % ((max + 1) - min); }
 inline double random(double fMin, double fMax) {
     double f = (double)rand() / RAND_MAX;

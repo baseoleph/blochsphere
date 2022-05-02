@@ -172,11 +172,9 @@ QVector<Spike> Operator::applyOperator(Spike s, UnitaryMatrix2x2 op) {
     QQuaternion   qz2 = QQuaternion::fromAxisAndAngle(zVector, static_cast<float>(dec.delta));
     QQuaternion   q = qz1 * qx * qz2;
 
-    // TODO check algorithm. q.scalar < 0; q.scalar < EPSILON + and -
     QVector3D v = q.vector().normalized();
     double    g = qFuzzyIsNull(v.length()) ? 0 : 2 * qAcos(q.scalar()) * 180 / M_PI;
     if (qFuzzyIsNull(g)) {
-        // TODO is this correct?
         g = g > 0 ? 180 : -180;
     }
 
@@ -241,7 +239,6 @@ decomposition Operator::zxDecomposition(UnitaryMatrix2x2 op) {
     }
     double v = gamma / 2.0;
 
-    // TODO there is need tests for this if
     if (abs(exp(i * (alpha - beta / 2.0 - delta / 2.0)) * cos(v) - a) > EPSILON ||
         abs(-i * exp(i * (alpha - beta / 2.0 + delta / 2.0)) * sin(v) - b) > EPSILON ||
         abs(-i * exp(i * (alpha + beta / 2.0 - delta / 2.0)) * sin(v) - c) > EPSILON ||
@@ -617,8 +614,6 @@ UnitaryMatrix2x2 Operator::genRandUnitaryMatrix(qint64 seed) {
     UnitaryMatrix2x2 op;
     matrix2x2        matrix;
 
-    // DOTO algorithm mast work every time!!
-    // DOTO get rid of c-style rand, must use c++-style
     complex i{0, 1};
     double  a1, a2, b1, b2, moda, modb, phi;
 
@@ -632,7 +627,6 @@ UnitaryMatrix2x2 Operator::genRandUnitaryMatrix(qint64 seed) {
     b1 = random(0., 1. - a1 * a1 - a2 * a2);
     b2 = sqrt(1 - a1 * a1 - a2 * a2 - b1 * b1);
 
-    // TODO check with and without
     //    phi = floor((2.0 * M_PI * rand() / double(RAND_MAX) - M_PI) * 180.0 / M_PI);
     phi = rand();
 
@@ -644,7 +638,6 @@ UnitaryMatrix2x2 Operator::genRandUnitaryMatrix(qint64 seed) {
     //    qDebug() << a1 << a2;
     //    qDebug() << b1 << b2;
 
-    // TODO check for exception
     op.updateMatrix(matrix);
     return op;
 }

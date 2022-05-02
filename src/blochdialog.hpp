@@ -27,14 +27,12 @@ class BlochDialog : public QDialog {
 public:
     BlochDialog(QWidget *parent, DIALOG_TYPE dt);
 
-    // TODO not safe method
     QString ang() const;
 
 private:
     QLineEdit *angEd = nullptr;
     void       angleInput();
 
-    // TODO show before/after (xyz, ab)
     void suggestNormalize();
 };
 #endif // ANGINPUT_HPP

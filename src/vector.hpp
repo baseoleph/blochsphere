@@ -50,7 +50,6 @@ struct Spike {
     QVector3D arrow4;
 };
 
-// TODO move all definitions to cpp
 class Vector : public QObject, public Qubit {
     Q_OBJECT
 public:
@@ -77,7 +76,6 @@ public:
     bool             isRotateVectorEnable() const { return _isRotateVectorEnable; }
     const QVector3D &rotateVector() const { return _rotateVector; }
 
-    // TODO when I should use inline?
     void popPath();
 
     void changeVector(Spike s) {

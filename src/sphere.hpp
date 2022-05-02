@@ -25,7 +25,6 @@ class Sphere : public QGLWidget {
     Q_OBJECT
 public:
     explicit Sphere(QWidget *parent);
-    // TODO realize safety add end detach vectors
     void addVector(Vector *v) { vectors.append(v); }
     void deleteVector(Vector *v);
     void toYoZ();
@@ -37,21 +36,17 @@ protected:
     void initializeGL() override;
     void resizeGL(int w, int h) override;
     void paintGL() override;
-    // TODO add shortcuts
     void mousePressEvent(QMouseEvent *pe) override;
     void mouseMoveEvent(QMouseEvent *pe) override;
     void wheelEvent(QWheelEvent *pe) override;
 
 private:
     const GLfloat sphereRadius = 1;
-    // TODO I don't like this font
-    const QFont font = QFont("System", 11);
-    // TODO better create functions with pattern views
-    // like default view, xOy vew etc.
-    GLfloat scaleFactor = 1;
-    GLfloat xAngle = -60;
-    GLfloat yAngle = 0;
-    GLfloat zAngle = -135;
+    const QFont   font = QFont("System", 11);
+    GLfloat       scaleFactor;
+    GLfloat       xAngle;
+    GLfloat       yAngle;
+    GLfloat       zAngle;
 
     QList<Vector *> vectors;
 

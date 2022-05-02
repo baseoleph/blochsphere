@@ -18,7 +18,7 @@
 #include <QMouseEvent>
 #include <QQuaternion>
 
-Sphere::Sphere(QWidget *parent) : QGLWidget{parent} {}
+Sphere::Sphere(QWidget *parent) : QGLWidget{parent} { toNormal(); }
 
 void Sphere::deleteVector(Vector *v) {
     if (vectors.indexOf(v) != -1) {
@@ -26,10 +26,7 @@ void Sphere::deleteVector(Vector *v) {
     }
 }
 
-void Sphere::initializeGL() {
-    // TODO why I use it?
-    qglClearColor(Qt::white);
-}
+void Sphere::initializeGL() { qglClearColor(Qt::white); }
 
 void Sphere::resizeGL(int w, int h) {
     glMatrixMode(GL_PROJECTION);
@@ -37,7 +34,6 @@ void Sphere::resizeGL(int w, int h) {
 
     GLfloat ratio = static_cast<GLfloat>(h) / w;
 
-    // TODO check calculations
     if (w >= h) {
         glOrtho(-2.0 / ratio, 2.0 / ratio, -2.0, 2.0, -10.0, 10.0);
     } else {
@@ -101,7 +97,6 @@ void Sphere::wheelEvent(QWheelEvent *pe) {
     updateGL();
 }
 
-// TODO optimize function. remove c-style cast
 void Sphere::drawSphere(int lats, int longs) {
     int i, j;
     for (i = 0; i <= lats; i++) {
@@ -131,7 +126,6 @@ void Sphere::drawSphere(int lats, int longs) {
 void Sphere::drawCircle() {
     glColor4f(0.7f, 0.8f, 0.8f, 0.5f);
 
-    // TODO Isn't 20.f too much? (also check sphere slices)
     glBegin(GL_POLYGON);
     float i = 0;
     while (i < 6.28f) {
@@ -153,12 +147,10 @@ void Sphere::drawCircle() {
 
     glColor3f(0.0f, 0.0f, 0.0f);
 
-    // TODO Why this symbols renders here?
     renderText(0.0, 0.05, -1.2, "|1>", font);
     renderText(0.0, 0.05, 1.2, "|0>", font);
 }
 
-// TODO I don't like how xyz renders (i mean letters)
 void Sphere::drawAxis() {
     float axSize = 1.7f;
 

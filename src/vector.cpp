@@ -16,7 +16,6 @@
 
 #include "vector.hpp"
 
-// TODO test this case
 Vector::Vector() { initialSpike(); }
 
 Vector::Vector(double x, double y, double z) : Qubit(x, y, z) { initialSpike(); }
@@ -33,9 +32,8 @@ Spike Vector::getSpike() const {
     }
 }
 
-// TODO Q_ASSERT works incorrect
 void Vector::popPath() {
-    Q_ASSERT(not path_.isEmpty());
+    assert(not path_.isEmpty());
     if (path_.size() > 1) {
         tracePushBack();
     }
