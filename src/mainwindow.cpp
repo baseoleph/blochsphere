@@ -202,7 +202,7 @@ void MainWindow::createTopBar() {
     colorComboBox->addItem("Blue");
     colorComboBox->addItem("Grey");
     colorComboBox->addItem("Yellow");
-    colorComboBox->setCurrentIndex(0);
+    colorComboBox->setCurrentIndex(3);
 
     connect(colorComboBox, SIGNAL(currentIndexChanged(int)), SLOT(slotTraceColor(int)));
 

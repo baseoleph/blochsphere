@@ -103,8 +103,6 @@ public:
 
     void printVector() const;
 
-    //    static QColor generateRandomColor();
-
     bool isNowAnimate() const { return isNowAnimate_; }
     void takeStep();
 
@@ -123,7 +121,7 @@ private:
     QVector<Spike> path_;
     QVector<Trace> trace_;
     QColor         selfColor_ = Qt::red;
-    QColor         traceColor_ = Qt::red;
+    QColor         traceColor_ = Qt::gray;
     bool           traceEnabled_ = true;
     bool           isNowAnimate_ = false;
     QVector3D      _rotateVector;

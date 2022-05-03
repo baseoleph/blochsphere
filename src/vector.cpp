@@ -133,11 +133,11 @@ void Vector::setColorByNameIndex() {
     } else if (_name == "1") {
         setSelfColor(Qt::red);
     } else if (_name == "2") {
-        setSelfColor(Qt::blue);
-    } else if (_name == "3") {
         setSelfColor(Qt::green);
-    } else if (_name == "4") {
+    } else if (_name == "3") {
         setSelfColor(Qt::yellow);
+    } else if (_name == "4") {
+        setSelfColor(Qt::magenta);
     } else if (_name == "5") {
         setSelfColor(Qt::cyan);
     }
