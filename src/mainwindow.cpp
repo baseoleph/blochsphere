@@ -1018,16 +1018,12 @@ void MainWindow::slotReset() {
 }
 
 void MainWindow::slotComplexLineEditChanged(const QString &) {
-    updateComplexLineEdit(mat[0][0]);
-    updateComplexLineEdit(mat[0][1]);
-    updateComplexLineEdit(mat[1][0]);
-    updateComplexLineEdit(mat[1][1]);
+    Utility::updateComplexLineEdit(mat[0][0]);
+    Utility::updateComplexLineEdit(mat[0][1]);
+    Utility::updateComplexLineEdit(mat[1][0]);
+    Utility::updateComplexLineEdit(mat[1][1]);
 }
 
-void MainWindow::updateComplexLineEdit(QLineEdit *lineEdit) {
-    QRegExp re(QString::fromUtf8("[IШш]"));
-    lineEdit->setText(lineEdit->text().replace(re, "i"));
-}
 void MainWindow::slotToggleRotateVector(bool f) {
     foreach (auto e, vectors.keys()) { e->setEnabledRotateVector(f); }
     slotUpdateSpheres();

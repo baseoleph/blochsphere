@@ -245,10 +245,7 @@ void VectorWidget::slotSetRandomPsi() {
     fillFieldsOfVector(sp);
 }
 
-void VectorWidget::updateComplexLineEdit(const QString &) {
-    QRegExp re(QString::fromUtf8("[IШш]"));
-    betEd->setText(betEd->text().replace(re, "i"));
-}
+void VectorWidget::updateComplexLineEdit(const QString &) { Utility::updateComplexLineEdit(betEd); }
 
 void VectorWidget::fillFieldsOfVector(Spike sp, FIELD exclude) {
     Vector v;

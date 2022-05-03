@@ -123,7 +123,6 @@ private:
 
     void nextAnimStepCircuit();
 
-    static void  updateComplexLineEdit(QLineEdit *lineEdit);
     void         startMove(Vector *v, CurDecompFun getDec);
     void         startMove(Vector *v, Operator &op, CurDecompFun getDec);
     CurDecompFun getCurrentDecomposition();

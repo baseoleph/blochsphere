@@ -17,6 +17,7 @@
 #ifndef BLOCHUTILITY_H
 #define BLOCHUTILITY_H
 
+#include <QLineEdit>
 #include <QRegExpValidator>
 #include <QString>
 #include <complex>
@@ -45,6 +46,7 @@ double  roundNumber(double a, double s = 1 / EPSILON);
 double  getDuration();
 double  getSpeed();
 void    setSpeed(int spd);
+void    updateComplexLineEdit(QLineEdit *lineEdit);
 
 inline int    random(int min, int max) { return min + rand() % ((max + 1) - min); }
 inline double random(double fMin, double fMax) {

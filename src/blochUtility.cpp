@@ -99,4 +99,9 @@ void    setSpeed(int spd) { speed = spd; }
 
 bool fuzzyCompare(double a, double b) { return qAbs(a - b) <= EPSILON * 10; }
 
+void updateComplexLineEdit(QLineEdit *lineEdit) {
+    QRegExp re(QString::fromUtf8("[IШш]"));
+    lineEdit->setText(lineEdit->text().replace(re, "i"));
+}
+
 } // namespace Utility
