@@ -48,10 +48,10 @@ public:
         _matrix.d = 1;
     }
 
-    bool             updateMatrix(matrix2x2 matrix);
-    static bool      isUnitaryMatrix(UnitaryMatrix2x2 op);
-    static bool      isUnitaryMatrix(matrix2x2 matrix);
-    static bool      compareOperators(UnitaryMatrix2x2 op1, UnitaryMatrix2x2 op2);
+    bool        updateMatrix(matrix2x2 matrix);
+    static bool isUnitaryMatrix(UnitaryMatrix2x2 op);
+    static bool isUnitaryMatrix(matrix2x2 matrix);
+    static bool compareOperators(UnitaryMatrix2x2 op1, UnitaryMatrix2x2 op2, bool verbose = true);
     UnitaryMatrix2x2 getConjugateTranspose();
     void             print(std::ostream &out) const;
 

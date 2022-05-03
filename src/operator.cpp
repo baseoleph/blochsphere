@@ -613,30 +613,23 @@ vectorangle Operator::vectorAngleDec() { return vectorAngleDec(_op); }
 UnitaryMatrix2x2 Operator::genRandUnitaryMatrix(qint64 seed) {
     UnitaryMatrix2x2 op;
     matrix2x2        matrix;
-
-    complex i{0, 1};
-    double  a1, a2, b1, b2, moda, modb, phi;
+    complex          i{0, 1};
 
     if (seed == 0) {
         seed = time(nullptr) * rand();
     }
     srand(seed);
-    moda = rand() / double(RAND_MAX);
-    a1 = Utility::random(0., 1.);
-    a2 = Utility::random(0., 1. - a1 * a1);
-    b1 = Utility::random(0., 1. - a1 * a1 - a2 * a2);
-    b2 = sqrt(1 - a1 * a1 - a2 * a2 - b1 * b1);
+    double a1 = Utility::random(0., 1.);
+    double a2 = Utility::random(0., 1. - a1 * a1);
+    double b1 = Utility::random(0., 1. - a1 * a1 - a2 * a2);
+    double b2 = sqrt(1 - a1 * a1 - a2 * a2 - b1 * b1);
 
-    //    phi = floor((2.0 * M_PI * rand() / double(RAND_MAX) - M_PI) * 180.0 / M_PI);
-    phi = rand();
+    double phi = Utility::random(0., 360.);
 
     matrix.a = exp(i * phi) * complex(a1, a2);
     matrix.b = exp(i * phi) * complex(b1, b2);
     matrix.c = -exp(i * phi) * conj(matrix.b);
     matrix.d = exp(i * phi) * conj(matrix.a);
-
-    //    qDebug() << a1 << a2;
-    //    qDebug() << b1 << b2;
 
     op.updateMatrix(matrix);
     return op;
@@ -853,19 +846,19 @@ QString Operator::getCurOperatorMatrixStr() { return getCurOperatorMatrixStr(_op
 
 QString Operator::getOperatorName(UnitaryMatrix2x2 op) {
     QString opName = "U";
-    if (UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2::getId(), op)) {
+    if (UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2::getId(), op, false)) {
         opName = "Id";
-    } else if (UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2::getX(), op)) {
+    } else if (UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2::getX(), op, false)) {
         opName = "X";
-    } else if (UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2::getY(), op)) {
+    } else if (UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2::getY(), op, false)) {
         opName = "Y";
-    } else if (UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2::getZ(), op)) {
+    } else if (UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2::getZ(), op, false)) {
         opName = "Z";
-    } else if (UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2::getH(), op)) {
+    } else if (UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2::getH(), op, false)) {
         opName = "H";
-    } else if (UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2::getS(), op)) {
+    } else if (UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2::getS(), op, false)) {
         opName = "S";
-    } else if (UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2::getT(), op)) {
+    } else if (UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2::getT(), op, false)) {
         opName = "T";
     }
     return opName;

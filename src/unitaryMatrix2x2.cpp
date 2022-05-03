@@ -41,7 +41,7 @@ void UnitaryMatrix2x2::print(std::ostream &out) const {
     out << "----------------------------------------------\n";
 }
 
-bool UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2 op1, UnitaryMatrix2x2 op2) {
+bool UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2 op1, UnitaryMatrix2x2 op2, bool verbose) {
     bool cmp = true;
     cmp &= Utility::fuzzyCompare(op1.a().real(), op2.a().real());
     cmp &= Utility::fuzzyCompare(op1.a().imag(), op2.a().imag());
@@ -82,7 +82,7 @@ bool UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2 op1, UnitaryMatrix2x2 o
         cmp &= Utility::fuzzyCompare(op1.d().imag(), d.imag());
     }
 
-    if (!cmp) {
+    if (verbose && !cmp) {
         std::cout << "----------------------------------------------\n";
         std::cout << "Expected\n";
         std::cout << "(" << op1.a().real() << ", " << op1.a().imag() << ") \t";
