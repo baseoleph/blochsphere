@@ -754,40 +754,28 @@ void MainWindow::slotSetRXYZOp() {
         dec.beta = rZyBetEd->text().toDouble();
         dec.gamma = rZyGamEd->text().toDouble();
         dec.delta = rZyDelEd->text().toDouble();
-        if (not curOperator.setOperatorByZyDecomposition(dec)) {
-            QMessageBox::warning(this, "Error", "error");
-            return;
-        }
+        assert(curOperator.setOperatorByZyDecomposition(dec));
         break;
     case 1:
         dec.alpha = rZxAlpEd->text().toDouble();
         dec.beta = rZxBetEd->text().toDouble();
         dec.gamma = rZxGamEd->text().toDouble();
         dec.delta = rZxDelEd->text().toDouble();
-        if (not curOperator.setOperatorByZxDecomposition(dec)) {
-            QMessageBox::warning(this, "Error", "error");
-            return;
-        }
+        assert(curOperator.setOperatorByZxDecomposition(dec));
         break;
     case 2:
         dec.alpha = rXyAlpEd->text().toDouble();
         dec.beta = rXyBetEd->text().toDouble();
         dec.gamma = rXyGamEd->text().toDouble();
         dec.delta = rXyDelEd->text().toDouble();
-        if (not curOperator.setOperatorByXyDecomposition(dec)) {
-            QMessageBox::warning(this, "Error", "error");
-            return;
-        }
+        assert(curOperator.setOperatorByXyDecomposition(dec));
         break;
     case 3:
         dec.alpha = rZyxAlpEd->text().toDouble();
         dec.beta = rZyxBetEd->text().toDouble();
         dec.gamma = rZyxGamEd->text().toDouble();
         dec.delta = rZyxDelEd->text().toDouble();
-        if (not curOperator.setOperatorByZyxDecomposition(dec)) {
-            QMessageBox::warning(this, "Error", "error");
-            return;
-        }
+        assert(curOperator.setOperatorByZyxDecomposition(dec));
         break;
     }
 
@@ -852,10 +840,7 @@ void MainWindow::slotSetAxOp() {
             }
         }
 
-        if (not curOperator.setOperatorByVectorAngle(va)) {
-            QMessageBox::warning(this, "Error", "error");
-            return;
-        }
+        assert(curOperator.setOperatorByVectorAngle(va));
 
         updateOp(OPERATOR_FORM::VECTOR);
     } else {
