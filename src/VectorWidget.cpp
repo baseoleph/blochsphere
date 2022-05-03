@@ -258,8 +258,7 @@ void VectorWidget::fillFieldsOfVector(Spike sp, FIELD exclude) {
 
     if (exclude != FIELD::ALPBET) {
         alpEd->setText(Utility::numberToStr(v.a().real()));
-        betEd->setText(Utility::numberToStr(v.b().real()) + (v.b().imag() >= 0 ? "+" : "") +
-                       Utility::numberToStr(v.b().imag()) + "i");
+        betEd->setText(Utility::parseComplexToStr(v.b()));
     }
 
     if (exclude != FIELD::BLOVEC) {

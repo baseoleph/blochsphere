@@ -17,6 +17,7 @@
 #ifndef BLOCHUTILITY_H
 #define BLOCHUTILITY_H
 
+#include <QDebug>
 #include <QLineEdit>
 #include <QRegExpValidator>
 #include <QString>

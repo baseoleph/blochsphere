@@ -67,29 +67,27 @@ QString parseComplexToStr(complex c, int d) {
     QString str;
     double  im = roundNumber(imag(c), d);
     double  re = roundNumber(real(c), d);
-    if (std::abs(re) < EPSILON && std::abs(im) > EPSILON) {
-        if (std::abs(1.0 - im) < EPSILON)
-            return str += "i";
-        else if (std::abs(1.0 + im) < EPSILON)
-            return str += "-i";
-        else
-            return str += QString("%1i").arg(im);
-    } else {
-        str = QString("%1").arg(re);
-        if (std::abs(im) > EPSILON) {
-            if (im > EPSILON) {
-                str += "+";
-                if (1.0 - im < EPSILON)
-                    return str += "i";
-            }
-            if (im < EPSILON) {
-                if (1.0 + im < EPSILON)
-                    return str += "-i";
-            }
-            str += QString("%1i").arg(im);
-        }
-        return str;
+
+    if (not fuzzyCompare(re, 0.)) {
+        str += QString::number(re);
     }
+
+    if (not fuzzyCompare(im, 0.)) {
+        if (fuzzyCompare(abs(im), 1.)) {
+            str += im > 0 ? "+i" : "-i";
+        } else {
+            str += im >= 0 ? "+" : "";
+            str += QString::number(im) + "i";
+        }
+    }
+
+    if (str.size() == 0) {
+        str = "0";
+    } else if (str[0] == "+") {
+        str = str.remove(0, 1);
+    }
+
+    return str;
 }
 
 QString numberToStr(double d) { return QString::number(roundNumber(d)); }
