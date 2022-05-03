@@ -417,17 +417,17 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         ops.append(op);
     }
 
-    // 36 V(tetha, phi) from A. Barenco
+    // 36 V(theta, phi) from A. Barenco
     {
         rd.seed(SEED);
-        double teta = rd.bounded(360.);
-        double phi0 = rd.bounded(360.);
-        teta = teta * M_PI / 180.0;
-        phi0 = phi0 * M_PI / 180.0;
-        a = cos(teta / 2.0);
-        b = -i * exp(-i * phi0) * sin(teta / 2.0);
-        c = -i * exp(i * phi0) * sin(teta / 2.0);
-        d = cos(teta / 2.0);
+        double the = rd.bounded(360.);
+        double phi = rd.bounded(360.);
+        the = the * M_PI / 180.0;
+        phi = phi * M_PI / 180.0;
+        a = cos(the / 2.0);
+        b = -i * exp(-i * phi) * sin(the / 2.0);
+        c = -i * exp(i * phi) * sin(the / 2.0);
+        d = cos(the / 2.0);
         EXPECT_TRUE(op.updateMatrix({a, b, c, d})) << "Not Unitary!";
         ops.append(op);
     }
