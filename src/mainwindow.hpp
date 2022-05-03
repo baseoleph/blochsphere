@@ -102,7 +102,6 @@ private:
     QTimer           *tm = nullptr;
     Circuit          *circuit = nullptr;
 
-    int circuitStepNumber = 0;
 
     QWidget     *controlWidget = nullptr;
     QVBoxLayout *controlLayout = nullptr;

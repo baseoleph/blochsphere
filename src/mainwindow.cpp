@@ -103,8 +103,8 @@ void MainWindow::slotTimer() {
                 curOperator = singleOperator;
             }
         } else if (isCircuitAnimation) {
-            circuitStepNumber += 1;
-            if (circuitStepNumber >= circuit->getSizeOfSteps()) {
+            circuit->stepUp();
+            if (circuit->getCurrentStep() >= circuit->getSizeOfSteps()) {
                 isCircuitAnimation = false;
                 vectorangle va = curOperator.vectorAngleDec();
                 foreach (auto e, vectors.keys()) {
@@ -971,7 +971,8 @@ void MainWindow::nextAnimStepCircuit() {
     isCircuitAnimation = true;
 
     foreach (auto e, circuit->getQubits()) {
-        startMove(e->getVector(), e->getOperator(circuitStepNumber), getCurrentDecomposition());
+        startMove(e->getVector(), e->getOperator(circuit->getCurrentStep()),
+                  getCurrentDecomposition());
     }
 }
 
@@ -1109,7 +1110,7 @@ void MainWindow::setEnabledWidgets(bool f) {
 }
 
 void MainWindow::slotStartCircuitMove() {
-    circuitStepNumber = 0;
+    circuit->clearStepPos();
     nextAnimStepCircuit();
 }
 

@@ -34,6 +34,9 @@ public:
     QWidget                       *makeButtons();
     const QVector<CircuitQubit *> &getQubits() { return qubits; }
     int                            getSizeOfSteps() { return lenOfSteps; }
+    void                           stepUp() { stepNumber += 1; }
+    void                           clearStepPos() { stepNumber = 0; }
+    int                            getCurrentStep() { return stepNumber; }
 
     QPushButton *runCircuitBut = nullptr;
     QPushButton *addStepBut = nullptr;
@@ -54,6 +57,7 @@ private:
     QVBoxLayout            *qubitsLayout = nullptr;
     QVector<CircuitQubit *> qubits;
     int                     lenOfSteps = 1;
+    int                     stepNumber = 0;
     bool                    isParentAnimating = true;
 };
 
