@@ -32,10 +32,6 @@
 #include <QTimer>
 #include <QToolBar>
 
-QRegExpValidator
-    compValid(QRegExp(QString::fromUtf8("^[+-]?[0-9]*\\.?[0-9]*[+-]?[0-9]*\\.?[0-9]*[iIшШ]?$")));
-QRegExpValidator axisValid(QRegExp("^-?[\\d]*\\.?[\\d]*;?-?[\\d]*\\.?[\\d]*;?-?[\\d]*\\.?[\\d]*$"));
-
 MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
     createSphere();
     createActions();
@@ -548,7 +544,7 @@ QWidget *MainWindow::makeOpWid() {
     for (int i = 0; i < 2; i++) {
         for (int j = 0; j < 2; j++) {
             mat[i][j] = new QLineEdit(QString::number(i == j));
-            mat[i][j]->setValidator(&compValid);
+            mat[i][j]->setValidator(Utility::compValid());
             connect(mat[i][j], SIGNAL(textEdited(QString)),
                     SLOT(slotComplexLineEditChanged(QString)));
         }
@@ -573,7 +569,7 @@ QWidget *MainWindow::makeOpWid() {
 
     auto *rNw = new QWidget();
     axRnEd = new QLineEdit("0;0;0");
-    axRnEd->setValidator(&axisValid);
+    axRnEd->setValidator(Utility::axisValid());
     ngRnEd = new QLineEdit("0");
     ngRnEd->setValidator(new QDoubleValidator);
 
@@ -803,7 +799,7 @@ void MainWindow::slotSetMatrixOp() {
     for (int i = 0; i < 2; i++)
         for (int j = 0; j < 2; j++) {
             try {
-                res.push_back(parseStrToComplex(mat[i][j]->text()));
+                res.push_back(Utility::parseStrToComplex(mat[i][j]->text()));
             } catch (int e) {
                 QMessageBox::warning(this, "Error",
                                      QString("Wrong input: Matrix(%1,%2)").arg(i).arg(j));
@@ -841,16 +837,16 @@ void MainWindow::slotSetAxOp() {
         }
 
         double len = sqrt(va.x * va.x + va.y * va.y + va.z * va.z);
-        if (not UnitaryMatrix2x2::fuzzyCompare(len, 1.)) {
+        if (not Utility::fuzzyCompare(len, 1.)) {
             auto *dial = new BlochDialog((QWidget *)sender(), DIALOG_TYPE::NORMALIZE);
             if (isAutoNormalize or dial->exec() == QDialog::Accepted) {
                 va.x /= len;
                 va.y /= len;
                 va.z /= len;
                 axRnEd->setText(QString("%1;%2;%3")
-                                    .arg(roundNumber(va.x))
-                                    .arg(roundNumber(va.y))
-                                    .arg(roundNumber(va.z)));
+                                    .arg(Utility::roundNumber(va.x))
+                                    .arg(Utility::roundNumber(va.y))
+                                    .arg(Utility::roundNumber(va.z)));
             } else {
                 return;
             }
@@ -872,34 +868,34 @@ void MainWindow::updateOp(OPERATOR_FORM exclude) {
     appBut->setText("Apply " + curOperator.getOperatorName());
 
     decomposition zyDec = curOperator.zyDecomposition();
-    rZyAlpEd->setText(numberToStr(zyDec.alpha));
-    rZyBetEd->setText(numberToStr(zyDec.beta));
-    rZyGamEd->setText(numberToStr(zyDec.gamma));
-    rZyDelEd->setText(numberToStr(zyDec.delta));
+    rZyAlpEd->setText(Utility::numberToStr(zyDec.alpha));
+    rZyBetEd->setText(Utility::numberToStr(zyDec.beta));
+    rZyGamEd->setText(Utility::numberToStr(zyDec.gamma));
+    rZyDelEd->setText(Utility::numberToStr(zyDec.delta));
 
     decomposition zxDec = curOperator.zxDecomposition();
-    rZxAlpEd->setText(numberToStr(zxDec.alpha));
-    rZxBetEd->setText(numberToStr(zxDec.beta));
-    rZxGamEd->setText(numberToStr(zxDec.gamma));
-    rZxDelEd->setText(numberToStr(zxDec.delta));
+    rZxAlpEd->setText(Utility::numberToStr(zxDec.alpha));
+    rZxBetEd->setText(Utility::numberToStr(zxDec.beta));
+    rZxGamEd->setText(Utility::numberToStr(zxDec.gamma));
+    rZxDelEd->setText(Utility::numberToStr(zxDec.delta));
 
     decomposition xyDec = curOperator.xyDecomposition();
-    rXyAlpEd->setText(numberToStr(xyDec.alpha));
-    rXyBetEd->setText(numberToStr(xyDec.beta));
-    rXyGamEd->setText(numberToStr(xyDec.gamma));
-    rXyDelEd->setText(numberToStr(xyDec.delta));
+    rXyAlpEd->setText(Utility::numberToStr(xyDec.alpha));
+    rXyBetEd->setText(Utility::numberToStr(xyDec.beta));
+    rXyGamEd->setText(Utility::numberToStr(xyDec.gamma));
+    rXyDelEd->setText(Utility::numberToStr(xyDec.delta));
 
     decomposition zyxDec = curOperator.zyxDecomposition();
-    rZyxAlpEd->setText(numberToStr(zyxDec.alpha));
-    rZyxBetEd->setText(numberToStr(zyxDec.beta));
-    rZyxGamEd->setText(numberToStr(zyxDec.gamma));
-    rZyxDelEd->setText(numberToStr(zyxDec.delta));
+    rZyxAlpEd->setText(Utility::numberToStr(zyxDec.alpha));
+    rZyxBetEd->setText(Utility::numberToStr(zyxDec.beta));
+    rZyxGamEd->setText(Utility::numberToStr(zyxDec.gamma));
+    rZyxDelEd->setText(Utility::numberToStr(zyxDec.delta));
 
     if (exclude != OPERATOR_FORM::MATRIX) {
-        mat[0][0]->setText(parseComplexToStr(curOperator.getOperator().a()));
-        mat[0][1]->setText(parseComplexToStr(curOperator.getOperator().b()));
-        mat[1][0]->setText(parseComplexToStr(curOperator.getOperator().c()));
-        mat[1][1]->setText(parseComplexToStr(curOperator.getOperator().d()));
+        mat[0][0]->setText(Utility::parseComplexToStr(curOperator.getOperator().a()));
+        mat[0][1]->setText(Utility::parseComplexToStr(curOperator.getOperator().b()));
+        mat[1][0]->setText(Utility::parseComplexToStr(curOperator.getOperator().c()));
+        mat[1][1]->setText(Utility::parseComplexToStr(curOperator.getOperator().d()));
         appBut->setToolTip(curOperator.getCurOperatorMatrixStr());
     }
 
@@ -908,10 +904,10 @@ void MainWindow::updateOp(OPERATOR_FORM exclude) {
 
     if (exclude != OPERATOR_FORM::VECTOR) {
         axRnEd->setText(QString("%1;%2;%3")
-                            .arg(roundNumber(va.x))
-                            .arg(roundNumber(va.y))
-                            .arg(roundNumber(va.z)));
-        ngRnEd->setText(QString("%1").arg(roundNumber(va.angle * 180 / M_PI)));
+                            .arg(Utility::roundNumber(va.x))
+                            .arg(Utility::roundNumber(va.y))
+                            .arg(Utility::roundNumber(va.z)));
+        ngRnEd->setText(QString("%1").arg(Utility::roundNumber(va.angle * 180 / M_PI)));
     }
 
     slotUpdateSpheres();
@@ -1126,21 +1122,21 @@ void MainWindow::slotUpdateSpheres() {
 }
 
 void MainWindow::slotSpeedUp() {
-    if (getSpeed() < 10) {
-        setSpeed(getSpeed() + 1);
+    if (Utility::getSpeed() < 10) {
+        Utility::setSpeed(Utility::getSpeed() + 1);
     }
-    speedLabel->setText("Speed: " + QString::number(getSpeed()) + " ");
-    speedUpButton->setEnabled(getSpeed() < 10);
-    speedDownButton->setEnabled(getSpeed() > 1);
+    speedLabel->setText("Speed: " + QString::number(Utility::getSpeed()) + " ");
+    speedUpButton->setEnabled(Utility::getSpeed() < 10);
+    speedDownButton->setEnabled(Utility::getSpeed() > 1);
 }
 
 void MainWindow::slotSpeedDown() {
-    if (getSpeed() > 0) {
-        setSpeed(getSpeed() - 1);
+    if (Utility::getSpeed() > 0) {
+        Utility::setSpeed(Utility::getSpeed() - 1);
     }
-    speedLabel->setText("Speed: " + QString::number(getSpeed()) + " ");
-    speedUpButton->setEnabled(getSpeed() < 10);
-    speedDownButton->setEnabled(getSpeed() > 1);
+    speedLabel->setText("Speed: " + QString::number(Utility::getSpeed()) + " ");
+    speedUpButton->setEnabled(Utility::getSpeed() < 10);
+    speedDownButton->setEnabled(Utility::getSpeed() > 1);
 }
 
 void MainWindow::slotToNormal() {

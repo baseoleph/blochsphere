@@ -17,6 +17,7 @@
 #ifndef BLOCHUTILITY_H
 #define BLOCHUTILITY_H
 
+#include <QRegExpValidator>
 #include <QString>
 #include <complex>
 
@@ -31,8 +32,13 @@
 
 typedef std::complex<double> complex;
 
+namespace Utility {
+const QValidator *compValid();
+const QValidator *axisValid();
+
 complex parseStrToComplex(const QString &str);
 QString parseComplexToStr(complex c, int d = 1 / EPSILON);
+bool    fuzzyCompare(double a, double b);
 QString numberToStr(double d);
 QString numberToStr(long d);
 double  roundNumber(double a, double s = 1 / EPSILON);
@@ -45,5 +51,5 @@ inline double random(double fMin, double fMax) {
     double f = (double)rand() / RAND_MAX;
     return fMin + f * (fMax - fMin);
 }
-
+} // namespace Utility
 #endif // BLOCHUTILITY_H

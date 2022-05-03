@@ -32,8 +32,6 @@ bool UnitaryMatrix2x2::isUnitaryMatrix(matrix2x2 matrix) {
     return isUnitaryMatrix(UnitaryMatrix2x2(matrix));
 }
 
-bool UnitaryMatrix2x2::fuzzyCompare(double a, double b) { return qAbs(a - b) <= EPSILON * 10; }
-
 void UnitaryMatrix2x2::print(std::ostream &out) const {
     out << "----------------------------------------------\n";
     out << "(" << a().real() << ", " << a().imag() << ") \t";
@@ -45,17 +43,17 @@ void UnitaryMatrix2x2::print(std::ostream &out) const {
 
 bool UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2 op1, UnitaryMatrix2x2 op2) {
     bool cmp = true;
-    cmp &= fuzzyCompare(op1.a().real(), op2.a().real());
-    cmp &= fuzzyCompare(op1.a().imag(), op2.a().imag());
+    cmp &= Utility::fuzzyCompare(op1.a().real(), op2.a().real());
+    cmp &= Utility::fuzzyCompare(op1.a().imag(), op2.a().imag());
 
-    cmp &= fuzzyCompare(op1.b().real(), op2.b().real());
-    cmp &= fuzzyCompare(op1.b().imag(), op2.b().imag());
+    cmp &= Utility::fuzzyCompare(op1.b().real(), op2.b().real());
+    cmp &= Utility::fuzzyCompare(op1.b().imag(), op2.b().imag());
 
-    cmp &= fuzzyCompare(op1.c().real(), op2.c().real());
-    cmp &= fuzzyCompare(op1.c().imag(), op2.c().imag());
+    cmp &= Utility::fuzzyCompare(op1.c().real(), op2.c().real());
+    cmp &= Utility::fuzzyCompare(op1.c().imag(), op2.c().imag());
 
-    cmp &= fuzzyCompare(op1.d().real(), op2.d().real());
-    cmp &= fuzzyCompare(op1.d().imag(), op2.d().imag());
+    cmp &= Utility::fuzzyCompare(op1.d().real(), op2.d().real());
+    cmp &= Utility::fuzzyCompare(op1.d().imag(), op2.d().imag());
 
     if (!cmp) {
         cmp = true;
@@ -71,17 +69,17 @@ bool UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2 op1, UnitaryMatrix2x2 o
         complex c = op2.c() / ephi;
         complex d = op2.d() / ephi;
 
-        cmp &= fuzzyCompare(op1.a().real(), a.real());
-        cmp &= fuzzyCompare(op1.a().imag(), a.imag());
+        cmp &= Utility::fuzzyCompare(op1.a().real(), a.real());
+        cmp &= Utility::fuzzyCompare(op1.a().imag(), a.imag());
 
-        cmp &= fuzzyCompare(op1.b().real(), b.real());
-        cmp &= fuzzyCompare(op1.b().imag(), b.imag());
+        cmp &= Utility::fuzzyCompare(op1.b().real(), b.real());
+        cmp &= Utility::fuzzyCompare(op1.b().imag(), b.imag());
 
-        cmp &= fuzzyCompare(op1.c().real(), c.real());
-        cmp &= fuzzyCompare(op1.c().imag(), c.imag());
+        cmp &= Utility::fuzzyCompare(op1.c().real(), c.real());
+        cmp &= Utility::fuzzyCompare(op1.c().imag(), c.imag());
 
-        cmp &= fuzzyCompare(op1.d().real(), d.real());
-        cmp &= fuzzyCompare(op1.d().imag(), d.imag());
+        cmp &= Utility::fuzzyCompare(op1.d().real(), d.real());
+        cmp &= Utility::fuzzyCompare(op1.d().imag(), d.imag());
     }
 
     if (!cmp) {

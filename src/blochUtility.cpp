@@ -17,9 +17,17 @@
 #include "blochUtility.h"
 
 #include <QRegExp>
-#include <QStringList>
 
+namespace {
 int speed = 5;
+QRegExpValidator
+    cmpVld(QRegExp(QString::fromUtf8("^[+-]?[0-9]*\\.?[0-9]*[+-]?[0-9]*\\.?[0-9]*[iIшШ]?$")));
+QRegExpValidator axsVld(QRegExp("^-?[\\d]*\\.?[\\d]*;?-?[\\d]*\\.?[\\d]*;?-?[\\d]*\\.?[\\d]*$"));
+} // namespace
+
+namespace Utility {
+const QValidator *compValid() { return &cmpVld; }
+const QValidator *axisValid() { return &axsVld; }
 
 double getDuration() { return DURATION * (11 - speed); }
 
@@ -88,3 +96,7 @@ QString numberToStr(double d) { return QString::number(roundNumber(d)); }
 QString numberToStr(long d) { return QString::number(d); }
 double  getSpeed() { return speed; }
 void    setSpeed(int spd) { speed = spd; }
+
+bool fuzzyCompare(double a, double b) { return qAbs(a - b) <= EPSILON * 10; }
+
+} // namespace Utility

@@ -23,9 +23,6 @@
 #include <QMessageBox>
 #include <QPushButton>
 
-QRegExpValidator
-    compValid2(QRegExp(QString::fromUtf8("^[+-]?[0-9]*\\.?[0-9]*[+-]?[0-9]*\\.?[0-9]*[iIшШ]?$")));
-
 VectorWidget::VectorWidget(QWidget *parent, Vector *v) : QWidget(parent), _v(v) {
     auto topLay = new QGridLayout();
     topLay->addWidget(makeThePhiWid(), 0, 0);
@@ -83,7 +80,7 @@ QWidget *VectorWidget::makeAlpBetWid() {
     alpEd->setValidator(new QDoubleValidator);
 
     betEd->setFixedWidth(90);
-    betEd->setValidator(&compValid2);
+    betEd->setValidator(Utility::compValid());
 
     connect(betEd, SIGNAL(textEdited(const QString &)),
             SLOT(updateComplexLineEdit(const QString &)));
@@ -180,19 +177,19 @@ void VectorWidget::slotAlpBet() {
     emptyToZeroLineEdit(betEd);
 
     double  a = alpEd->text().toDouble();
-    complex b = parseStrToComplex(betEd->text());
+    complex b = Utility::parseStrToComplex(betEd->text());
     if (abs(a) + abs(b) < EPSILON) {
         QMessageBox::warning(this, "Warning", "Vector must be non-zero");
         return;
     }
     double len = sqrt(a * a + b.real() * b.real() + b.imag() * b.imag());
-    if (not UnitaryMatrix2x2::fuzzyCompare(len, 1.)) {
+    if (not Utility::fuzzyCompare(len, 1.)) {
         auto *dial = new BlochDialog((QWidget *)sender(), DIALOG_TYPE::NORMALIZE);
         if (isAutoNormalize or dial->exec() == QDialog::Accepted) {
             a /= len;
             b = complex(b.real() / len, b.imag() / len);
             alpEd->setText(QString::number(a));
-            betEd->setText(parseComplexToStr(b));
+            betEd->setText(Utility::parseComplexToStr(b));
         } else {
             return;
         }
@@ -217,7 +214,7 @@ void VectorWidget::slotBloVec() {
         return;
     }
     double len = sqrt(x * x + y * y + z * z);
-    if (not UnitaryMatrix2x2::fuzzyCompare(len, 1.)) {
+    if (not Utility::fuzzyCompare(len, 1.)) {
         auto *dial = new BlochDialog((QWidget *)sender(), DIALOG_TYPE::NORMALIZE);
         if (isAutoNormalize or dial->exec() == QDialog::Accepted) {
             x /= len;
@@ -238,8 +235,8 @@ void VectorWidget::slotBloVec() {
 }
 
 void VectorWidget::slotSetRandomPsi() {
-    double the = random(0, 180);
-    double phi = random(0, 360);
+    double the = Utility::random(0, 180);
+    double phi = Utility::random(0, 360);
 
     Spike sp = Vector::createSpike(the, phi);
     _v->changeVector(sp);
@@ -258,20 +255,20 @@ void VectorWidget::fillFieldsOfVector(Spike sp, FIELD exclude) {
     v.changeVector(sp);
 
     if (exclude != FIELD::THEPHI) {
-        theEd->setText(numberToStr(qRadiansToDegrees(v.the())));
-        phiEd->setText(numberToStr(qRadiansToDegrees(v.phi())));
+        theEd->setText(Utility::numberToStr(qRadiansToDegrees(v.the())));
+        phiEd->setText(Utility::numberToStr(qRadiansToDegrees(v.phi())));
     }
 
     if (exclude != FIELD::ALPBET) {
-        alpEd->setText(numberToStr(v.a().real()));
-        betEd->setText(numberToStr(v.b().real()) + (v.b().imag() >= 0 ? "+" : "") +
-                       numberToStr(v.b().imag()) + "i");
+        alpEd->setText(Utility::numberToStr(v.a().real()));
+        betEd->setText(Utility::numberToStr(v.b().real()) + (v.b().imag() >= 0 ? "+" : "") +
+                       Utility::numberToStr(v.b().imag()) + "i");
     }
 
     if (exclude != FIELD::BLOVEC) {
-        xEd->setText(numberToStr(v.x()));
-        yEd->setText(numberToStr(v.y()));
-        zEd->setText(numberToStr(v.z()));
+        xEd->setText(Utility::numberToStr(v.x()));
+        yEd->setText(Utility::numberToStr(v.y()));
+        zEd->setText(Utility::numberToStr(v.z()));
     }
 }
 

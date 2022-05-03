@@ -21,9 +21,9 @@ Operator::Operator() { toId(); }
 QVector<Spike> Operator::rotate(Spike s, QVector3D v, double gamma) {
     QVector<Spike> trace;
     trace.append(s);
-    for (uint i = 1; i < getDuration(); ++i) {
-        QQuaternion q =
-            QQuaternion::fromAxisAndAngle(v, static_cast<float>(i / getDuration() * gamma));
+    for (uint i = 1; i < Utility::getDuration(); ++i) {
+        QQuaternion q = QQuaternion::fromAxisAndAngle(
+            v, static_cast<float>(i / Utility::getDuration() * gamma));
         trace.append(Vector::actOperator(q, s));
     }
     QQuaternion q = QQuaternion::fromAxisAndAngle(v, static_cast<float>(gamma));
@@ -179,9 +179,9 @@ QVector<Spike> Operator::applyOperator(Spike s, UnitaryMatrix2x2 op) {
     }
 
     if (not qFuzzyIsNull(g)) {
-        for (uint i = 1; i < getDuration(); ++i) {
-            QQuaternion qq =
-                QQuaternion::fromAxisAndAngle(v, static_cast<float>(i / getDuration() * g));
+        for (uint i = 1; i < Utility::getDuration(); ++i) {
+            QQuaternion qq = QQuaternion::fromAxisAndAngle(
+                v, static_cast<float>(i / Utility::getDuration() * g));
             spike.append(Vector::actOperator(qq, s));
         }
     }
@@ -622,9 +622,9 @@ UnitaryMatrix2x2 Operator::genRandUnitaryMatrix(qint64 seed) {
     }
     srand(seed);
     moda = rand() / double(RAND_MAX);
-    a1 = random(0., 1.);
-    a2 = random(0., 1. - a1 * a1);
-    b1 = random(0., 1. - a1 * a1 - a2 * a2);
+    a1 = Utility::random(0., 1.);
+    a2 = Utility::random(0., 1. - a1 * a1);
+    b1 = Utility::random(0., 1. - a1 * a1 - a2 * a2);
     b2 = sqrt(1 - a1 * a1 - a2 * a2 - b1 * b1);
 
     //    phi = floor((2.0 * M_PI * rand() / double(RAND_MAX) - M_PI) * 180.0 / M_PI);

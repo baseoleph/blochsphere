@@ -95,7 +95,7 @@ Spike Vector::createSpike(double a, complex b) {
 
 QVector<Spike> Vector::normalizePath(const QVector<Spike> &s) {
     QVector<Spike> newS;
-    int            dur = getDuration();
+    int            dur = Utility::getDuration();
     newS.append(s.first());
     if (dur != 0) {
         int step = s.size() / dur;

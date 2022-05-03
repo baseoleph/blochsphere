@@ -53,17 +53,16 @@ public:
     static bool      isUnitaryMatrix(matrix2x2 matrix);
     static bool      compareOperators(UnitaryMatrix2x2 op1, UnitaryMatrix2x2 op2);
     UnitaryMatrix2x2 getConjugateTranspose();
-    static bool      fuzzyCompare(double a, double b);
     void             print(std::ostream &out) const;
 
     complex a() const { return _matrix.a; }
     complex b() const { return _matrix.b; }
     complex c() const { return _matrix.c; }
     complex d() const { return _matrix.d; }
-    QString aStr() const { return parseComplexToStr(_matrix.a); }
-    QString bStr() const { return parseComplexToStr(_matrix.b); }
-    QString cStr() const { return parseComplexToStr(_matrix.c); }
-    QString dStr() const { return parseComplexToStr(_matrix.d); }
+    QString aStr() const { return Utility::parseComplexToStr(_matrix.a); }
+    QString bStr() const { return Utility::parseComplexToStr(_matrix.b); }
+    QString cStr() const { return Utility::parseComplexToStr(_matrix.c); }
+    QString dStr() const { return Utility::parseComplexToStr(_matrix.d); }
 
     static UnitaryMatrix2x2 getId();
     static UnitaryMatrix2x2 getX();
