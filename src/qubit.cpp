@@ -15,7 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "qubit.hpp"
+#include <QtCore>
 #include <complex>
+#include <iostream>
 
 Qubit::Qubit() { evalAB(); }
 Qubit::Qubit(double x, double y, double z) : Point(x, y, z) { evalAB(); }
@@ -57,4 +59,13 @@ void Qubit::evalAB() {
     complex csin(sin(the() / 2.0), 0.0);
     a_ = cos(the() / 2.0);
     b_ = pow(C_E, C_I * phi()) * csin;
+}
+
+void Qubit::printQubit() {
+    std::cout << "---------------\n";
+    std::cout << "xyz " << x() << " " << y() << " " << z() << "\n";
+    std::cout << "pt " << qRadiansToDegrees(the()) << " " << qRadiansToDegrees(phi()) << "\n";
+    std::cout << "ab (" << a().real() << ", " << a().imag() << "), (" << b().real() << ", "
+              << b().imag() << ") \n";
+    std::cout << "---------------\n";
 }

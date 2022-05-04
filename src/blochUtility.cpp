@@ -96,6 +96,9 @@ double  getSpeed() { return speed; }
 void    setSpeed(int spd) { speed = spd; }
 
 bool fuzzyCompare(double a, double b) { return qAbs(a - b) <= EPSILON * 10; }
+bool fuzzyCompare(complex a, complex b) {
+    return fuzzyCompare(a.real(), b.real()) && fuzzyCompare(a.imag(), b.imag());
+}
 
 void updateComplexLineEdit(QLineEdit *lineEdit) {
     QRegExp re(QString::fromUtf8("[IШш]"));

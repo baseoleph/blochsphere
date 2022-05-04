@@ -96,11 +96,16 @@ add_executable(
         test/unitaryOperators.cpp
         src/operator.cpp
         src/unitaryMatrix2x2.cpp
-        src/blochUtility.cpp src/blochUtility.h
+        src/qubit.cpp
+        src/point.cpp
+        src/blochUtility.cpp
+        src/blochUtility.h
         test/testOperator.cpp
         test/main.cpp
         test/identityOperatorPairs.cpp
         test/identityOperatorPairs.h
+        test/testQubit.cpp
+        test/qubits.cpp test/qubits.h
 )
 
 target_include_directories(

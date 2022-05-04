@@ -41,6 +41,7 @@ const QValidator *axisValid();
 complex parseStrToComplex(const QString &str);
 QString parseComplexToStr(complex c, int d = 1 / EPSILON);
 bool    fuzzyCompare(double a, double b);
+bool    fuzzyCompare(complex a, complex b);
 QString numberToStr(double d);
 QString numberToStr(long d);
 double  roundNumber(double a, double s = 1 / EPSILON);

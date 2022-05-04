@@ -14,38 +14,29 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef QUBIT_HPP
-#define QUBIT_HPP
+#ifndef QUBITS_H
+#define QUBITS_H
 
-#include "blochUtility.h"
-#include "point.hpp"
-#include <complex>
+#include "qubit.hpp"
 
-class Qubit : public Point {
-public:
-    Qubit();
-    Qubit(double x, double y, double z);
-    Qubit(double the, double phi);
-    Qubit(complex a, complex b);
-
-    inline complex a() const { return a_; }
-    inline complex b() const { return b_; }
-
-    void printQubit();
-
-protected:
-    void changeQubit(double x, double y, double z);
-    void changeQubit(double the, double phi);
-    void changeQubit(complex a, complex b);
-
-private:
-    using Point::changePoint;
-
-    complex a_;
-    complex b_;
-
-    void evalVertex();
-    void evalAB();
+struct QubitFields {
+    complex a;
+    complex b;
+    double  the;
+    double  phi;
+    double  x;
+    double  y;
+    double  z;
+    bool    aCheck = true;
+    bool    bCheck = true;
+    bool    tCheck = true;
+    bool    pCheck = true;
+    bool    xCheck = true;
+    bool    yCheck = true;
+    bool    zCheck = true;
 };
 
-#endif // QUBIT_HPP
+QVector<QubitFields> qubits();
+QubitFields          getQubitFields(const Qubit &q);
+
+#endif // QUBITS_H
