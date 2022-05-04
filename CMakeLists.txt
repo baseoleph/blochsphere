@@ -92,11 +92,16 @@ add_subdirectory(
 
 add_executable(
         test
-        test/testOperator.cpp
+        test/testOperatorDecompositions.cpp
         test/unitaryOperators.cpp
         src/operator.cpp
         src/unitaryMatrix2x2.cpp
-        src/blochUtility.cpp src/blochUtility.h)
+        src/blochUtility.cpp src/blochUtility.h
+        test/testOperator.cpp
+        test/main.cpp
+        test/identityOperatorPairs.cpp
+        test/identityOperatorPairs.h
+)
 
 target_include_directories(
         test PRIVATE

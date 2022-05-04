@@ -76,11 +76,15 @@ public:
     static UnitaryMatrix2x2 getYrotate(double the);
     static UnitaryMatrix2x2 getZrotate(double the);
 
+    UnitaryMatrix2x2 operator*(const UnitaryMatrix2x2 &op);
+    UnitaryMatrix2x2 operator-(const UnitaryMatrix2x2 &op);
+    UnitaryMatrix2x2 operator+(const UnitaryMatrix2x2 &op);
+    UnitaryMatrix2x2 operator-();
+
 private:
     matrix2x2 _matrix;
 
     // Matrices must be unitary
     explicit UnitaryMatrix2x2(matrix2x2 matrix) : _matrix(matrix) {}
-    UnitaryMatrix2x2 operator*(const UnitaryMatrix2x2 &op);
 };
 #endif // UNITARYMATRIX2X2_HPP

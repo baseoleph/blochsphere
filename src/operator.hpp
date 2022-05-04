@@ -95,7 +95,7 @@ public:
     bool setOperatorByXyDecomposition(decomposition dec);
     bool setOperatorByZyxDecomposition(decomposition dec);
     bool setOperatorByVectorAngle(vectorangle va);
-    void setOperator(UnitaryMatrix2x2 op, QString opName);
+    void setOperator(UnitaryMatrix2x2 op, QString opName = "U");
 
     static UnitaryMatrix2x2 genRandUnitaryMatrix(qint64 seed = 0);
 

@@ -14,15 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "identityOperatorPairs.h"
-#include "operator.hpp"
+#include "unitaryOperators.hpp"
 #include <gtest/gtest.h>
 
-TEST(Operator, multiplicationIdentity) {
-    QVector<std::pair<UnitaryMatrix2x2, UnitaryMatrix2x2>> ops = identityPairs();
-
-    for (int i = 0; i < ops.size(); ++i) {
-        EXPECT_TRUE(UnitaryMatrix2x2::compareOperators(ops[i].first, ops[i].second))
-            << "Not equal pair: " << i;
-    }
+int main(int argc, char **argv) {
+    testing::InitGoogleTest(&argc, argv);
+    std::cout << "Seed: " << SEED << "\n";
+    return RUN_ALL_TESTS();
 }
