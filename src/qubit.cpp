@@ -66,7 +66,7 @@ void Qubit::evalAB() {
 void Qubit::printQubit() {
     std::cout << "---------------\n";
     std::cout << "xyz " << x() << " " << y() << " " << z() << "\n";
-    std::cout << "pt " << qRadiansToDegrees(the()) << " " << qRadiansToDegrees(phi()) << "\n";
+    std::cout << "pt " << the() * 180 / M_PI << " " << phi() * 180 / M_PI << "\n";
     std::cout << "ab (" << a().real() << ", " << a().imag() << "), (" << b().real() << ", "
               << b().imag() << ") \n";
     std::cout << "---------------\n";

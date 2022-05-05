@@ -83,7 +83,7 @@ QString parseComplexToStr(complex c, int d) {
 
     if (str.size() == 0) {
         str = "0";
-    } else if (str[0] == "+") {
+    } else if (str[0] == '+') {
         str = str.remove(0, 1);
     }
 

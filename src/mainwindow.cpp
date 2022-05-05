@@ -31,6 +31,7 @@
 #include <QTime>
 #include <QTimer>
 #include <QToolBar>
+#include <cassert>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
     createSphere();
