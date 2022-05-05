@@ -782,11 +782,6 @@ matrix2x2 Operator::getMatrixByVecAng(vectorangle va) {
     return matrix;
 }
 
-void Operator::toRnRotate(vectorangle) {
-    //        curOperator = cos(ng / 2.0) * Iop - C_I * sin(ng / 2.0) * (nX * Xop + nY * Yop + nZ *
-    //        Zop);
-}
-
 QString Operator::getCurOperatorMatrixStr(UnitaryMatrix2x2 op) {
     return "<style>"
            "table, th, td {"

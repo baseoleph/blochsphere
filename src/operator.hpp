@@ -117,7 +117,6 @@ public:
     void toYrotate(double the);
     void toZrotate(double the);
     void toId();
-    void toRnRotate(vectorangle);
     void toRandUnitaryMatrix();
 
     complex a() { return _op.a(); }
