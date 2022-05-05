@@ -301,9 +301,9 @@ void MainWindow::createSideWidget() {
 
     sphereLabel = new QLabel("Sphere:");
     spherePlusBut = new QPushButton("+");
-    spherePlusBut->setFixedWidth(50);
+    spherePlusBut->setFixedSize(50, 30);
     sphereMinusBut = new QPushButton("-");
-    sphereMinusBut->setFixedWidth(50);
+    sphereMinusBut->setFixedSize(50, 30);
     sphereMinusBut->setEnabled(false);
 
     connect(spherePlusBut, SIGNAL(clicked()), SLOT(slotPlusSphere()));
