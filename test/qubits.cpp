@@ -22,6 +22,7 @@ QVector<QubitFields> qubits() {
     QVector<QubitFields> qbs;
     QubitFields          qf;
     QRandomGenerator     rd(SEED);
+    complex              i{0, 1};
 
     // 00
     {
@@ -93,14 +94,144 @@ QVector<QubitFields> qubits() {
 
     // 05
     {
-        qf.a = complex(0, 1 / sqrt(2));
-        qf.b = 1 / sqrt(2);
+        qf.a = 1 / sqrt(2);
+        qf.b = -complex(0, 1 / sqrt(2));
         qf.the = 90. / 180 * M_PI;
         qf.phi = -90. / 180 * M_PI;
         qf.pCheck = false;
         qf.x = 0;
         qf.y = -1;
         qf.z = 0;
+        qbs.append(qf);
+    }
+
+    // 06
+    {
+        qf.a = sqrt(3) / 2;
+        qf.b = -i / complex(2);
+        qf.the = 60. / 180 * M_PI;
+        qf.phi = -90. / 180 * M_PI;
+        qf.pCheck = false;
+        qf.x = 0;
+        qf.y = -0.866025;
+        qf.z = 0.5;
+        qbs.append(qf);
+    }
+
+    // 07
+    {
+        qf.a = sqrt(3) / 2;
+        qf.b = i / complex(2);
+        qf.the = 60. / 180 * M_PI;
+        qf.phi = 90. / 180 * M_PI;
+        qf.pCheck = false;
+        qf.x = 0;
+        qf.y = 0.866025;
+        qf.z = 0.5;
+        qbs.append(qf);
+    }
+
+    // 08
+    {
+        qf.a = 1. / 2;
+        qf.b = i * sqrt(3) / complex(2);
+        qf.the = 120. / 180 * M_PI;
+        qf.phi = 90. / 180 * M_PI;
+        qf.pCheck = false;
+        qf.x = 0;
+        qf.y = 0.866025;
+        qf.z = -0.5;
+        qbs.append(qf);
+    }
+
+    // 09
+    {
+        qf.a = 1. / 2;
+        qf.b = -i * sqrt(3) / complex(2);
+        qf.the = 120. / 180 * M_PI;
+        qf.phi = -90. / 180 * M_PI;
+        qf.pCheck = false;
+        qf.x = 0;
+        qf.y = -0.866025;
+        qf.z = -0.5;
+        qbs.append(qf);
+    }
+
+    // 10
+    {
+        qf.a = 1. / sqrt(2);
+        qf.b = (complex(1) + i) / 2.;
+        qf.the = 90. / 180 * M_PI;
+        qf.phi = 45. / 180 * M_PI;
+        qf.pCheck = false;
+        qf.x = 0.707107;
+        qf.y = 0.707107;
+        qf.z = 0;
+        qbs.append(qf);
+    }
+
+    // 11
+    {
+        qf.a = 1. / sqrt(2);
+        qf.b = exp(-i * M_PI / 4.) * 1. / sqrt(2);
+        qf.the = 90. / 180 * M_PI;
+        qf.phi = -45. / 180 * M_PI;
+        qf.pCheck = false;
+        qf.x = 0.707107;
+        qf.y = -0.707107;
+        qf.z = 0;
+        qbs.append(qf);
+    }
+
+    // 12
+    {
+        qf.a = 0;
+        qf.b = i;
+        qf.the = 180. / 180 * M_PI;
+        qf.phi = 90. / 180 * M_PI;
+        qf.pCheck = false;
+        qf.x = 0;
+        qf.y = 0;
+        qf.z = -1;
+        qbs.append(qf);
+    }
+
+    // 13
+    {
+        qf.a = 1 / sqrt(2);
+        qf.b = -1 / sqrt(2);
+        qf.the = 90. / 180 * M_PI;
+        qf.phi = 180. / 180 * M_PI;
+        qf.pCheck = false;
+        qf.x = -1;
+        qf.y = 0;
+        qf.z = 0;
+        qbs.append(qf);
+    }
+
+    // 14
+    {
+        qf.a = 1 / sqrt(2);
+        qf.b = 1 / sqrt(2);
+        qf.the = 90. / 180 * M_PI;
+        qf.phi = 0. / 180 * M_PI;
+        qf.pCheck = false;
+        qf.x = 1;
+        qf.y = 0;
+        qf.z = 0;
+        qbs.append(qf);
+    }
+
+    // 15
+    {
+        qf.a = 1 / 2.;
+        qf.b = sqrt(3) / 2;
+        qf.the = 120. / 180 * M_PI;
+        qf.phi = 0. / 180 * M_PI;
+        qf.pCheck = false;
+        qf.x = 0.866025;
+        qf.y = 0;
+        qf.z = -0.5;
         qbs.append(qf);
     }
 

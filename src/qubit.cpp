@@ -40,12 +40,14 @@ void Qubit::changeQubit(complex a, complex b) {
     evalVertex();
 }
 
-// It's bad algorithm
 void Qubit::evalVertex() {
     double the = 0;
-    double phi =
-        abs(b_) < EPSILON ? 0 : (complex(0, -1) * log(b_ / sqrt(complex(1, 0) - a_ * a_))).real();
-    //    double phi = (complex(0, -1) * log(b_ / sqrt(complex(1, 0) - a_ * a_))).real();
+    double phi = 0;
+
+    if (abs(b_) > EPSILON) {
+        phi = (complex(0, -1) * log(b_ / sqrt(complex(1, 0) - a_ * a_))).real();
+    }
+
     if (abs(a_) == 0) {
         the = M_PI;
     } else {
@@ -58,7 +60,7 @@ void Qubit::evalVertex() {
 void Qubit::evalAB() {
     complex csin(sin(the() / 2.0), 0.0);
     a_ = cos(the() / 2.0);
-    b_ = pow(C_E, C_I * phi()) * csin;
+    b_ = exp(C_I * phi()) * csin;
 }
 
 void Qubit::printQubit() {
