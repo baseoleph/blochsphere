@@ -52,20 +52,20 @@ QVector<std::pair<UnitaryMatrix2x2, UnitaryMatrix2x2>> identityPairs() {
 
     // 05
     rd.seed(SEED);
-    the = rd.bounded(360.);
+    the = rd.bounded(360.) / 180 * M_PI;
     op1.setOperator(um.getYrotate(-the));
     op2.setOperator(um.getX() * um.getYrotate(the) * um.getX());
     ops.append({op1.getOperator(), op2.getOperator()});
 
     // 06
     rd.seed(SEED);
-    the = rd.bounded(360.);
+    the = rd.bounded(360.) / 180 * M_PI;
     op1.setOperator(um.getZrotate(-the));
     op2.setOperator(um.getX() * um.getZrotate(the) * um.getX());
     ops.append({op1.getOperator(), op2.getOperator()});
 
     // 07
-    op1.setOperator(um.getXrotate(45));
+    op1.setOperator(um.getXrotate(45. / 180 * M_PI));
     op2.setOperator(um.getH() * um.getT() * um.getH());
     ops.append({op1.getOperator(), op2.getOperator()});
 
@@ -96,11 +96,11 @@ QVector<std::pair<UnitaryMatrix2x2, UnitaryMatrix2x2>> identityPairs() {
 
     // 13
     op1.setOperator(um.getT());
-    op2.setOperator(um.getZrotate(45));
+    op2.setOperator(um.getZrotate(45. / 180 * M_PI));
     ops.append({op1.getOperator(), op2.getOperator()});
 
     // 14
-    op1.setOperator(um.getYrotate(-180));
+    op1.setOperator(um.getYrotate(-180. / 180 * M_PI));
     op2.setOperator(um.getZ() * um.getX());
     ops.append({op1.getOperator(), op2.getOperator()});
 
