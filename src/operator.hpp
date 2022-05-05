@@ -30,17 +30,17 @@
 #endif
 
 struct decomposition {
-    double alpha = 0; // deg
-    double beta = 0;  // deg
-    double delta = 0; // deg
-    double gamma = 0; // deg
+    double alpha = 0; // rad
+    double beta = 0;  // rad
+    double delta = 0; // rad
+    double gamma = 0; // rad
 
     void print(std::ostream &out) const {
         out << "----------------------------------------------\n";
-        out << "alpha: " << alpha << "\n";
-        out << "beta: " << beta << "\n";
-        out << "delta: " << delta << "\n";
-        out << "gamma: " << gamma << "\n";
+        out << "alpha: " << alpha * 180 / M_PI << "\n";
+        out << "beta: " << beta * 180 / M_PI << "\n";
+        out << "delta: " << delta * 180 / M_PI << "\n";
+        out << "gamma: " << gamma * 180 / M_PI << "\n";
         out << "----------------------------------------------\n";
     }
 };
@@ -49,7 +49,7 @@ struct vectorangle {
     double x = 0;
     double y = 0;
     double z = 0;
-    double angle = 0;
+    double angle = 0; // rad
 };
 
 class Operator {

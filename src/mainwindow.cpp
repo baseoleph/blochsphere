@@ -750,31 +750,31 @@ void MainWindow::slotSetRXYZOp() {
     decomposition dec;
     switch (rxyzTab->currentIndex()) {
     case 0:
-        dec.alpha = rZyAlpEd->text().toDouble();
-        dec.beta = rZyBetEd->text().toDouble();
-        dec.gamma = rZyGamEd->text().toDouble();
-        dec.delta = rZyDelEd->text().toDouble();
+        dec.alpha = rZyAlpEd->text().toDouble() / 180 * M_PI;
+        dec.beta = rZyBetEd->text().toDouble() / 180 * M_PI;
+        dec.gamma = rZyGamEd->text().toDouble() / 180 * M_PI;
+        dec.delta = rZyDelEd->text().toDouble() / 180 * M_PI;
         assert(curOperator.setOperatorByZyDecomposition(dec));
         break;
     case 1:
-        dec.alpha = rZxAlpEd->text().toDouble();
-        dec.beta = rZxBetEd->text().toDouble();
-        dec.gamma = rZxGamEd->text().toDouble();
-        dec.delta = rZxDelEd->text().toDouble();
+        dec.alpha = rZxAlpEd->text().toDouble() / 180 * M_PI;
+        dec.beta = rZxBetEd->text().toDouble() / 180 * M_PI;
+        dec.gamma = rZxGamEd->text().toDouble() / 180 * M_PI;
+        dec.delta = rZxDelEd->text().toDouble() / 180 * M_PI;
         assert(curOperator.setOperatorByZxDecomposition(dec));
         break;
     case 2:
-        dec.alpha = rXyAlpEd->text().toDouble();
-        dec.beta = rXyBetEd->text().toDouble();
-        dec.gamma = rXyGamEd->text().toDouble();
-        dec.delta = rXyDelEd->text().toDouble();
+        dec.alpha = rXyAlpEd->text().toDouble() / 180 * M_PI;
+        dec.beta = rXyBetEd->text().toDouble() / 180 * M_PI;
+        dec.gamma = rXyGamEd->text().toDouble() / 180 * M_PI;
+        dec.delta = rXyDelEd->text().toDouble() / 180 * M_PI;
         assert(curOperator.setOperatorByXyDecomposition(dec));
         break;
     case 3:
-        dec.alpha = rZyxAlpEd->text().toDouble();
-        dec.beta = rZyxBetEd->text().toDouble();
-        dec.gamma = rZyxGamEd->text().toDouble();
-        dec.delta = rZyxDelEd->text().toDouble();
+        dec.alpha = rZyxAlpEd->text().toDouble() / 180 * M_PI;
+        dec.beta = rZyxBetEd->text().toDouble() / 180 * M_PI;
+        dec.gamma = rZyxGamEd->text().toDouble() / 180 * M_PI;
+        dec.delta = rZyxDelEd->text().toDouble() / 180 * M_PI;
         assert(curOperator.setOperatorByZyxDecomposition(dec));
         break;
     }
@@ -853,28 +853,28 @@ void MainWindow::updateOp(OPERATOR_FORM exclude) {
     appBut->setText("Apply " + curOperator.getOperatorName());
 
     decomposition zyDec = curOperator.zyDecomposition();
-    rZyAlpEd->setText(Utility::numberToStr(zyDec.alpha));
-    rZyBetEd->setText(Utility::numberToStr(zyDec.beta));
-    rZyGamEd->setText(Utility::numberToStr(zyDec.gamma));
-    rZyDelEd->setText(Utility::numberToStr(zyDec.delta));
+    rZyAlpEd->setText(Utility::numberToStr(zyDec.alpha * 180 / M_PI));
+    rZyBetEd->setText(Utility::numberToStr(zyDec.beta * 180 / M_PI));
+    rZyGamEd->setText(Utility::numberToStr(zyDec.gamma * 180 / M_PI));
+    rZyDelEd->setText(Utility::numberToStr(zyDec.delta * 180 / M_PI));
 
     decomposition zxDec = curOperator.zxDecomposition();
-    rZxAlpEd->setText(Utility::numberToStr(zxDec.alpha));
-    rZxBetEd->setText(Utility::numberToStr(zxDec.beta));
-    rZxGamEd->setText(Utility::numberToStr(zxDec.gamma));
-    rZxDelEd->setText(Utility::numberToStr(zxDec.delta));
+    rZxAlpEd->setText(Utility::numberToStr(zxDec.alpha * 180 / M_PI));
+    rZxBetEd->setText(Utility::numberToStr(zxDec.beta * 180 / M_PI));
+    rZxGamEd->setText(Utility::numberToStr(zxDec.gamma * 180 / M_PI));
+    rZxDelEd->setText(Utility::numberToStr(zxDec.delta * 180 / M_PI));
 
     decomposition xyDec = curOperator.xyDecomposition();
-    rXyAlpEd->setText(Utility::numberToStr(xyDec.alpha));
-    rXyBetEd->setText(Utility::numberToStr(xyDec.beta));
-    rXyGamEd->setText(Utility::numberToStr(xyDec.gamma));
-    rXyDelEd->setText(Utility::numberToStr(xyDec.delta));
+    rXyAlpEd->setText(Utility::numberToStr(xyDec.alpha * 180 / M_PI));
+    rXyBetEd->setText(Utility::numberToStr(xyDec.beta * 180 / M_PI));
+    rXyGamEd->setText(Utility::numberToStr(xyDec.gamma * 180 / M_PI));
+    rXyDelEd->setText(Utility::numberToStr(xyDec.delta * 180 / M_PI));
 
     decomposition zyxDec = curOperator.zyxDecomposition();
-    rZyxAlpEd->setText(Utility::numberToStr(zyxDec.alpha));
-    rZyxBetEd->setText(Utility::numberToStr(zyxDec.beta));
-    rZyxGamEd->setText(Utility::numberToStr(zyxDec.gamma));
-    rZyxDelEd->setText(Utility::numberToStr(zyxDec.delta));
+    rZyxAlpEd->setText(Utility::numberToStr(zyxDec.alpha * 180 / M_PI));
+    rZyxBetEd->setText(Utility::numberToStr(zyxDec.beta * 180 / M_PI));
+    rZyxGamEd->setText(Utility::numberToStr(zyxDec.gamma * 180 / M_PI));
+    rZyxDelEd->setText(Utility::numberToStr(zyxDec.delta * 180 / M_PI));
 
     if (exclude != OPERATOR_FORM::MATRIX) {
         mat[0][0]->setText(Utility::parseComplexToStr(curOperator.getOperator().a()));

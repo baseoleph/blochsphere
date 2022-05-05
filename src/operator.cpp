@@ -23,10 +23,10 @@ QVector<Spike> Operator::rotate(Spike s, QVector3D v, double gamma) {
     trace.append(s);
     for (uint i = 1; i < Utility::getDuration(); ++i) {
         QQuaternion q = QQuaternion::fromAxisAndAngle(
-            v, static_cast<float>(i / Utility::getDuration() * gamma));
+            v, static_cast<float>(i / Utility::getDuration() * gamma * 180 / M_PI));
         trace.append(Vector::actOperator(q, s));
     }
-    QQuaternion q = QQuaternion::fromAxisAndAngle(v, static_cast<float>(gamma));
+    QQuaternion q = QQuaternion::fromAxisAndAngle(v, static_cast<float>(gamma * 180 / M_PI));
     trace.append(Vector::actOperator(q, s));
     return trace;
 }
@@ -249,10 +249,10 @@ decomposition Operator::zxDecomposition(UnitaryMatrix2x2 op) {
     }
 
     decomposition dec;
-    dec.alpha = alpha * (180 / M_PI);
-    dec.beta = beta * (180 / M_PI);
-    dec.delta = delta * (180 / M_PI);
-    dec.gamma = gamma * (180 / M_PI);
+    dec.alpha = alpha;
+    dec.beta = beta;
+    dec.delta = delta;
+    dec.gamma = gamma;
     return dec;
 }
 
@@ -306,10 +306,10 @@ decomposition Operator::zyDecomposition(UnitaryMatrix2x2 op) {
     }
 
     decomposition dec;
-    dec.alpha = alpha * (180 / M_PI);
-    dec.beta = beta * (180 / M_PI);
-    dec.delta = delta * (180 / M_PI);
-    dec.gamma = gamma * (180 / M_PI);
+    dec.alpha = alpha;
+    dec.beta = beta;
+    dec.delta = delta;
+    dec.gamma = gamma;
     return dec;
 }
 
@@ -422,10 +422,10 @@ decomposition Operator::xyDecomposition(UnitaryMatrix2x2 op) {
     }
 
     decomposition dec;
-    dec.alpha = alpha * (180 / M_PI);
-    dec.beta = beta * (180 / M_PI);
-    dec.delta = delta * (180 / M_PI);
-    dec.gamma = gamma * (180 / M_PI);
+    dec.alpha = alpha;
+    dec.beta = beta;
+    dec.delta = delta;
+    dec.gamma = gamma;
     return dec;
 }
 
@@ -547,10 +547,10 @@ decomposition Operator::zyxDecomposition(UnitaryMatrix2x2 op) {
     }
 
     decomposition dec;
-    dec.alpha = alpha * (180 / M_PI);
-    dec.beta = beta * (180 / M_PI);
-    dec.delta = delta * (180 / M_PI);
-    dec.gamma = gamma * (180 / M_PI);
+    dec.alpha = alpha;
+    dec.beta = beta;
+    dec.delta = delta;
+    dec.gamma = gamma;
     return dec;
 }
 
@@ -559,9 +559,9 @@ decomposition Operator::zyxDecomposition() { return zyxDecomposition(_op); }
 vectorangle Operator::vectorAngleDec(UnitaryMatrix2x2 op) {
     decomposition zyDec = Operator::zyDecomposition(op);
 
-    zyDec.gamma = zyDec.gamma / 180 * M_PI;
-    zyDec.beta = zyDec.beta / 180 * M_PI;
-    zyDec.delta = zyDec.delta / 180 * M_PI;
+    zyDec.gamma = zyDec.gamma;
+    zyDec.beta = zyDec.beta;
+    zyDec.delta = zyDec.delta;
 
     vectorangle va;
 
@@ -622,7 +622,7 @@ QVector<Spike> Operator::applyVectorRotation(Spike s, UnitaryMatrix2x2 op) {
 
     vectorangle va = vectorAngleDec(op);
 
-    QVector<Spike> vct = rotate(s, QVector3D(va.x, va.y, va.z), va.angle * 180 / M_PI);
+    QVector<Spike> vct = rotate(s, QVector3D(va.x, va.y, va.z), va.angle);
     for (auto &e : vct) {
         spike.append(e);
     }
@@ -705,10 +705,10 @@ bool Operator::setOperatorByVectorAngle(vectorangle va) {
 }
 
 matrix2x2 Operator::getMatrixByZxDec(decomposition dec) {
-    double    alpha = dec.alpha * M_PI / 180;
-    double    beta = dec.beta * M_PI / 180;
-    double    delta = dec.delta * M_PI / 180;
-    double    v = dec.gamma * M_PI / 360;
+    double    alpha = dec.alpha;
+    double    beta = dec.beta;
+    double    delta = dec.delta;
+    double    v = dec.gamma / 2;
     matrix2x2 matrix;
     complex   i{0, 1};
     matrix.a = exp(i * (alpha - beta / 2.0 - delta / 2.0)) * cos(v);
@@ -719,10 +719,10 @@ matrix2x2 Operator::getMatrixByZxDec(decomposition dec) {
 }
 
 matrix2x2 Operator::getMatrixByZyDec(decomposition dec) {
-    double    alpha = dec.alpha * M_PI / 180;
-    double    beta = dec.beta * M_PI / 180;
-    double    delta = dec.delta * M_PI / 180;
-    double    v = dec.gamma * M_PI / 360;
+    double    alpha = dec.alpha;
+    double    beta = dec.beta;
+    double    delta = dec.delta;
+    double    v = dec.gamma / 2;
     matrix2x2 matrix;
     complex   i{0, 1};
     matrix.a = exp(i * (alpha - beta / 2.0 - delta / 2.0)) * cos(v);
@@ -733,10 +733,10 @@ matrix2x2 Operator::getMatrixByZyDec(decomposition dec) {
 }
 
 matrix2x2 Operator::getMatrixByXyDec(decomposition dec) {
-    double    alpha = dec.alpha * M_PI / 180;
-    double    beta = dec.beta * M_PI / 180;
-    double    delta = dec.delta * M_PI / 180;
-    double    v = dec.gamma * M_PI / 360;
+    double    alpha = dec.alpha;
+    double    beta = dec.beta;
+    double    delta = dec.delta;
+    double    v = dec.gamma / 2;
     matrix2x2 matrix;
     complex   i{0, 1};
     double    w = beta / 2.0 + delta / 2.0;
@@ -750,10 +750,10 @@ matrix2x2 Operator::getMatrixByXyDec(decomposition dec) {
 }
 
 matrix2x2 Operator::getMatrixByZyxDec(decomposition dec) {
-    double    alpha = dec.alpha * M_PI / 180;
-    double    beta = dec.beta * M_PI / 180;
-    double    delta = dec.delta * M_PI / 180;
-    double    gamma = dec.gamma * M_PI / 180;
+    double    alpha = dec.alpha;
+    double    beta = dec.beta;
+    double    delta = dec.delta;
+    double    gamma = dec.gamma;
     matrix2x2 matrix;
     complex   i{0, 1};
     double    g = gamma / 2.0;
