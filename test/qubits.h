@@ -17,7 +17,7 @@
 #ifndef QUBITS_H
 #define QUBITS_H
 
-#include "src/quantum/Qubit.hpp"
+#include "src/quantum/Qubit.h"
 
 struct QubitFields {
     complex a;

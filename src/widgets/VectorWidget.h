@@ -17,7 +17,7 @@
 #ifndef VECTORTABWIDGET_H
 #define VECTORTABWIDGET_H
 
-#include "src/quantum/Vector.hpp"
+#include "src/quantum/Vector.h"
 #include <QGridLayout>
 #include <QLineEdit>
 #include <QTabWidget>

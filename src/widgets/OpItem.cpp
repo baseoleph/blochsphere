@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "OpItem.hpp"
-#include "MainWindow.hpp"
+#include "OpItem.h"
+#include "MainWindow.h"
 #include <QGridLayout>
 #include <QLineEdit>
 #include <QMenuBar>

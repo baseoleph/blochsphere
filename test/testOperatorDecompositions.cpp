@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "src/quantum/Operator.hpp"
-#include "unitaryOperators.hpp"
+#include "src/quantum/Operator.h"
+#include "unitaryOperators.h"
 #include <QMap>
 #include <gtest/gtest.h>
 #include <qglobal.h>

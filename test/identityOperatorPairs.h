@@ -17,7 +17,7 @@
 #ifndef IDENTITYOPERATORPAIRS_H
 #define IDENTITYOPERATORPAIRS_H
 
-#include "src/quantum/UnitaryMatrix2x2.hpp"
+#include "src/quantum/UnitaryMatrix2x2.h"
 QVector<std::pair<UnitaryMatrix2x2, UnitaryMatrix2x2>> identityPairs();
 
 #endif // IDENTITYOPERATORPAIRS_H

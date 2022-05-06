@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "qubits.h"
-#include "src/quantum/Qubit.hpp"
+#include "src/quantum/Qubit.h"
 #include "utility.h"
 #include <gtest/gtest.h>
 

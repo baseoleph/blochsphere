@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "UnitaryMatrix2x2.hpp"
+#include "UnitaryMatrix2x2.h"
 
 bool UnitaryMatrix2x2::updateMatrix(matrix2x2 matrix) {
     if (isUnitaryMatrix(matrix)) {

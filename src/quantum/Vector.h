@@ -17,7 +17,7 @@
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
 
-#include "Qubit.hpp"
+#include "Qubit.h"
 #include <QColor>
 #include <QDebug>
 #include <QObject>

@@ -41,19 +41,19 @@ SOURCES += \
 
 HEADERS += \
     src/utility.h \
-    src/quantum/Operator.hpp \
-    src/quantum/Point.hpp \
-    src/quantum/Qubit.hpp \
-    src/quantum/UnitaryMatrix2x2.hpp \
-    src/quantum/Vector.hpp \
+    src/quantum/Operator.h \
+    src/quantum/Point.h \
+    src/quantum/Qubit.h \
+    src/quantum/UnitaryMatrix2x2.h \
+    src/quantum/Vector.h \
     src/widgets/Circuit.h \
     src/widgets/CircuitOperator.h \
     src/widgets/CircuitQubit.h \
     src/widgets/VectorWidget.h \
-    src/widgets/BlochDialog.hpp \
-    src/widgets/MainWindow.hpp \
-    src/widgets/OpItem.hpp \
-    src/widgets/Sphere.hpp
+    src/widgets/BlochDialog.h \
+    src/widgets/MainWindow.h \
+    src/widgets/OpItem.h \
+    src/widgets/Sphere.h
 
 LIBS += libopengl32
 

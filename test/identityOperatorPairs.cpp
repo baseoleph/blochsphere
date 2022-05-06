@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "identityOperatorPairs.h"
-#include "src/quantum/Operator.hpp"
+#include "src/quantum/Operator.h"
 
 QVector<std::pair<UnitaryMatrix2x2, UnitaryMatrix2x2>> identityPairs() {
     QVector<std::pair<UnitaryMatrix2x2, UnitaryMatrix2x2>> ops;

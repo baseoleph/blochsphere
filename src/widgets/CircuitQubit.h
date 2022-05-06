@@ -18,8 +18,8 @@
 #define CIRCUITQUBIT_H
 
 #include "CircuitOperator.h"
-#include "src/quantum/Operator.hpp"
-#include "src/quantum/Vector.hpp"
+#include "src/quantum/Operator.h"
+#include "src/quantum/Vector.h"
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QWidget>

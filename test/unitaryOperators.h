@@ -14,18 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef OPITEM_HPP
-#define OPITEM_HPP
+#include "src/quantum/UnitaryMatrix2x2.h"
 
-#include "src/quantum/Operator.hpp"
-#include <QListWidgetItem>
-
-class OpItem : public QListWidgetItem {
-    Operator oper;
-
-public:
-    OpItem(QListWidget *parent, const QString &opName, Operator op);
-    Operator getOp();
-};
-
-#endif // OPITEM_HPP
+QVector<UnitaryMatrix2x2> unitaryOperators2x2();

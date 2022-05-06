@@ -17,7 +17,7 @@
 #ifndef CIRCUITOPERATOR_H
 #define CIRCUITOPERATOR_H
 
-#include "src/quantum/Operator.hpp"
+#include "src/quantum/Operator.h"
 #include <QComboBox>
 
 enum OPERATORS { ID = 0, X, Y, Z, H, S, T, PHI, RX, RY, RZ };

@@ -36,17 +36,17 @@ set(PROJECT_SOURCES
         src/utility.cpp
         src/utility.h
         src/quantum/Operator.cpp
-        src/quantum/Operator.hpp
+        src/quantum/Operator.h
         src/quantum/Point.cpp
-        src/quantum/Point.hpp
+        src/quantum/Point.h
         src/quantum/Qubit.cpp
-        src/quantum/Qubit.hpp
+        src/quantum/Qubit.h
         src/quantum/UnitaryMatrix2x2.cpp
-        src/quantum/UnitaryMatrix2x2.hpp
+        src/quantum/UnitaryMatrix2x2.h
         src/quantum/Vector.cpp
-        src/quantum/Vector.hpp
+        src/quantum/Vector.h
         src/widgets/BlochDialog.cpp
-        src/widgets/BlochDialog.hpp
+        src/widgets/BlochDialog.h
         src/widgets/Circuit.cpp
         src/widgets/Circuit.h
         src/widgets/CircuitOperator.cpp
@@ -54,11 +54,11 @@ set(PROJECT_SOURCES
         src/widgets/CircuitQubit.cpp
         src/widgets/CircuitQubit.h
         src/widgets/MainWindow.cpp
-        src/widgets/MainWindow.hpp
+        src/widgets/MainWindow.h
         src/widgets/OpItem.cpp
-        src/widgets/OpItem.hpp
+        src/widgets/OpItem.h
         src/widgets/Sphere.cpp
-        src/widgets/Sphere.hpp
+        src/widgets/Sphere.h
         src/widgets/VectorWidget.cpp
         src/widgets/VectorWidget.h
         )
