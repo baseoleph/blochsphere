@@ -37,22 +37,22 @@ BlochDialog::BlochDialog(QWidget *parent, DIALOG_TYPE dt)
 QString BlochDialog::ang() const { return angEd->text(); }
 
 void BlochDialog::angleInput() {
-    angEd = new QLineEdit;
-    auto *angLab = new QLabel("Enter the angle in degrees:");
+    angEd = new QLineEdit(this);
+    auto angLab = new QLabel("Enter the angle in degrees:", this);
 
     angLab->setBuddy(angEd);
-    angEd->setValidator(new QDoubleValidator);
+    angEd->setValidator(new QDoubleValidator(this));
 
-    auto *bOk = new QPushButton("Ok");
-    auto *bCl = new QPushButton("Cancel");
+    auto bOk = new QPushButton("Ok", this);
+    auto bCl = new QPushButton("Cancel", this);
     connect(bOk, SIGNAL(clicked()), SLOT(accept()));
     connect(bCl, SIGNAL(clicked()), SLOT(reject()));
 
-    auto *lay = new QVBoxLayout;
+    auto lay = new QVBoxLayout(this);
     lay->addWidget(angLab);
     lay->addWidget(angEd);
 
-    auto *lay1 = new QHBoxLayout;
+    auto lay1 = new QHBoxLayout(lay->widget());
     lay1->addWidget(bOk);
     lay1->addWidget(bCl);
 
@@ -61,17 +61,17 @@ void BlochDialog::angleInput() {
     setFixedWidth(155);
 }
 void BlochDialog::suggestNormalize() {
-    auto *angLab = new QLabel("Vector is not unit. \nDo you want normalize it?");
+    auto angLab = new QLabel("Vector is not unit. \nDo you want normalize it?", this);
 
-    auto *bOk = new QPushButton("Ok");
-    auto *bCl = new QPushButton("Cancel");
+    auto bOk = new QPushButton("Ok", this);
+    auto bCl = new QPushButton("Cancel", this);
     connect(bOk, SIGNAL(clicked()), SLOT(accept()));
     connect(bCl, SIGNAL(clicked()), SLOT(reject()));
 
-    auto *lay = new QVBoxLayout;
+    auto lay = new QVBoxLayout(this);
     lay->addWidget(angLab);
 
-    auto *lay1 = new QHBoxLayout;
+    auto lay1 = new QHBoxLayout(lay->widget());
     lay1->addWidget(bOk);
     lay1->addWidget(bCl);
 

@@ -18,6 +18,7 @@
 #define VECTORTABWIDGET_H
 
 #include "vector.hpp"
+#include <QGridLayout>
 #include <QLineEdit>
 #include <QTabWidget>
 
@@ -32,8 +33,8 @@ public:
     void    fillFieldsOfVector(Spike sp, FIELD exclude = FIELD::NOTHIN);
     Vector *getVector() { return _v; }
 
-    signals:
-        void signalUpdate();
+signals:
+    void signalUpdate();
 
 public slots:
     void slotThePhi();
@@ -46,8 +47,9 @@ private:
     Vector *_v = nullptr;
     bool    isAutoNormalize = true;
 
-    QLineEdit *theEd = nullptr;
-    QLineEdit *phiEd = nullptr;
+    QGridLayout *topLay = nullptr;
+    QLineEdit   *theEd = nullptr;
+    QLineEdit   *phiEd = nullptr;
 
     QLineEdit *alpEd = nullptr;
     QLineEdit *betEd = nullptr;
@@ -60,7 +62,7 @@ private:
     QWidget *makeAlpBetWid();
     QWidget *makeBloVecWid();
 
-    void         emptyToZeroLineEdit(QLineEdit *lineEdit);
+    void emptyToZeroLineEdit(QLineEdit *lineEdit);
 };
 
 #endif // VECTORTABWIDGET_H

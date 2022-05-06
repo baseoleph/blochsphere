@@ -23,7 +23,8 @@
 #include <QTime>
 #include <QToolBar>
 
-OpItem::OpItem(const QString &opName, Operator op) : QListWidgetItem(opName), oper(op) {
+OpItem::OpItem(QListWidget *parent, const QString &opName, Operator op)
+    : QListWidgetItem(opName, parent), oper(op) {
     this->setToolTip(op.getCurOperatorMatrixStr());
 }
 

@@ -102,7 +102,6 @@ private:
     QTimer           *tm = nullptr;
     Circuit          *circuit = nullptr;
 
-
     QWidget     *controlWidget = nullptr;
     QVBoxLayout *controlLayout = nullptr;
     QHBoxLayout *sphereLayout = nullptr;
@@ -111,7 +110,6 @@ private:
     void createSphere();
     void createMenu();
     void createActions();
-    void createStatusBar();
     void createTopBar();
     void createOpQueWidget();
 
@@ -186,9 +184,6 @@ private:
     QRadioButton *rZyxRb = nullptr;
     QRadioButton *rtRb = nullptr;
 
-    QLabel           *xyzStLab = nullptr;
-    QLabel           *svdStLab = nullptr;
-    QLabel           *mtnStLab = nullptr;
     QComboBox        *colorComboBox = nullptr;
     bool              isQueueAnimation = false;
     bool              isCircuitAnimation = false;

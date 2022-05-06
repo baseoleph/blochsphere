@@ -37,13 +37,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent} {
     createSphere();
     createActions();
     createMenu();
-    createStatusBar();
     createTopBar();
     createSideWidget();
     createOpQueWidget();
 
     tm = new QTimer(this);
     connect(tm, SIGNAL(timeout()), SLOT(slotTimer()));
+    statusBar()->show();
 }
 
 void MainWindow::addVector(Vector *v, MapVectors &mp) {
@@ -174,9 +174,13 @@ void MainWindow::createActions() {
 }
 
 void MainWindow::createMenu() {
-    auto *mnuBar = new QMenuBar();
-    auto *menuFile = new QMenu("File");
-    auto *menuInfo = new QMenu("Info");
+    // auto mnuBar = new QMenuBar();
+    // auto menuFile = new QMenu("File");
+    // auto menuInfo = new QMenu("Info");
+
+    auto mnuBar = new QMenuBar(this);
+    auto menuFile = new QMenu("File", mnuBar);
+    auto menuInfo = new QMenu("Info", mnuBar);
 
     menuFile->addSeparator();
     menuFile->addAction(exitAct);
@@ -189,7 +193,8 @@ void MainWindow::createMenu() {
 }
 
 void MainWindow::createTopBar() {
-    auto *qtb = new QToolBar("Tool bar");
+    // auto qtb = new QToolBar("Tool bar");
+    auto qtb = new QToolBar("Tool bar", this);
     //    qtb->addAction(saveState);
     //    qtb->addAction(recallState);
     qtb->addAction(resetAct);
@@ -207,7 +212,8 @@ void MainWindow::createTopBar() {
 
     connect(colorComboBox, SIGNAL(currentIndexChanged(int)), SLOT(slotTraceColor(int)));
 
-    qtb->addWidget(new QLabel("<center>Trace Color:"));
+    // qtb->addWidget(new QLabel("<center>Trace Color:"));
+    qtb->addWidget(new QLabel("<center>Trace Color:", qtb));
     qtb->addWidget(colorComboBox);
     qtb->addSeparator();
 
@@ -220,11 +226,14 @@ void MainWindow::createTopBar() {
     qtb->addWidget(normalizeCheckBox);
     qtb->addSeparator();
 
-    speedLabel = new QLabel("Speed: 5 ");
+    // speedLabel = new QLabel("Speed: 5 ");
+    speedLabel = new QLabel("Speed: 5 ", qtb);
     qtb->addWidget(speedLabel);
-    speedUpButton = new QPushButton("Up");
+    // speedUpButton = new QPushButton("Up");
+    speedUpButton = new QPushButton("Up", qtb);
     speedUpButton->setFixedSize(50, 30);
-    speedDownButton = new QPushButton("Down");
+    // speedDownButton = new QPushButton("Down");
+    speedDownButton = new QPushButton("Down", qtb);
     speedDownButton->setFixedSize(50, 30);
     qtb->addWidget(speedUpButton);
     qtb->addWidget(speedDownButton);
@@ -233,16 +242,16 @@ void MainWindow::createTopBar() {
     connect(speedDownButton, SIGNAL(clicked()), this, SLOT(slotSpeedDown()));
 
     qtb->addSeparator();
-    auto normalViewButton = new QPushButton("XYZ");
+    auto normalViewButton = new QPushButton("XYZ", qtb);
     normalViewButton->setFixedSize(50, 30);
     qtb->addWidget(normalViewButton);
-    auto yOzViewButton = new QPushButton("yOz");
+    auto yOzViewButton = new QPushButton("yOz", qtb);
     yOzViewButton->setFixedSize(50, 30);
     qtb->addWidget(yOzViewButton);
-    auto xOyViewButton = new QPushButton("xOy");
+    auto xOyViewButton = new QPushButton("xOy", qtb);
     xOyViewButton->setFixedSize(50, 30);
     qtb->addWidget(xOyViewButton);
-    auto zOxViewButton = new QPushButton("zOx");
+    auto zOxViewButton = new QPushButton("zOx", qtb);
     zOxViewButton->setFixedSize(50, 30);
     qtb->addWidget(zOxViewButton);
 
@@ -255,25 +264,25 @@ void MainWindow::createTopBar() {
 }
 
 void MainWindow::createOpQueWidget() {
-    opQueWid = new QListWidget;
+    opQueWid = new QListWidget(this);
     opQueWid->setFlow(QListView::LeftToRight);
     opQueWid->setSpacing(6);
     connect(opQueWid, SIGNAL(itemClicked(QListWidgetItem *)),
             SLOT(slotQueItemClicked(QListWidgetItem *)));
-    auto *delAct = new QAction("Delete", opQueWid);
+    auto delAct = new QAction("Delete", opQueWid);
     opQueWid->addAction(delAct);
     connect(delAct, SIGNAL(triggered()), SLOT(slotOpItemDelete()));
     opQueWid->setContextMenuPolicy(Qt::ActionsContextMenu);
     opQueWid->setFixedHeight(39);
 
-    appQueBut = new QPushButton("Apply queue");
+    appQueBut = new QPushButton("Apply queue", opQueWid);
     appQueBut->setFixedSize(70, 40);
     connect(appQueBut, SIGNAL(clicked()), SLOT(slotApplyQue()));
-    clrQueBut = new QPushButton("Clear queue");
+    clrQueBut = new QPushButton("Clear queue", opQueWid);
     clrQueBut->setFixedSize(70, 40);
     connect(clrQueBut, SIGNAL(clicked()), opQueWid, SLOT(clear()));
 
-    auto *qtb = new QToolBar("Operators queue");
+    auto qtb = new QToolBar("Operators queue", this);
     qtb->addWidget(opQueWid);
     qtb->addWidget(appQueBut);
     qtb->addWidget(clrQueBut);
@@ -282,43 +291,29 @@ void MainWindow::createOpQueWidget() {
     this->addToolBar(Qt::BottomToolBarArea, qtb);
 }
 
-void MainWindow::createStatusBar() {
-    xyzStLab = new QLabel();
-    svdStLab = new QLabel();
-    mtnStLab = new QLabel();
-    xyzStLab->setFixedWidth(115);
-    svdStLab->setFixedWidth(200);
-    mtnStLab->setFixedWidth(200);
-    svdStLab->hide();
-    mtnStLab->hide();
-    statusBar()->addWidget(xyzStLab);
-    statusBar()->addWidget(svdStLab);
-    statusBar()->addWidget(mtnStLab);
-}
-
 void MainWindow::createSideWidget() {
-    auto leftWid = new QWidget();
-    auto mainLay = new QVBoxLayout();
+    auto leftWid = new QWidget(this);
+    auto mainLay = new QVBoxLayout(leftWid);
 
-    sphereLabel = new QLabel("Sphere:");
-    spherePlusBut = new QPushButton("+");
+    sphereLabel = new QLabel("Sphere:", leftWid);
+    spherePlusBut = new QPushButton("+", leftWid);
     spherePlusBut->setFixedSize(50, 30);
-    sphereMinusBut = new QPushButton("-");
+    sphereMinusBut = new QPushButton("-", leftWid);
     sphereMinusBut->setFixedSize(50, 30);
     sphereMinusBut->setEnabled(false);
 
     connect(spherePlusBut, SIGNAL(clicked()), SLOT(slotPlusSphere()));
     connect(sphereMinusBut, SIGNAL(clicked()), SLOT(slotMinusSphere()));
 
-    auto vectorSphereCreatorWid = new QWidget();
-    auto vectorSphereLay = new QHBoxLayout();
+    auto vectorSphereCreatorWid = new QWidget(leftWid);
+    auto vectorSphereLay = new QHBoxLayout(vectorSphereCreatorWid);
     vectorSphereLay->setMargin(0);
     vectorSphereLay->addWidget(sphereLabel);
     vectorSphereLay->addWidget(spherePlusBut);
     vectorSphereLay->addWidget(sphereMinusBut);
     vectorSphereCreatorWid->setLayout(vectorSphereLay);
 
-    topTabWid = new QTabWidget();
+    topTabWid = new QTabWidget(leftWid);
     topTabWid->setFixedHeight(115);
 
     auto vct = new Vector(0., 0.);
@@ -343,7 +338,7 @@ void MainWindow::createSideWidget() {
     scrollArea->setWidget(leftWid);
     scrollArea->horizontalScrollBar()->setHidden(true);
 
-    auto qtb = new QToolBar("Control panel");
+    auto qtb = new QToolBar("Control panel", this);
     qtb->addWidget(scrollArea);
     qtb->setAllowedAreas(Qt::LeftToolBarArea | Qt::RightToolBarArea);
 
@@ -351,23 +346,23 @@ void MainWindow::createSideWidget() {
 }
 
 QWidget *MainWindow::makeDecompWid() {
-    rxyzTab = new QTabWidget;
+    rxyzTab = new QTabWidget(this);
     rxyzTab->insertTab(0, makeZyWid(), "Z-Y");
     rxyzTab->insertTab(1, makeZxWid(), "Z-X");
     rxyzTab->insertTab(2, makeXyWid(), "X-Y");
     rxyzTab->insertTab(3, makeZyxWid(), "Z-Y-X");
     rxyzTab->setCurrentIndex(0);
 
-    auto *bRotXYZ = new QPushButton("Set");
+    auto bRotXYZ = new QPushButton("Set", rxyzTab);
     bRotXYZ->setFixedWidth(60);
     connect(bRotXYZ, SIGNAL(clicked()), SLOT(slotSetRXYZOp()));
 
-    auto *qwb = new QVBoxLayout;
+    auto rtW = new QWidget(this);
+    auto qwb = new QVBoxLayout(rtW);
     qwb->addWidget(rxyzTab);
     qwb->addWidget(bRotXYZ);
     qwb->setSpacing(0);
     qwb->setMargin(1);
-    auto *rtW = new QWidget;
     rtW->setLayout(qwb);
     rtW->setFixedHeight(140);
 
@@ -375,24 +370,24 @@ QWidget *MainWindow::makeDecompWid() {
 }
 
 QWidget *MainWindow::makeZyWid() {
-    rZyAlpEd = new QLineEdit("0");
-    rZyBetEd = new QLineEdit("0");
-    rZyGamEd = new QLineEdit("0");
-    rZyDelEd = new QLineEdit("0");
+    auto rzW = new QWidget(this);
 
-    auto *rZYALab = new QLabel("Alpha");
-    auto *rZYBLab = new QLabel("Rz(Beta)");
-    auto *rZYGLab = new QLabel("Ry(Gamma)");
-    auto *rZYDLab = new QLabel("Rz(Delta)");
+    rZyAlpEd = new QLineEdit("0", rzW);
+    rZyBetEd = new QLineEdit("0", rzW);
+    rZyGamEd = new QLineEdit("0", rzW);
+    rZyDelEd = new QLineEdit("0", rzW);
+
+    auto rZYALab = new QLabel("Alpha", rzW);
+    auto rZYBLab = new QLabel("Rz(Beta)", rzW);
+    auto rZYGLab = new QLabel("Ry(Gamma)", rzW);
+    auto rZYDLab = new QLabel("Rz(Delta)", rzW);
 
     rZyAlpEd->setMaximumWidth(60);
     rZyBetEd->setMaximumWidth(60);
     rZyGamEd->setMaximumWidth(60);
     rZyDelEd->setMaximumWidth(60);
 
-    auto *rzW = new QWidget();
-
-    auto *rzLay = new QGridLayout();
+    auto rzLay = new QGridLayout(rzW);
     rzLay->addWidget(rZYALab, 1, 2);
     rzLay->addWidget(rZyAlpEd, 1, 3);
     rzLay->addWidget(rZYBLab, 2, 2);
@@ -409,24 +404,24 @@ QWidget *MainWindow::makeZyWid() {
 }
 
 QWidget *MainWindow::makeZxWid() {
-    rZxAlpEd = new QLineEdit("0");
-    rZxBetEd = new QLineEdit("0");
-    rZxGamEd = new QLineEdit("0");
-    rZxDelEd = new QLineEdit("0");
+    auto rzW = new QWidget(this);
 
-    auto *rZXALab = new QLabel("Alpha");
-    auto *rZXBLab = new QLabel("Rz(Beta)");
-    auto *rZXGLab = new QLabel("Rx(Gamma)");
-    auto *rZXDLab = new QLabel("Rz(Delta)");
+    rZxAlpEd = new QLineEdit("0", rzW);
+    rZxBetEd = new QLineEdit("0", rzW);
+    rZxGamEd = new QLineEdit("0", rzW);
+    rZxDelEd = new QLineEdit("0", rzW);
+
+    auto rZXALab = new QLabel("Alpha", rzW);
+    auto rZXBLab = new QLabel("Rz(Beta)", rzW);
+    auto rZXGLab = new QLabel("Rx(Gamma)", rzW);
+    auto rZXDLab = new QLabel("Rz(Delta)", rzW);
 
     rZxAlpEd->setMaximumWidth(60);
     rZxBetEd->setMaximumWidth(60);
     rZxGamEd->setMaximumWidth(60);
     rZxDelEd->setMaximumWidth(60);
 
-    auto *rzW = new QWidget();
-
-    auto *rzLay = new QGridLayout();
+    auto rzLay = new QGridLayout(rzW);
     rzLay->addWidget(rZXALab, 1, 2);
     rzLay->addWidget(rZxAlpEd, 1, 3);
     rzLay->addWidget(rZXBLab, 2, 2);
@@ -443,24 +438,24 @@ QWidget *MainWindow::makeZxWid() {
 }
 
 QWidget *MainWindow::makeXyWid() {
-    rXyAlpEd = new QLineEdit("0");
-    rXyBetEd = new QLineEdit("0");
-    rXyGamEd = new QLineEdit("0");
-    rXyDelEd = new QLineEdit("0");
+    auto rzW = new QWidget(this);
 
-    auto *rXYALab = new QLabel("Alpha");
-    auto *rXYBLab = new QLabel("Rx(Beta)");
-    auto *rXYGLab = new QLabel("Ry(Gamma)");
-    auto *rXYDLab = new QLabel("Rx(Delta)");
+    rXyAlpEd = new QLineEdit("0", rzW);
+    rXyBetEd = new QLineEdit("0", rzW);
+    rXyGamEd = new QLineEdit("0", rzW);
+    rXyDelEd = new QLineEdit("0", rzW);
+
+    auto rXYALab = new QLabel("Alpha", rzW);
+    auto rXYBLab = new QLabel("Rx(Beta)", rzW);
+    auto rXYGLab = new QLabel("Ry(Gamma)", rzW);
+    auto rXYDLab = new QLabel("Rx(Delta)", rzW);
 
     rXyAlpEd->setMaximumWidth(60);
     rXyBetEd->setMaximumWidth(60);
     rXyGamEd->setMaximumWidth(60);
     rXyDelEd->setMaximumWidth(60);
 
-    auto *rzW = new QWidget();
-
-    auto *rzLay = new QGridLayout();
+    auto rzLay = new QGridLayout(rzW);
     rzLay->addWidget(rXYALab, 1, 2);
     rzLay->addWidget(rXyAlpEd, 1, 3);
     rzLay->addWidget(rXYBLab, 2, 2);
@@ -477,24 +472,24 @@ QWidget *MainWindow::makeXyWid() {
 }
 
 QWidget *MainWindow::makeZyxWid() {
-    rZyxAlpEd = new QLineEdit("0");
-    rZyxBetEd = new QLineEdit("0");
-    rZyxGamEd = new QLineEdit("0");
-    rZyxDelEd = new QLineEdit("0");
+    auto rzW = new QWidget(this);
 
-    auto *rZyxALab = new QLabel("Alpha");
-    auto *rZyxBLab = new QLabel("Rz(Beta)");
-    auto *rZyxGLab = new QLabel("Ry(Gamma)");
-    auto *rZyxDLab = new QLabel("Rx(Delta)");
+    rZyxAlpEd = new QLineEdit("0", rzW);
+    rZyxBetEd = new QLineEdit("0", rzW);
+    rZyxGamEd = new QLineEdit("0", rzW);
+    rZyxDelEd = new QLineEdit("0", rzW);
+
+    auto rZyxALab = new QLabel("Alpha", rzW);
+    auto rZyxBLab = new QLabel("Rz(Beta)", rzW);
+    auto rZyxGLab = new QLabel("Ry(Gamma)", rzW);
+    auto rZyxDLab = new QLabel("Rx(Delta)", rzW);
 
     rZyxAlpEd->setMaximumWidth(60);
     rZyxBetEd->setMaximumWidth(60);
     rZyxGamEd->setMaximumWidth(60);
     rZyxDelEd->setMaximumWidth(60);
 
-    auto *rzW = new QWidget();
-
-    auto *rzLay = new QGridLayout();
+    auto rzLay = new QGridLayout(rzW);
     rzLay->addWidget(rZyxALab, 1, 2);
     rzLay->addWidget(rZyxAlpEd, 1, 3);
     rzLay->addWidget(rZyxBLab, 2, 2);
@@ -511,18 +506,18 @@ QWidget *MainWindow::makeZyxWid() {
 }
 
 QWidget *MainWindow::makeOpWid() {
-    auto *opW = new QWidget();
+    auto opW = new QWidget(this);
 
-    auto *qfOpButtons = new QFrame(opW);
+    auto qfOpButtons = new QFrame(opW);
     qfOpButtons->setFrameStyle(QFrame::Panel | QFrame::Raised);
     qfOpButtons->move(0, 0);
     qfOpButtons->setFixedSize(opW->size());
 
-    stackW = new QTabWidget();
+    stackW = new QTabWidget(opW);
     stackW->setFixedHeight(120);
 
-    auto *bOp = new QWidget();
-    auto *bOpLay = new QGridLayout();
+    auto bOp = new QWidget(stackW);
+    auto bOpLay = new QGridLayout(bOp);
     bOpLay->addWidget(makeOpButton("X"), 0, 0, 1, 4);
     bOpLay->addWidget(makeOpButton("Y"), 0, 4, 1, 4);
     bOpLay->addWidget(makeOpButton("Z"), 0, 8, 1, 4);
@@ -539,22 +534,22 @@ QWidget *MainWindow::makeOpWid() {
 
     stackW->addTab(bOp, "Gates");
 
-    auto *mOp = new QWidget();
-    auto *mOpLay = new QGridLayout();
+    auto mOp = new QWidget(opW);
+    auto mOpLay = new QGridLayout(mOp);
 
     for (int i = 0; i < 2; i++) {
         for (int j = 0; j < 2; j++) {
-            mat[i][j] = new QLineEdit(QString::number(i == j));
+            mat[i][j] = new QLineEdit(QString::number(i == j), mOp);
             mat[i][j]->setValidator(Utility::compValid());
             connect(mat[i][j], SIGNAL(textEdited(QString)),
                     SLOT(slotComplexLineEditChanged(QString)));
         }
     }
 
-    auto *applyMat = new QPushButton("Ok");
+    auto applyMat = new QPushButton("Ok", mOp);
     connect(applyMat, SIGNAL(clicked()), SLOT(slotSetMatrixOp()));
 
-    auto *getRandomBut = new QPushButton("Random");
+    auto getRandomBut = new QPushButton("Random", mOp);
     connect(getRandomBut, SIGNAL(clicked()), SLOT(slotSetRandomOp()));
 
     mOpLay->addWidget(mat[0][0], 1, 0);
@@ -568,19 +563,19 @@ QWidget *MainWindow::makeOpWid() {
 
     stackW->addTab(mOp, "Matrix");
 
-    auto *rNw = new QWidget();
-    axRnEd = new QLineEdit("0;0;0");
+    auto rNw = new QWidget(opW);
+    axRnEd = new QLineEdit("0;0;0", rNw);
     axRnEd->setValidator(Utility::axisValid());
-    ngRnEd = new QLineEdit("0");
-    ngRnEd->setValidator(new QDoubleValidator);
+    ngRnEd = new QLineEdit("0", rNw);
+    ngRnEd->setValidator(new QDoubleValidator(ngRnEd));
 
-    auto *axOpBut = new QPushButton("Ok");
+    auto axOpBut = new QPushButton("Ok", rNw);
     connect(axOpBut, SIGNAL(clicked()), SLOT(slotSetAxOp()));
 
-    auto *rNwLay = new QGridLayout();
-    rNwLay->addWidget(new QLabel("Vector"), 0, 0);
+    auto rNwLay = new QGridLayout(opW);
+    rNwLay->addWidget(new QLabel("Vector", rNwLay->widget()), 0, 0);
     rNwLay->addWidget(axRnEd, 0, 1, 1, 3);
-    rNwLay->addWidget(new QLabel("Angle"), 1, 0);
+    rNwLay->addWidget(new QLabel("Angle", rNwLay->widget()), 1, 0);
     rNwLay->addWidget(ngRnEd, 1, 1, 1, 3);
     rNwLay->addWidget(axOpBut, 2, 3, 1, 1); // 4
     rNwLay->setContentsMargins(20, 10, 20, 0);
@@ -589,19 +584,19 @@ QWidget *MainWindow::makeOpWid() {
 
     stackW->addTab(rNw, "Rn");
 
-    auto *qGb = new QGroupBox("Rotation");
+    auto qGb = new QGroupBox("Rotation", opW);
 
-    rZyRb = new QRadioButton("ZY-decomposition");
+    rZyRb = new QRadioButton("ZY-decomposition", qGb);
     rZyRb->toggle();
 
-    rZxRb = new QRadioButton("ZX-decomposition");
-    rXyRb = new QRadioButton("XY-decomposition");
-    rZyxRb = new QRadioButton("ZYX-decomposition");
-    rtRb = new QRadioButton("Rotation about vector");
+    rZxRb = new QRadioButton("ZX-decomposition", qGb);
+    rXyRb = new QRadioButton("XY-decomposition", qGb);
+    rZyxRb = new QRadioButton("ZYX-decomposition", qGb);
+    rtRb = new QRadioButton("Rotation about vector", qGb);
 
     connect(rtRb, SIGNAL(toggled(bool)), SLOT(slotToggleRotateVector(bool)));
 
-    auto *gbLay = new QVBoxLayout();
+    auto gbLay = new QVBoxLayout(qGb);
     qGb->setFixedHeight(120);
     gbLay->addWidget(rZyRb);
     gbLay->addWidget(rZxRb);
@@ -611,20 +606,20 @@ QWidget *MainWindow::makeOpWid() {
     gbLay->setSpacing(5);
     qGb->setLayout(gbLay);
 
-    appBut = new QPushButton("Apply Id");
+    appBut = new QPushButton("Apply Id", opW);
     appBut->setToolTip(curOperator.getCurOperatorMatrixStr());
     appBut->setFixedHeight(35);
     connect(appBut, SIGNAL(clicked()), SLOT(slotApplyOp()));
 
-    auto *addToQueBut = new QPushButton("Add to queue");
+    auto addToQueBut = new QPushButton("Add to queue", opW);
     addToQueBut->setFixedHeight(35);
     connect(addToQueBut, SIGNAL(clicked()), SLOT(slotAddToQue()));
 
-    auto *horLay = new QHBoxLayout;
+    auto pLay = new QVBoxLayout(opW);
+    auto horLay = new QHBoxLayout(pLay->widget());
     horLay->addWidget(appBut);
     horLay->addWidget(addToQueBut);
 
-    auto *pLay = new QVBoxLayout();
     pLay->addWidget(stackW);
     pLay->addWidget(qGb);
     pLay->addStretch();
@@ -638,7 +633,7 @@ QWidget *MainWindow::makeOpWid() {
 }
 
 QPushButton *MainWindow::makeOpButton(const QString &str) {
-    auto *newOpBut = new QPushButton(str);
+    auto newOpBut = new QPushButton(str, this);
     newOpBut->setFixedHeight(26);
     connect(newOpBut, SIGNAL(clicked()), SLOT(slotSetOperatorClicked()));
     return newOpBut;
@@ -827,7 +822,7 @@ void MainWindow::slotSetAxOp() {
 
         double len = sqrt(va.x * va.x + va.y * va.y + va.z * va.z);
         if (not Utility::fuzzyCompare(len, 1.)) {
-            auto *dial = new BlochDialog((QWidget *)sender(), DIALOG_TYPE::NORMALIZE);
+            auto dial = new BlochDialog((QWidget *)sender(), DIALOG_TYPE::NORMALIZE);
             if (isAutoNormalize or dial->exec() == QDialog::Accepted) {
                 va.x /= len;
                 va.y /= len;
@@ -900,7 +895,7 @@ void MainWindow::updateOp(OPERATOR_FORM exclude) {
 }
 
 void MainWindow::slotQueItemClicked(QListWidgetItem *it) {
-    auto *opi = (OpItem *)it;
+    auto opi = (OpItem *)it;
     curOperator = opi->getOp();
     updateOp();
 }
@@ -911,7 +906,7 @@ void MainWindow::slotOpItemDelete() {
 }
 
 void MainWindow::slotAddToQue() {
-    auto *it = new OpItem(curOperator.getOperatorName(), curOperator);
+    auto it = new OpItem(opQueWid, curOperator.getOperatorName(), curOperator);
     opQueWid->insertItem(0, it);
 }
 

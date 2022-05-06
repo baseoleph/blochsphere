@@ -24,7 +24,7 @@ class OpItem : public QListWidgetItem {
     Operator oper;
 
 public:
-    OpItem(const QString &opName, Operator op);
+    OpItem(QListWidget *parent, const QString &opName, Operator op);
     Operator getOp();
 };
 

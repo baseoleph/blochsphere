@@ -57,15 +57,15 @@ QWidget *Circuit::makeButtons() {
     auto layout = new QHBoxLayout(wdt);
     layout->setAlignment(Qt::AlignLeft);
 
-    addStepBut = new QPushButton("Add step");
+    addStepBut = new QPushButton("Add step", wdt);
     layout->addWidget(addStepBut);
     connect(addStepBut, SIGNAL(clicked()), SLOT(slotAddStep()));
 
-    removeStepBut = new QPushButton("Remove step");
+    removeStepBut = new QPushButton("Remove step", wdt);
     layout->addWidget(removeStepBut);
     connect(removeStepBut, SIGNAL(clicked()), SLOT(slotRemoveStep()));
 
-    runCircuitBut = new QPushButton("Run");
+    runCircuitBut = new QPushButton("Run", wdt);
     layout->addWidget(runCircuitBut);
     connect(runCircuitBut, SIGNAL(clicked()), SLOT(slotRun()));
 

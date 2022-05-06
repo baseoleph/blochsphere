@@ -24,7 +24,7 @@
 #include <QPushButton>
 
 VectorWidget::VectorWidget(QWidget *parent, Vector *v) : QWidget(parent), _v(v) {
-    auto topLay = new QGridLayout();
+    topLay = new QGridLayout(this);
     topLay->addWidget(makeThePhiWid(), 0, 0);
     topLay->addWidget(makeAlpBetWid(), 0, 1);
     topLay->addWidget(makeBloVecWid(), 0, 2);
@@ -34,30 +34,26 @@ VectorWidget::VectorWidget(QWidget *parent, Vector *v) : QWidget(parent), _v(v) 
 }
 
 QWidget *VectorWidget::makeThePhiWid() {
-    theEd = new QLineEdit("0");
-    phiEd = new QLineEdit("0");
-    auto *theLab = new QLabel("<font face=symbol size=5>q</font>");
-    auto *phiLab = new QLabel("<font face=symbol size=5>f</font>");
+    auto tpW = new QWidget(this);
+
+    theEd = new QLineEdit("0", tpW);
+    phiEd = new QLineEdit("0", tpW);
+    auto theLab = new QLabel("<font face=symbol size=5>q</font>", tpW);
+    auto phiLab = new QLabel("<font face=symbol size=5>f</font>", tpW);
 
     theEd->setMaximumWidth(55);
-    theEd->setValidator(new QDoubleValidator);
+    theEd->setValidator(new QDoubleValidator(theEd));
 
     phiEd->setMaximumWidth(55);
-    phiEd->setValidator(new QDoubleValidator);
+    phiEd->setValidator(new QDoubleValidator(theEd));
 
-    auto *thePhiButton = new QPushButton("Set");
+    auto thePhiButton = new QPushButton("Set", tpW);
     thePhiButton->setFixedWidth(55);
     connect(thePhiButton, SIGNAL(clicked()), SLOT(slotThePhi()));
 
-    auto *tpW = new QWidget();
-    tpW->setFixedHeight(90);
+    tpW->setFixedSize(110, 90);
 
-    auto *qfThePhi = new QFrame(tpW);
-    qfThePhi->setFrameStyle(QFrame::Panel | QFrame::Raised);
-    qfThePhi->move(0, 0);
-    qfThePhi->setFixedSize(tpW->size());
-
-    auto *tpLay = new QGridLayout();
+    auto tpLay = new QGridLayout(tpW);
     tpLay->addWidget(theLab, 0, 0);
     tpLay->addWidget(theEd, 0, 1, 1, 3);
     tpLay->addWidget(phiLab, 1, 0);
@@ -71,13 +67,14 @@ QWidget *VectorWidget::makeThePhiWid() {
 }
 
 QWidget *VectorWidget::makeAlpBetWid() {
-    alpEd = new QLineEdit("1");
-    betEd = new QLineEdit("0");
-    auto *alpLab = new QLabel("<font face=symbol size=5>a</font>");
-    auto *betLab = new QLabel("<font face=symbol size=5>b</font>");
+    auto abW = new QWidget(this);
+    alpEd = new QLineEdit("1", abW);
+    betEd = new QLineEdit("0", abW);
+    auto alpLab = new QLabel("<font face=symbol size=5>a</font>", abW);
+    auto betLab = new QLabel("<font face=symbol size=5>b</font>", abW);
 
     alpEd->setFixedWidth(90);
-    alpEd->setValidator(new QDoubleValidator);
+    alpEd->setValidator(new QDoubleValidator(alpEd));
 
     betEd->setFixedWidth(90);
     betEd->setValidator(Utility::compValid());
@@ -85,23 +82,17 @@ QWidget *VectorWidget::makeAlpBetWid() {
     connect(betEd, SIGNAL(textEdited(const QString &)),
             SLOT(updateComplexLineEdit(const QString &)));
 
-    auto *bPsi = new QPushButton("Set");
+    auto bPsi = new QPushButton("Set", abW);
     bPsi->setFixedWidth(60);
     connect(bPsi, SIGNAL(clicked()), SLOT(slotAlpBet()));
 
-    auto *bRandPsi = new QPushButton("Random");
+    auto bRandPsi = new QPushButton("Random", abW);
     bRandPsi->setFixedWidth(60);
     connect(bRandPsi, SIGNAL(clicked()), SLOT(slotSetRandomPsi()));
 
-    auto *abW = new QWidget();
-    abW->setFixedHeight(90);
+    abW->setFixedSize(150, 90);
 
-    auto *qfAlpBet = new QFrame(abW);
-    qfAlpBet->setFrameStyle(QFrame::Panel | QFrame::Raised);
-    qfAlpBet->move(0, 0);
-    qfAlpBet->setFixedSize(abW->size());
-
-    auto *abLay = new QGridLayout();
+    auto abLay = new QGridLayout(abW);
     abLay->addWidget(alpLab, 1, 0);
     abLay->addWidget(alpEd, 1, 1, 1, 3);
     abLay->addWidget(betLab, 2, 0);
@@ -116,34 +107,29 @@ QWidget *VectorWidget::makeAlpBetWid() {
 }
 
 QWidget *VectorWidget::makeBloVecWid() {
-    xEd = new QLineEdit("0");
-    yEd = new QLineEdit("0");
-    zEd = new QLineEdit("1");
+    auto xyzW = new QWidget(this);
+    xEd = new QLineEdit("0", xyzW);
+    yEd = new QLineEdit("0", xyzW);
+    zEd = new QLineEdit("1", xyzW);
 
-    auto *xLab = new QLabel("<font size=4>x</font>");
-    auto *yLab = new QLabel("<font size=4>y</font>");
-    auto *zLab = new QLabel("<font size=4>z</font>");
+    auto xLab = new QLabel("<font size=4>x</font>", xyzW);
+    auto yLab = new QLabel("<font size=4>y</font>", xyzW);
+    auto zLab = new QLabel("<font size=4>z</font>", xyzW);
 
     xEd->setFixedWidth(90);
-    xEd->setValidator(new QDoubleValidator);
+    xEd->setValidator(new QDoubleValidator(xEd));
     yEd->setFixedWidth(90);
-    yEd->setValidator(new QDoubleValidator);
+    yEd->setValidator(new QDoubleValidator(yEd));
     zEd->setFixedWidth(90);
-    zEd->setValidator(new QDoubleValidator);
+    zEd->setValidator(new QDoubleValidator(zEd));
 
-    auto *bXyz = new QPushButton("Set");
+    auto bXyz = new QPushButton("Set", xyzW);
     bXyz->setFixedWidth(60);
     connect(bXyz, SIGNAL(clicked()), SLOT(slotBloVec()));
 
-    auto *xyzW = new QWidget();
-    xyzW->setFixedHeight(90);
+    xyzW->setFixedSize(150, 90);
 
-    auto *qfAlpBet = new QFrame(xyzW);
-    qfAlpBet->setFrameStyle(QFrame::Panel | QFrame::Raised);
-    qfAlpBet->move(0, 0);
-    qfAlpBet->setFixedSize(xyzW->size());
-
-    auto *abLay = new QGridLayout();
+    auto abLay = new QGridLayout(xyzW);
     abLay->addWidget(xLab, 1, 0);
     abLay->addWidget(xEd, 1, 1, 1, 3);
     abLay->addWidget(yLab, 2, 0);
@@ -184,7 +170,7 @@ void VectorWidget::slotAlpBet() {
     }
     double len = sqrt(a * a + b.real() * b.real() + b.imag() * b.imag());
     if (not Utility::fuzzyCompare(len, 1.)) {
-        auto *dial = new BlochDialog((QWidget *)sender(), DIALOG_TYPE::NORMALIZE);
+        auto dial = new BlochDialog((QWidget *)sender(), DIALOG_TYPE::NORMALIZE);
         if (isAutoNormalize or dial->exec() == QDialog::Accepted) {
             a /= len;
             b = complex(b.real() / len, b.imag() / len);
@@ -215,7 +201,7 @@ void VectorWidget::slotBloVec() {
     }
     double len = sqrt(x * x + y * y + z * z);
     if (not Utility::fuzzyCompare(len, 1.)) {
-        auto *dial = new BlochDialog((QWidget *)sender(), DIALOG_TYPE::NORMALIZE);
+        auto dial = new BlochDialog((QWidget *)sender(), DIALOG_TYPE::NORMALIZE);
         if (isAutoNormalize or dial->exec() == QDialog::Accepted) {
             x /= len;
             y /= len;

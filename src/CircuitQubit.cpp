@@ -28,7 +28,7 @@ CircuitQubit::CircuitQubit(QWidget *parent, Vector *v, const QString &name, int 
     updateOperators(cntOperators);
     _name = name;
 
-    auto nameLabel = new QLabel(_name);
+    auto nameLabel = new QLabel(_name, this);
     nameLabel->setFixedSize(50, cellHigh);
     mainLayout->addWidget(nameLabel);
     foreach (auto e, operators) { mainLayout->addWidget(e); }
