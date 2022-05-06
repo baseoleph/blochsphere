@@ -18,12 +18,12 @@
 #define MAINWINDOW_HPP
 
 #include "Circuit.h"
+#include "OpItem.hpp"
+#include "Sphere.hpp"
 #include "VectorWidget.h"
-#include "blochUtility.h"
-#include "operator.hpp"
-#include "opitem.hpp"
-#include "qubit.hpp"
-#include "sphere.hpp"
+#include "src/quantum/Operator.hpp"
+#include "src/quantum/Qubit.hpp"
+#include "src/utility.h"
 #include <QActionGroup>
 #include <QComboBox>
 #include <QDialog>

@@ -17,9 +17,9 @@
 #ifndef OPERATOR_HPP
 #define OPERATOR_HPP
 
-#include "blochUtility.h"
-#include "unitaryMatrix2x2.hpp"
-#include "vector.hpp"
+#include "UnitaryMatrix2x2.hpp"
+#include "Vector.hpp"
+#include "src/utility.h"
 
 #if QT_VERSION >= 0x050000
 #include <QRandomGenerator64>

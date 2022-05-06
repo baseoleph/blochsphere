@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "blochdialog.hpp"
-#include "mainwindow.hpp"
+#include "BlochDialog.hpp"
+#include "MainWindow.hpp"
 #include <QGridLayout>
 #include <QLineEdit>
 #include <QMenuBar>

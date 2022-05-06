@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "blochUtility.h"
-#include "qubit.hpp"
 #include "qubits.h"
+#include "src/quantum/Qubit.hpp"
+#include "utility.h"
 #include <gtest/gtest.h>
 
 using namespace Utility;

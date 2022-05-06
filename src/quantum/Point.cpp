@@ -14,38 +14,35 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef POINT_HPP
-#define POINT_HPP
+#include "Point.hpp"
+#include <complex>
 
-#include "blochUtility.h"
-#include <QDebug>
+Point::Point() { evalPT(); }
+Point::Point(double x, double y, double z) : x_(x), y_(y), z_(z) { evalPT(); }
+Point::Point(double the, double phi) : the_(the), phi_(phi) { evalXYZ(); }
 
-class Point {
-public:
-    Point();
-    Point(double x, double y, double z);
-    Point(double the, double phi);
+void Point::changePoint(double x, double y, double z) {
+    x_ = x;
+    y_ = y;
+    z_ = z;
+    evalPT();
+}
 
-    inline double x() const { return x_; }
-    inline double y() const { return y_; }
-    inline double z() const { return z_; }
-    inline double the() const { return the_; }
-    inline double phi() const { return phi_; }
+void Point::changePoint(double the, double phi) {
+    the_ = the;
+    phi_ = phi;
+    evalXYZ();
+}
 
-protected:
-    void changePoint(double x, double y, double z);
-    void changePoint(double the, double phi);
+void Point::evalPT() {
+    the_ = acos(z() / sqrt(x() * x() + y() * y() + z() * z()));
+    phi_ = atan2(y(), x());
+}
 
-private:
-    double x_;
-    double y_;
-    double z_;
-    double the_; // radians
-    double phi_; // radians
+void Point::evalXYZ() {
+    x_ = sin(the_) * cos(phi_);
+    y_ = sin(the_) * sin(phi_);
+    z_ = cos(the_);
+}
 
-    void          evalPT();
-    void          evalXYZ();
-    inline double getXyzLen();
-};
-
-#endif // POINT_HPP
+double Point::getXyzLen() { return sqrt(x_ * x_ + y_ * y_ + z_ * z_); }

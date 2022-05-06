@@ -14,35 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "point.hpp"
-#include <complex>
+#ifndef OPITEM_HPP
+#define OPITEM_HPP
 
-Point::Point() { evalPT(); }
-Point::Point(double x, double y, double z) : x_(x), y_(y), z_(z) { evalPT(); }
-Point::Point(double the, double phi) : the_(the), phi_(phi) { evalXYZ(); }
+#include "src/quantum/Operator.hpp"
+#include <QListWidgetItem>
 
-void Point::changePoint(double x, double y, double z) {
-    x_ = x;
-    y_ = y;
-    z_ = z;
-    evalPT();
-}
+class OpItem : public QListWidgetItem {
+    Operator oper;
 
-void Point::changePoint(double the, double phi) {
-    the_ = the;
-    phi_ = phi;
-    evalXYZ();
-}
+public:
+    OpItem(QListWidget *parent, const QString &opName, Operator op);
+    Operator getOp();
+};
 
-void Point::evalPT() {
-    the_ = acos(z() / sqrt(x() * x() + y() * y() + z() * z()));
-    phi_ = atan2(y(), x());
-}
-
-void Point::evalXYZ() {
-    x_ = sin(the_) * cos(phi_);
-    y_ = sin(the_) * sin(phi_);
-    z_ = cos(the_);
-}
-
-double Point::getXyzLen() { return sqrt(x_ * x_ + y_ * y_ + z_ * z_); }
+#endif // OPITEM_HPP

@@ -32,35 +32,35 @@ find_package(OpenGL REQUIRED)
 find_package(Qt5 COMPONENTS Widgets OpenGL REQUIRED)
 
 set(PROJECT_SOURCES
-        src/blochdialog.cpp
-        src/blochdialog.hpp
         src/main.cpp
-        src/mainwindow.cpp
-        src/mainwindow.hpp
-        src/operator.cpp
-        src/operator.hpp
-        src/opitem.cpp
-        src/opitem.hpp
-        src/point.cpp
-        src/point.hpp
-        src/qubit.cpp
-        src/qubit.hpp
-        src/sphere.cpp
-        src/sphere.hpp
-        src/vector.cpp
-        src/vector.hpp
-        src/unitaryMatrix2x2.cpp
-        src/unitaryMatrix2x2.hpp
-        src/blochUtility.cpp
-        src/blochUtility.h
-        src/VectorWidget.cpp
-        src/VectorWidget.h
-        src/Circuit.cpp
-        src/Circuit.h
-        src/CircuitQubit.cpp
-        src/CircuitQubit.h
-        src/CircuitOperator.cpp
-        src/CircuitOperator.h
+        src/utility.cpp
+        src/utility.h
+        src/quantum/Operator.cpp
+        src/quantum/Operator.hpp
+        src/quantum/Point.cpp
+        src/quantum/Point.hpp
+        src/quantum/Qubit.cpp
+        src/quantum/Qubit.hpp
+        src/quantum/UnitaryMatrix2x2.cpp
+        src/quantum/UnitaryMatrix2x2.hpp
+        src/quantum/Vector.cpp
+        src/quantum/Vector.hpp
+        src/widgets/BlochDialog.cpp
+        src/widgets/BlochDialog.hpp
+        src/widgets/Circuit.cpp
+        src/widgets/Circuit.h
+        src/widgets/CircuitOperator.cpp
+        src/widgets/CircuitOperator.h
+        src/widgets/CircuitQubit.cpp
+        src/widgets/CircuitQubit.h
+        src/widgets/MainWindow.cpp
+        src/widgets/MainWindow.hpp
+        src/widgets/OpItem.cpp
+        src/widgets/OpItem.hpp
+        src/widgets/Sphere.cpp
+        src/widgets/Sphere.hpp
+        src/widgets/VectorWidget.cpp
+        src/widgets/VectorWidget.h
         )
 
 add_executable(blochsphere ${PROJECT_SOURCES})
@@ -94,12 +94,12 @@ add_executable(
         test
         test/testOperatorDecompositions.cpp
         test/unitaryOperators.cpp
-        src/operator.cpp
-        src/unitaryMatrix2x2.cpp
-        src/qubit.cpp
-        src/point.cpp
-        src/blochUtility.cpp
-        src/blochUtility.h
+        src/quantum/Operator.cpp
+        src/quantum/UnitaryMatrix2x2.cpp
+        src/quantum/Qubit.cpp
+        src/quantum/Point.cpp
+        src/utility.cpp
+        src/utility.h
         test/testOperator.cpp
         test/main.cpp
         test/identityOperatorPairs.cpp

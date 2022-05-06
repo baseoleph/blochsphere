@@ -18,7 +18,7 @@
 #define CIRCUIT_H
 
 #include "CircuitQubit.h"
-#include "vector.hpp"
+#include "src/quantum/Vector.hpp"
 #include <QGridLayout>
 #include <QPushButton>
 #include <QWidget>

@@ -14,6 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "unitaryMatrix2x2.hpp"
+#include "src/quantum/UnitaryMatrix2x2.hpp"
 
 QVector<UnitaryMatrix2x2> unitaryOperators2x2();

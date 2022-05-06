@@ -17,7 +17,7 @@
 #ifndef UNITARYMATRIX2X2_HPP
 #define UNITARYMATRIX2X2_HPP
 
-#include "qubit.hpp"
+#include "Qubit.hpp"
 #include <iostream>
 #include <ostream>
 

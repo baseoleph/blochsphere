@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "unitaryOperators.hpp"
-#include "operator.hpp"
+#include "src/quantum/Operator.hpp"
 #include <gtest/gtest.h>
 
 QVector<UnitaryMatrix2x2> unitaryOperators2x2() {

@@ -15,8 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "VectorWidget.h"
-#include "blochdialog.hpp"
-#include "unitaryMatrix2x2.hpp"
+#include "BlochDialog.hpp"
+#include "src/quantum/UnitaryMatrix2x2.hpp"
 #include <QDoubleValidator>
 #include <QGridLayout>
 #include <QLabel>

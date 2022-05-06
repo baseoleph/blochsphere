@@ -22,40 +22,39 @@ QT += opengl gui widgets core
 QMAKE_CXXFLAGS += -std=c++11
 
 SOURCES += \
-    src/blochUtility.cpp \
     src/main.cpp \
-    src/mainwindow.cpp \
-    src/operator.cpp \
-    src/point.cpp \
-    src/qubit.cpp \
-    src/sphere.cpp \
-    src/opitem.cpp \
-    src/blochdialog.cpp \
-    src/unitaryMatrix2x2.cpp \
-    src/vector.cpp \
-    src/VectorWidget.cpp \
-    src/Circuit.cpp \
-    src/CircuitQubit.cpp \
-    src/CircuitOperator.cpp
+    src/utility.cpp \
+    src/quantum/Operator.cpp \
+    src/quantum/Point.cpp \
+    src/quantum/Qubit.cpp \
+    src/quantum/UnitaryMatrix2x2.cpp \
+    src/quantum/Vector.cpp \
+    src/widgets/BlochDialog.cpp \
+    src/widgets/Circuit.cpp \
+    src/widgets/CircuitOperator.cpp \
+    src/widgets/CircuitQubit.cpp \
+    src/widgets/MainWindow.cpp \
+    src/widgets/OpItem.cpp \
+    src/widgets/Sphere.cpp \
+    src/widgets/VectorWidget.cpp
 
 
 HEADERS += \
-    src/blochUtility.h \
-    src/mainwindow.hpp \
-    src/operator.hpp \
-    src/point.hpp \
-    src/opitem.hpp \
-    src/blochdialog.hpp \
-    src/qubit.hpp \
-    src/sphere.hpp \
-    src/unitaryMatrix2x2.hpp \
-    src/vector.hpp \
-    src/VectorWidget.h \
-    src/Circuit.h \
-    src/CircuitQubit.h \
-    src/CircuitOperator.h
+    src/utility.h \
+    src/quantum/Operator.hpp \
+    src/quantum/Point.hpp \
+    src/quantum/Qubit.hpp \
+    src/quantum/UnitaryMatrix2x2.hpp \
+    src/quantum/Vector.hpp \
+    src/widgets/Circuit.h \
+    src/widgets/CircuitOperator.h \
+    src/widgets/CircuitQubit.h \
+    src/widgets/VectorWidget.h \
+    src/widgets/BlochDialog.hpp \
+    src/widgets/MainWindow.hpp \
+    src/widgets/OpItem.hpp \
+    src/widgets/Sphere.hpp
 
-#LIBS += libopengl32 libglu32 c:\Users\baseoleph\git\blochsphere\bloch2\glut32.dll
 LIBS += libopengl32
 
 TARGET = blochsphere

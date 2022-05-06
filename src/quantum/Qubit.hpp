@@ -17,8 +17,8 @@
 #ifndef QUBIT_HPP
 #define QUBIT_HPP
 
-#include "blochUtility.h"
-#include "point.hpp"
+#include "Point.hpp"
+#include "src/utility.h"
 #include <complex>
 
 class Qubit : public Point {

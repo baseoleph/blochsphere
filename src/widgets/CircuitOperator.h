@@ -14,18 +14,31 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef OPITEM_HPP
-#define OPITEM_HPP
+#ifndef CIRCUITOPERATOR_H
+#define CIRCUITOPERATOR_H
 
-#include "operator.hpp"
-#include <QListWidgetItem>
+#include "src/quantum/Operator.hpp"
+#include <QComboBox>
 
-class OpItem : public QListWidgetItem {
-    Operator oper;
+enum OPERATORS { ID = 0, X, Y, Z, H, S, T, PHI, RX, RY, RZ };
+enum STATE { ACTIVE = 0, PASSIVE };
 
+class CircuitOperator : public QComboBox {
+    Q_OBJECT
 public:
-    OpItem(QListWidget *parent, const QString &opName, Operator op);
-    Operator getOp();
+    CircuitOperator(QWidget *parent, Operator op = Operator());
+
+    QString   getOperatorName();
+    Operator &getOperator();
+    void      setState(STATE state);
+
+public slots:
+    void slotOperatorChanged(int index);
+
+private:
+    Operator _op;
+    int      lastActivated = 0;
+    void     clearComboBoxNames();
 };
 
-#endif // OPITEM_HPP
+#endif // CIRCUITOPERATOR_H

@@ -17,7 +17,7 @@
 #ifndef SPHERE_HPP
 #define SPHERE_HPP
 
-#include "vector.hpp"
+#include "src/quantum/Vector.hpp"
 #include <QDebug>
 #include <QGLWidget>
 

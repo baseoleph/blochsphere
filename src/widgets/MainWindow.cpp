@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "mainwindow.hpp"
-#include "blochdialog.hpp"
-#include "operator.hpp"
+#include "MainWindow.hpp"
+#include "BlochDialog.hpp"
+#include "src/quantum/Operator.hpp"
 #include <QCheckBox>
 #include <QGridLayout>
 #include <QGroupBox>

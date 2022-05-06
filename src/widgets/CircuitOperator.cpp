@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "CircuitOperator.h"
-#include "blochdialog.hpp"
+#include "BlochDialog.hpp"
 
 CircuitOperator::CircuitOperator(QWidget *parent, Operator op) : QComboBox(parent), _op(op) {
     addItem("Id");
