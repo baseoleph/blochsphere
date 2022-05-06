@@ -381,7 +381,11 @@ decomposition Operator::xyDecomposition(UnitaryMatrix2x2 op) {
 
     if (fabs(a1) < EPSILON && fabs(a2) > EPSILON && fabs(b1) < EPSILON && fabs(b2) > EPSILON) {
         beta = M_PI;
-        gamma = 2.0 * asin(-a2);
+        if (-b2 > 0) {
+            gamma = 2.0 * asin(-a2);
+        } else {
+            gamma = 2.0 * M_PI - 2.0 * asin(-a2);
+        }
         delta = 0;
     }
 
@@ -406,9 +410,17 @@ decomposition Operator::xyDecomposition(UnitaryMatrix2x2 op) {
     }
 
     if (fabs(a1) > EPSILON && fabs(a2) < EPSILON && fabs(b1) > EPSILON && fabs(b2) > EPSILON) {
-        gamma = 2.0 * asin(-b1);
-        beta = asin(-b2 / cos(gamma / 2.0)); // beta=atan(-b2/a1);
+        beta = atan(-b2 / a1);
         delta = beta;
+        if (-b2 / beta > 0) {
+            gamma = 2.0 * asin(-b1);
+        } else {
+            gamma = 2.0 * M_PI - 2.0 * asin(-b1);
+        }
+
+        if (gamma > 2.0 * M_PI) {
+            gamma -= 2.0 * M_PI;
+        }
     }
 
     if (fabs(a1) > EPSILON && fabs(a2) > EPSILON && fabs(b2) > EPSILON) {
