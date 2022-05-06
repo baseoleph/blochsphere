@@ -43,23 +43,27 @@ complex parseStrToComplex(const QString &str) {
     QRegExp rxp1("^([+-]?[0-9]+\\.?[0-9]*)([+-]?[0-9]*\\.?[0-9]*)i$");
     QRegExp rxp2("^([+-]?[\\d]+\\.?[\\d]*)$");
     QRegExp rxp3("^([+-]?[0-9]*\\.?[0-9]*)i$");
-    QRegExp rxp4("^([+-])i$");
-    if (str.contains(rxp1)) {
-        if (rxp1.capturedTexts()[2] == "+")
-            return complex(rxp1.capturedTexts()[1].toDouble(), 1.0);
-        else if (rxp1.capturedTexts()[2] == "-")
-            return complex(rxp1.capturedTexts()[1].toDouble(), -1.0);
-        else
-            return complex(rxp1.capturedTexts()[1].toDouble(), rxp1.capturedTexts()[2].toDouble());
-    } else if (str.contains(rxp2))
-        return complex(rxp2.capturedTexts()[1].toDouble(), 0.0);
-    else if (str.contains(rxp3)) {
-        if (rxp3.capturedTexts()[1] == "+" || rxp3.capturedTexts()[1] == "")
+
+    if (str.contains(rxp3)) {
+        if (rxp3.capturedTexts()[1] == "+" || rxp3.capturedTexts()[1] == "") {
             return complex(0.0, 1.0);
-        else if (rxp3.capturedTexts()[1] == "-")
+        } else if (rxp3.capturedTexts()[1] == "-") {
             return complex(0.0, -1.0);
-        else
+        } else {
             return complex(0.0, rxp3.capturedTexts()[1].toDouble());
+        }
+    } else if (str.contains(rxp1)) {
+        if (rxp1.capturedTexts()[2] == "+") {
+            return complex(rxp1.capturedTexts()[1].toDouble(), 1.0);
+        } else if (rxp1.capturedTexts()[2] == "-") {
+            return complex(rxp1.capturedTexts()[1].toDouble(), -1.0);
+        } else if (rxp1.capturedTexts().size() > 2) {
+            return complex(rxp1.capturedTexts()[1].toDouble(), rxp1.capturedTexts()[2].toDouble());
+        } else {
+            return complex(0, rxp1.capturedTexts()[1].toDouble());
+        }
+    } else if (str.contains(rxp2)) {
+        return complex(rxp2.capturedTexts()[1].toDouble(), 0.0);
     }
 }
 
