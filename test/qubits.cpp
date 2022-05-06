@@ -235,6 +235,18 @@ QVector<QubitFields> qubits() {
         qbs.append(qf);
     }
 
+    // 16
+    {
+        qf.a = 1 / sqrt(2);
+        qf.b = -i / sqrt(2);
+        qf.the = 90. / 180 * M_PI;
+        qf.phi = -90. / 180 * M_PI;
+        qf.x = 0;
+        qf.y = -1;
+        qf.z = 0;
+        qbs.append(qf);
+    }
+
     return qbs;
 }
 
