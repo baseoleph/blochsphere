@@ -154,7 +154,7 @@ void Sphere::drawCircle() {
 void Sphere::drawAxis() {
     float axSize = 1.7f;
 
-    glLineWidth(2.5f);
+    glLineWidth(2.3f);
     // OX
     qglColor(Qt::black);
     glBegin(GL_LINES);
