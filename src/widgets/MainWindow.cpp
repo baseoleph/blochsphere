@@ -356,18 +356,13 @@ QWidget *MainWindow::makeDecompWid() {
     rxyzTab->insertTab(3, makeZyxWid(), "Z-Y-X");
     rxyzTab->setCurrentIndex(0);
 
-    auto bRotXYZ = new QPushButton("Set", rxyzTab);
-    bRotXYZ->setFixedWidth(60);
-    connect(bRotXYZ, SIGNAL(clicked()), SLOT(slotSetRXYZOp()));
-
     auto rtW = new QWidget(this);
     auto qwb = new QVBoxLayout(rtW);
     qwb->addWidget(rxyzTab);
-    qwb->addWidget(bRotXYZ);
     qwb->setSpacing(0);
     qwb->setMargin(1);
     rtW->setLayout(qwb);
-    rtW->setFixedHeight(140);
+    rtW->setFixedHeight(170);
 
     return rtW;
 }
@@ -384,11 +379,15 @@ QWidget *MainWindow::makeZyWid() {
     auto rZYBLab = new QLabel("Rz(Beta)", rzW);
     auto rZYGLab = new QLabel("Ry(Gamma)", rzW);
     auto rZYDLab = new QLabel("Rz(Delta)", rzW);
+    auto bRotXYZ = new QPushButton("Set", rzW);
 
+    bRotXYZ->setMaximumWidth(60);
     rZyAlpEd->setMaximumWidth(60);
     rZyBetEd->setMaximumWidth(60);
     rZyGamEd->setMaximumWidth(60);
     rZyDelEd->setMaximumWidth(60);
+
+    connect(bRotXYZ, SIGNAL(clicked()), SLOT(slotSetRXYZOp()));
 
     auto rzLay = new QGridLayout(rzW);
     rzLay->addWidget(rZYALab, 1, 2);
@@ -399,6 +398,7 @@ QWidget *MainWindow::makeZyWid() {
     rzLay->addWidget(rZyGamEd, 3, 3);
     rzLay->addWidget(rZYDLab, 4, 2);
     rzLay->addWidget(rZyDelEd, 4, 3);
+    rzLay->addWidget(bRotXYZ, 5, 3);
     rzLay->setContentsMargins(20, 5, 20, 5);
     rzLay->setSpacing(2);
     rzW->setLayout(rzLay);
@@ -418,11 +418,15 @@ QWidget *MainWindow::makeZxWid() {
     auto rZXBLab = new QLabel("Rz(Beta)", rzW);
     auto rZXGLab = new QLabel("Rx(Gamma)", rzW);
     auto rZXDLab = new QLabel("Rz(Delta)", rzW);
+    auto bRotXYZ = new QPushButton("Set", rzW);
 
+    bRotXYZ->setMaximumWidth(60);
     rZxAlpEd->setMaximumWidth(60);
     rZxBetEd->setMaximumWidth(60);
     rZxGamEd->setMaximumWidth(60);
     rZxDelEd->setMaximumWidth(60);
+
+    connect(bRotXYZ, SIGNAL(clicked()), SLOT(slotSetRXYZOp()));
 
     auto rzLay = new QGridLayout(rzW);
     rzLay->addWidget(rZXALab, 1, 2);
@@ -433,6 +437,7 @@ QWidget *MainWindow::makeZxWid() {
     rzLay->addWidget(rZxGamEd, 3, 3);
     rzLay->addWidget(rZXDLab, 4, 2);
     rzLay->addWidget(rZxDelEd, 4, 3);
+    rzLay->addWidget(bRotXYZ, 5, 3);
     rzLay->setContentsMargins(20, 5, 20, 5);
     rzLay->setSpacing(2);
     rzW->setLayout(rzLay);
@@ -452,11 +457,15 @@ QWidget *MainWindow::makeXyWid() {
     auto rXYBLab = new QLabel("Rx(Beta)", rzW);
     auto rXYGLab = new QLabel("Ry(Gamma)", rzW);
     auto rXYDLab = new QLabel("Rx(Delta)", rzW);
+    auto bRotXYZ = new QPushButton("Set", rzW);
 
+    bRotXYZ->setMaximumWidth(60);
     rXyAlpEd->setMaximumWidth(60);
     rXyBetEd->setMaximumWidth(60);
     rXyGamEd->setMaximumWidth(60);
     rXyDelEd->setMaximumWidth(60);
+
+    connect(bRotXYZ, SIGNAL(clicked()), SLOT(slotSetRXYZOp()));
 
     auto rzLay = new QGridLayout(rzW);
     rzLay->addWidget(rXYALab, 1, 2);
@@ -467,6 +476,7 @@ QWidget *MainWindow::makeXyWid() {
     rzLay->addWidget(rXyGamEd, 3, 3);
     rzLay->addWidget(rXYDLab, 4, 2);
     rzLay->addWidget(rXyDelEd, 4, 3);
+    rzLay->addWidget(bRotXYZ, 5, 3);
     rzLay->setContentsMargins(20, 5, 20, 5);
     rzLay->setSpacing(2);
     rzW->setLayout(rzLay);
@@ -486,11 +496,15 @@ QWidget *MainWindow::makeZyxWid() {
     auto rZyxBLab = new QLabel("Rz(Beta)", rzW);
     auto rZyxGLab = new QLabel("Ry(Gamma)", rzW);
     auto rZyxDLab = new QLabel("Rx(Delta)", rzW);
+    auto bRotXYZ = new QPushButton("Set", rzW);
 
+    bRotXYZ->setMaximumWidth(60);
     rZyxAlpEd->setMaximumWidth(60);
     rZyxBetEd->setMaximumWidth(60);
     rZyxGamEd->setMaximumWidth(60);
     rZyxDelEd->setMaximumWidth(60);
+
+    connect(bRotXYZ, SIGNAL(clicked()), SLOT(slotSetRXYZOp()));
 
     auto rzLay = new QGridLayout(rzW);
     rzLay->addWidget(rZyxALab, 1, 2);
@@ -501,6 +515,7 @@ QWidget *MainWindow::makeZyxWid() {
     rzLay->addWidget(rZyxGamEd, 3, 3);
     rzLay->addWidget(rZyxDLab, 4, 2);
     rzLay->addWidget(rZyxDelEd, 4, 3);
+    rzLay->addWidget(bRotXYZ, 5, 3);
     rzLay->setContentsMargins(20, 5, 20, 5);
     rzLay->setSpacing(2);
     rzW->setLayout(rzLay);
