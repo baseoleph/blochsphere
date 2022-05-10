@@ -152,7 +152,7 @@ UnitaryMatrix2x2 UnitaryMatrix2x2::getT() {
 }
 
 UnitaryMatrix2x2 UnitaryMatrix2x2::getPhi(double gamma) {
-    return UnitaryMatrix2x2({1, 0, 0, pow(C_E, C_I * gamma)});
+    return UnitaryMatrix2x2({exp(C_I * gamma), 0, 0, 1});
 }
 
 UnitaryMatrix2x2 UnitaryMatrix2x2::getXrotate(double the) {
