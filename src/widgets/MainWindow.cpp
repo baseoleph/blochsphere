@@ -1103,8 +1103,8 @@ void MainWindow::setEnabledWidgets(bool f) {
     spherePlusBut->setEnabled(f and spheres.size() < MAX_COUNT_SPHERES);
     sphereMinusBut->setEnabled(f and spheres.size() > 1);
     circuit->runCircuitBut->setEnabled(f);
-    circuit->addStepBut->setEnabled(f and circuit->getQubits().size() < MAX_COUNT_OF_STEPS);
-    circuit->removeStepBut->setEnabled(f and circuit->getQubits().size() > 1);
+    circuit->addStepBut->setEnabled(f and circuit->getSizeOfSteps() < MAX_COUNT_OF_STEPS);
+    circuit->removeStepBut->setEnabled(f and circuit->getSizeOfSteps() > 1);
     clrQueBut->setEnabled(f);
 }
 
