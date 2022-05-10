@@ -843,7 +843,7 @@ void MainWindow::slotSetAxOp() {
 
         updateOp(OPERATOR_FORM::VECTOR);
     } else {
-        QMessageBox::warning(this, "Error", "Wrong input: Vector (x;y;z)");
+        QMessageBox::warning(this, "Error", "Wrong input. Must be x;y;z");
         return;
     }
 }
