@@ -32,6 +32,7 @@ BlochDialog::BlochDialog(QWidget *parent, DIALOG_TYPE dt)
     } else {
         suggestNormalize();
     }
+    setFixedWidth(200);
 }
 
 QString BlochDialog::ang() const { return angEd->text(); }
@@ -58,8 +59,8 @@ void BlochDialog::angleInput() {
 
     lay->addLayout(lay1);
     setLayout(lay);
-    setFixedWidth(155);
 }
+
 void BlochDialog::suggestNormalize() {
     auto angLab = new QLabel("Vector is not unit. \nDo you want normalize it?", this);
 
