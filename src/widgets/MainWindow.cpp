@@ -160,6 +160,8 @@ void MainWindow::createActions() {
 
     resetAct = new QAction("Reset", this);
     connect(resetAct, SIGNAL(triggered()), SLOT(slotReset()));
+    clearAct = new QAction("Clear", this);
+    connect(clearAct, SIGNAL(triggered()), SLOT(slotClear()));
 
     showTAct = new QAction("Show trace", this);
     showTAct->setCheckable(true);
@@ -198,6 +200,7 @@ void MainWindow::createTopBar() {
     //    qtb->addAction(saveState);
     //    qtb->addAction(recallState);
     qtb->addAction(resetAct);
+    qtb->addAction(clearAct);
     qtb->addSeparator();
     qtb->addAction(showTAct);
     qtb->addAction(clearTAct);
@@ -997,6 +1000,21 @@ void MainWindow::slotReset() {
 
     controlWidget->show();
     slotPlusSphere();
+}
+
+void MainWindow::slotClear() {
+    stopTimer();
+
+    Vector v(0., 0.);
+    foreach (auto e, topTabWid->findChildren<VectorWidget *>()) {
+        if (e->getVector() != nullptr) {
+            e->getVector()->changeVector(v.getSpike());
+            e->fillFieldsOfVector(e->getVector()->getSpike());
+            e->getVector()->clearTrace();
+        }
+    }
+
+    foreach (auto e, spheres) { e->toNormal(); }
 }
 
 void MainWindow::slotComplexLineEditChanged(const QString &) {
