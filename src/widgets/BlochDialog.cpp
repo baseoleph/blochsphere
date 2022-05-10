@@ -62,7 +62,7 @@ void BlochDialog::angleInput() {
 }
 
 void BlochDialog::suggestNormalize() {
-    auto angLab = new QLabel("Vector is not unit. \nDo you want normalize it?", this);
+    auto angLab = new QLabel("Vector is not unit. \nDo you want to normalize it?", this);
 
     auto bOk = new QPushButton("Ok", this);
     auto bCl = new QPushButton("Cancel", this);
