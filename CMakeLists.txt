@@ -98,6 +98,7 @@ add_executable(
         src/quantum/UnitaryMatrix2x2.cpp
         src/quantum/Qubit.cpp
         src/quantum/Point.cpp
+        src/quantum/Vector.cpp
         src/utility.cpp
         src/utility.h
         test/testOperator.cpp

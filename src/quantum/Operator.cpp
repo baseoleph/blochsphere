@@ -352,85 +352,65 @@ decomposition Operator::xyDecomposition(UnitaryMatrix2x2 op) {
     double b2 = imag(B);
 
     if (fabs(a1) < EPSILON && fabs(b2) < EPSILON) {
-        if (fabs(b1) > EPSILON) {
-            delta = 0;
-            beta = delta + 2.0 * atan(a2 / b1);
-            gamma = M_PI;
-        } else if (fabs(a2) > EPSILON) {
-            delta = 0;
-            beta = delta + M_PI - 2.0 * atan(b1 / a2);
-            gamma = M_PI;
-        }
+        delta = 0;
+        beta = delta + 2.0 * atan2(-a2, -b1);
+        gamma = M_PI;
     }
 
     if (fabs(a2) < EPSILON && fabs(b1) < EPSILON) {
-        if (fabs(a1) > EPSILON) {
-            delta = 0;
-            if (a1 > 0) {
-                beta = -delta + 2.0 * asin(-b2);
-            } else {
-                beta = 2.0 * M_PI - (-delta + 2.0 * asin(-b2));
-            }
-            gamma = 0;
-        } else if (fabs(b2) > EPSILON) {
-            delta = 0;
-            beta = -delta + M_PI - 2.0 * atan(-a1 / b2);
-            gamma = 0;
-        }
+        delta = 0;
+        beta = -delta + 2.0 * atan2(-b2, a1);
+        gamma = 0;
     }
 
     if (fabs(a1) < EPSILON && fabs(a2) > EPSILON && fabs(b1) < EPSILON && fabs(b2) > EPSILON) {
         beta = M_PI;
-        if (-b2 > 0) {
-            gamma = 2.0 * asin(-a2);
-        } else {
-            gamma = 2.0 * M_PI - 2.0 * asin(-a2);
-        }
+        gamma = 2.0 * atan2(-a2, -b2);
         delta = 0;
     }
 
     if (fabs(a1) > EPSILON && fabs(a2) > EPSILON && fabs(b1) < EPSILON && fabs(b2) < EPSILON) {
         beta = M_PI / 2.0;
-        if (a1 > 0) {
-            gamma = 2.0 * asin(-a2);
-        } else {
-            gamma = 2.0 * M_PI - 2.0 * asin(-a2);
-        }
+        gamma = 2.0 * atan2(-a2, a1);
         delta = -M_PI / 2.0;
     }
 
     if (fabs(a1) > EPSILON && fabs(a2) < EPSILON && fabs(b1) > EPSILON && fabs(b2) < EPSILON) {
         beta = 0;
-        if (a1 > 0) {
-            gamma = -2.0 * asin(b1);
-        } else {
-            gamma = 2 * M_PI - (-2.0 * asin(b1));
-        }
+        gamma = 2.0 * atan2(-b1, a1);
         delta = 0;
     }
 
     if (fabs(a1) > EPSILON && fabs(a2) < EPSILON && fabs(b1) > EPSILON && fabs(b2) > EPSILON) {
         beta = atan(-b2 / a1);
+        gamma = 2.0 * atan2(-b1, -b2 / sin(beta));
         delta = beta;
-        if (-b2 / beta > 0) {
-            gamma = 2.0 * asin(-b1);
-        } else {
-            gamma = 2.0 * M_PI - 2.0 * asin(-b1);
-        }
-
-        if (gamma > 2.0 * M_PI) {
-            gamma -= 2.0 * M_PI;
-        }
     }
 
-    if (fabs(a1) > EPSILON && fabs(a2) > EPSILON && fabs(b2) > EPSILON) {
+    if (fabs(a1) > EPSILON && fabs(a2) > EPSILON && fabs(b1) > EPSILON && fabs(b2) > EPSILON) {
         beta = atan(-b2 / a1) + atan(a2 / b1);
         delta = atan(-b2 / a1) - atan(a2 / b1);
-        if (a1 / cos(beta / 2.0 + delta / 2.0) > 0) {
-            gamma = 2.0 * asin(-a2 / sin(beta / 2.0 - delta / 2.0));
-        } else {
-            gamma = 2.0 * M_PI - 2.0 * asin(-a2 / sin(beta / 2.0 - delta / 2.0));
-        }
+        gamma =
+            2.0 * atan2(-a2 / sin(beta / 2.0 - delta / 2.0), a1 / cos(beta / 2.0 + delta / 2.0));
+    }
+
+    if (fabs(a1) > EPSILON && fabs(a2) > EPSILON && fabs(b1) > EPSILON && fabs(b2) < EPSILON) {
+        beta = atan(-b2 / a1) + atan(a2 / b1);
+        delta = atan(-b2 / a1) - atan(a2 / b1);
+        gamma =
+            2.0 * atan2(-a2 / sin(beta / 2.0 - delta / 2.0), a1 / cos(beta / 2.0 + delta / 2.0));
+    }
+
+    if (fabs(a1) < EPSILON && fabs(a2) < EPSILON && fabs(b1) > EPSILON && fabs(b2) > EPSILON) {
+        beta = M_PI / 2.0;
+        gamma = 2.0 * atan2(-b1, -b2);
+        delta = M_PI / 2.0;
+    }
+
+    if (fabs(a1) > EPSILON && fabs(a2) > EPSILON && fabs(b1) < EPSILON && fabs(b2) > EPSILON) {
+        beta = M_PI / 2.0 + atan(-b2 / a1);
+        delta = -M_PI + beta;
+        gamma = 2.0 * atan2(-a2, -b2 / sin(beta / 2.0 + delta / 2.0));
     }
 
     decomposition dec;
