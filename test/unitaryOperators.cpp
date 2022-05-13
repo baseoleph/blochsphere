@@ -520,5 +520,15 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         ops.append(op);
     }
 
+    // 45
+    {
+        a = i * sqrt(1.0 / 2.0);
+        b = -i * sqrt(1.0 / 2.0);
+        c = -i * sqrt(1.0 / 2.0);
+        d = -i * sqrt(1.0 / 2.0);
+        EXPECT_TRUE(op.updateMatrix({a, b, c, d})) << "Not Unitary!";
+        ops.append(op);
+    }
+
     return ops;
 }
