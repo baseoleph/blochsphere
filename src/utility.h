@@ -23,10 +23,8 @@
 #include <QString>
 #include <complex>
 
-#define EEE 2.71828182845904523536
 #define EPSILON 0.000001
 #define C_I complex(0, 1)
-#define C_E complex(EEE, 0.0)
 #define M_PI 3.14159265358979323846
 #define DURATION 100.
 #define MAX_COUNT_SPHERES 5
@@ -50,10 +48,7 @@ double  getSpeed();
 void    setSpeed(int spd);
 void    updateComplexLineEdit(QLineEdit *lineEdit);
 
-inline int    random(int min, int max) { return min + rand() % ((max + 1) - min); }
-inline double random(double fMin, double fMax) {
-    double f = (double)rand() / RAND_MAX;
-    return fMin + f * (fMax - fMin);
-}
+int    random(int min, int max);
+double random(double fMin, double fMax);
 } // namespace Utility
 #endif // BLOCHUTILITY_H

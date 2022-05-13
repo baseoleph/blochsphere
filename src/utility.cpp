@@ -111,4 +111,11 @@ void updateComplexLineEdit(QLineEdit *lineEdit) {
     lineEdit->setText(lineEdit->text().replace(re, "i"));
 }
 
+int random(int min, int max) { return min + rand() % ((max + 1) - min); }
+
+double random(double fMin, double fMax) {
+    double f = (double)rand() / RAND_MAX;
+    return fMin + f * (fMax - fMin);
+}
+
 } // namespace Utility

@@ -42,6 +42,27 @@ void Vector::popPath() {
     path_.pop_back();
 }
 
+void Vector::changeVector(Spike s) {
+    path_.clear();
+    spike_ = s;
+    this->changeQubit(s.point.x(), s.point.y(), s.point.z());
+}
+
+void Vector::changeVector(QVector<Spike> s) {
+    path_ = normalizePath(s);
+    spike_ = s.last();
+    this->changeQubit(s.first().point.x(), s.first().point.y(), s.first().point.z());
+}
+
+Spike Vector::actOperator(QQuaternion q, Spike s) {
+    s.point = q.rotatedVector(s.point);
+    s.arrow1 = q.rotatedVector(s.arrow1);
+    s.arrow2 = q.rotatedVector(s.arrow2);
+    s.arrow3 = q.rotatedVector(s.arrow3);
+    s.arrow4 = q.rotatedVector(s.arrow4);
+    return s;
+}
+
 void Vector::printVector() const {
     qDebug() << "---------------";
     qDebug() << "xyz" << x() << y() << z();
