@@ -959,7 +959,39 @@ CurDecompFun MainWindow::getCurrentDecomposition() {
     return &Operator::applyZyDecomposition;
 }
 
-void MainWindow::slotAbout() { QMessageBox::about(this, "About program", "blochsphere"); }
+void MainWindow::slotAbout() {
+    QString aboutText =
+        "<h3 class=\"code-line\" data-line-start=0 data-line-end=1 ><a "
+        "id=\"blochsphere_0\"></a>blochsphere</h3>\n"
+        "<hr>\n"
+        "<p class=\"has-line-data\" data-line-start=\"2\" data-line-end=\"3\">The program helps to "
+        "see a geometric representation of qubits.</p>\n"
+        "<p class=\"has-line-data\" data-line-start=\"4\" data-line-end=\"5\">Copyright © 2022 "
+        "Vasiliy Stephanov <a href=\"mailto:baseoleph@gmail.com\">baseoleph@gmail.com</a></p>\n"
+        "<hr>\n"
+        "<p class=\"has-line-data\" data-line-start=\"6\" data-line-end=\"7\">Based on <a "
+        "href=\"https://github.com/baseoleph/blochsphere/tree/base\">BLOCH</a> by Denis "
+        "Kadochnikov (Денис Кадочников)</p>\n"
+        "<p class=\"has-line-data\" data-line-start=\"8\" data-line-end=\"9\">Decomposition "
+        "algorithms by M.V. Shvetskiy (Михаил Владимирович Шведский) <a "
+        "href=\"mailto:audit269@gmail.com\">audit269@gmail.com</a>:</p>\n"
+        "<ul>\n"
+        "<li class=\"has-line-data\" data-line-start=\"9\" data-line-end=\"10\"><a "
+        "href=\"https://github.com/baseoleph/blochsphere/commit/"
+        "690dca3e8dcc32e4b4eed0fcfc65c5bdf8dd06b0\">Z-Y</a></li>\n"
+        "<li class=\"has-line-data\" data-line-start=\"10\" data-line-end=\"11\"><a "
+        "href=\"https://github.com/baseoleph/blochsphere/commit/"
+        "ff22dd04382d02a839c56f27a80ad18064eb6595\">Z-X</a></li>\n"
+        "<li class=\"has-line-data\" data-line-start=\"11\" data-line-end=\"12\"><a "
+        "href=\"https://github.com/baseoleph/blochsphere/commit/"
+        "cdc00f14787f28de44d8ae0ee1582ebaa82aba0e\">X-Y</a></li>\n"
+        "<li class=\"has-line-data\" data-line-start=\"12\" data-line-end=\"13\"><a "
+        "href=\"https://github.com/baseoleph/blochsphere/commit/"
+        "7e3567036330e10d948873364cde38d51eb12897\">Z-Y-X</a></li>\n"
+        "</ul>";
+
+    QMessageBox::about(this, "blochsphere", aboutText);
+}
 
 void MainWindow::slotReset() {
     stopTimer();
