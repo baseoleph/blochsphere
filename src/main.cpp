@@ -1,41 +1,30 @@
-// The program helps to see a geometric representation of qubits
-// Copyright (C) 2022 Vasiliy Stephanov <baseoleph@gmail.com>
+// Запуск главного она.
+// --------------------
+// Кадочников Д. 4 курс (06.10.2014)
 
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
+#include "mainwid.h"
+#include <QtGui/QApplication>
+#include <ctime>
+#include <QTextCodec>
 
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
+int main(int argc, char *argv[])
+{
+    srand(time(NULL));
+    QApplication a(argc, argv);
 
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    a.setStyle("Cleanlooks");    
 
-#include "src/widgets/MainWindow.h"
-#include <QApplication>
-#include <QDesktopWidget>
+    QTextCodec *codec=QTextCodec::codecForName("WINDOWS-1251");
+    QTextCodec::setCodecForTr(codec);
+    QTextCodec::setCodecForCStrings(codec);
+    QTextCodec::setCodecForLocale(codec);
 
-int main(int argc, char *argv[]) {
-    QApplication app(argc, argv);
+    MainWid *scene=new MainWid;
 
-    MainWindow      w;
-    QDesktopWidget *desktop = QApplication::desktop();
+    scene->setWindowTitle("Bloch");
+    scene->move(100,50);
+    scene->show(); 
+    scene->resize(800,600);
 
-    if (desktop->height() > 1200) {
-        //        w.resize(1200, 1024);
-        w.resize(1200, 800);
-    } else {
-        w.resize(1100, 800);
-    }
-
-    int x = (desktop->width() - w.width()) / 2;
-    int y = (desktop->height() - w.height()) / 3;
-    w.move(x, y);
-
-    w.show();
-
-    return app.exec();
+    return a.exec();
 }
