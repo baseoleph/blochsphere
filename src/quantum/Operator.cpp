@@ -201,7 +201,8 @@ QString getComplexStr(complex a) {
 
 decomposition Operator::zxDecomposition(UnitaryMatrix2x2 op) {
     //  Author  : Швецкий Михаил Владимирович
-    //  Original: ff22dd04382d02a839c56f27a80ad18064eb6595
+    //  Original:
+    //  https://github.com/baseoleph/blochsphere/commit/ff22dd04382d02a839c56f27a80ad18064eb6595
 
     complex i = complex(0, 1);
     double  alpha = 0;
@@ -260,7 +261,8 @@ decomposition Operator::zxDecomposition() { return zxDecomposition(_op); }
 
 decomposition Operator::zyDecomposition(UnitaryMatrix2x2 op) {
     //  Author  : Швецкий Михаил Владимирович
-    //  Original: 690dca3e8dcc32e4b4eed0fcfc65c5bdf8dd06b0
+    //  Original:
+    //  https://github.com/baseoleph/blochsphere/commit/690dca3e8dcc32e4b4eed0fcfc65c5bdf8dd06b0
 
     complex i = complex(0, 1);
     double  alpha = 0;
@@ -317,7 +319,8 @@ decomposition Operator::zyDecomposition() { return zyDecomposition(_op); }
 
 decomposition Operator::xyDecomposition(UnitaryMatrix2x2 op) {
     //  Author  : Швецкий Михаил Владимирович
-    //  Original: cdc00f14787f28de44d8ae0ee1582ebaa82aba0e
+    //  Original:
+    //  https://github.com/baseoleph/blochsphere/commit/cdc00f14787f28de44d8ae0ee1582ebaa82aba0e
 
     complex i = complex(0, 1);
     double  alpha = 0;
@@ -425,7 +428,8 @@ decomposition Operator::xyDecomposition() { return xyDecomposition(_op); }
 
 decomposition Operator::zyxDecomposition(UnitaryMatrix2x2 op) {
     //  Author  : Швецкий Михаил Владимирович
-    //  Original: 7e3567036330e10d948873364cde38d51eb12897
+    //  Original:
+    //  https://github.com/baseoleph/blochsphere/commit/7e3567036330e10d948873364cde38d51eb12897
 
     complex i = complex(0, 1);
     double  alpha = 0;
