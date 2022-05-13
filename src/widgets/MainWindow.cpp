@@ -516,11 +516,6 @@ QWidget *MainWindow::makeZyxWid() {
 QWidget *MainWindow::makeOpWid() {
     auto opW = new QWidget(this);
 
-    auto qfOpButtons = new QFrame(opW);
-    qfOpButtons->setFrameStyle(QFrame::Panel | QFrame::Raised);
-    qfOpButtons->move(0, 0);
-    qfOpButtons->setFixedSize(opW->size());
-
     stackW = new QTabWidget(opW);
     stackW->setFixedHeight(120);
 
