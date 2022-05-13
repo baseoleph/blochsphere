@@ -151,13 +151,6 @@ void MainWindow::createActions() {
     aboutAct = new QAction("About program", this);
     connect(aboutAct, SIGNAL(triggered()), SLOT(slotAbout()));
 
-    //    saveState = new QAction("Save state", this);
-    //    connect(saveState, SIGNAL(triggered()), SLOT(slotSaveState()));
-    //
-    //    recallState = new QAction("Recall state", this);
-    //    recallState->setEnabled(false);
-    //    connect(recallState, SIGNAL(triggered()), SLOT(slotRecallState()));
-
     resetAct = new QAction("Reset", this);
     connect(resetAct, SIGNAL(triggered()), SLOT(slotReset()));
     clearAct = new QAction("Clear", this);
@@ -197,8 +190,6 @@ void MainWindow::createMenu() {
 void MainWindow::createTopBar() {
     // auto qtb = new QToolBar("Tool bar");
     auto qtb = new QToolBar("Tool bar", this);
-    //    qtb->addAction(saveState);
-    //    qtb->addAction(recallState);
     qtb->addAction(resetAct);
     qtb->addAction(clearAct);
     qtb->addSeparator();
@@ -655,22 +646,6 @@ QPushButton *MainWindow::makeOpButton(const QString &str) {
     newOpBut->setFixedHeight(26);
     connect(newOpBut, SIGNAL(clicked()), SLOT(slotSetOperatorClicked()));
     return newOpBut;
-}
-
-void MainWindow::slotSaveState() {
-    removeAllVectors(savedVectors);
-    foreach (auto &e, vectors.keys()) { savedVectors.insert(e->getCopyState(), vectors[e]); }
-    recallState->setEnabled(true);
-}
-
-void MainWindow::slotRecallState() {
-    removeAllVectors(vectors);
-    foreach (auto &e, savedVectors.keys()) { addVector(e->getCopyState(), vectors); }
-    foreach (auto e, topTabWid->findChildren<VectorWidget *>()) {
-        if (e->getVector() != nullptr) {
-            e->fillFieldsOfVector(e->getVector()->getSpike());
-        }
-    }
 }
 
 void MainWindow::slotShowTrace() {

@@ -71,8 +71,6 @@ public slots:
     void slotUpdateSpheres();
     void slotReset();
     void slotClear();
-    void slotSaveState();
-    void slotRecallState();
     void slotShowTrace();
     void slotClearTrace();
     void slotTraceColor(int index);
@@ -193,8 +191,6 @@ private:
     QListWidget *opQueWid = nullptr;
 
     QAction *aboutAct = nullptr;
-    QAction *saveState = nullptr;
-    QAction *recallState = nullptr;
     QAction *resetAct = nullptr;
     QAction *clearAct = nullptr;
     QAction *exitAct = nullptr;
