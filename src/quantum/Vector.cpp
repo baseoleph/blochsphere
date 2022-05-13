@@ -85,11 +85,6 @@ void Vector::tracePushBack() {
 
 void Vector::initialSpike() { spike_ = createSpike(x(), y(), z()); }
 
-// QColor Vector::generateRandomColor() {
-//    return {QRandomGenerator::global()->bounded(255), QRandomGenerator::global()->bounded(255),
-//            QRandomGenerator::global()->bounded(255)};
-//}
-
 Spike Vector::createSpike(double x, double y, double z) {
     Spike s;
 #if QT_VERSION >= 0x050000
