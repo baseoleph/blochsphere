@@ -30,6 +30,7 @@ public:
     void toYoZ();
     void toXoY();
     void toZoX();
+    void easterEggRotate();
     void toNormal();
 
 protected:

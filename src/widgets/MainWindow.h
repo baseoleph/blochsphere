@@ -196,6 +196,8 @@ private:
     QAction *exitAct = nullptr;
     QAction *showTAct = nullptr;
     QAction *clearTAct = nullptr;
+
+    int easterEggCounter = 0;
 };
 
 #endif // MAINWINDOW_HPP

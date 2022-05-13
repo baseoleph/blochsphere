@@ -991,6 +991,10 @@ void MainWindow::slotAbout() {
         "</ul>";
 
     QMessageBox::about(this, "blochsphere", aboutText);
+    if (++easterEggCounter > 2) {
+        easterEggCounter = 0;
+        spheres.first()->easterEggRotate();
+    }
 }
 
 void MainWindow::slotReset() {

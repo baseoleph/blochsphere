@@ -292,3 +292,26 @@ void Sphere::toNormal() {
     zAngle = -135;
     update();
 }
+void Sphere::easterEggRotate() {
+    GLfloat scale = scaleFactor;
+    GLfloat x = xAngle;
+    GLfloat y = yAngle;
+    GLfloat z = zAngle;
+    for (int i = 0; i < 360; i += 5) {
+        xAngle = x + i;
+        yAngle = y + i;
+        zAngle = z + i;
+        if (i < 180) {
+            scaleFactor /= 1.05;
+        } else {
+            scaleFactor *= 1.05;
+        }
+        update();
+        Utility::delay();
+    }
+    scaleFactor = scale;
+    xAngle = x;
+    yAngle = y;
+    zAngle = z;
+    update();
+}

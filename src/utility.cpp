@@ -16,7 +16,9 @@
 
 #include "utility.h"
 
+#include <QCoreApplication>
 #include <QRegExp>
+#include <QTime>
 
 namespace {
 int speed = 5;
@@ -116,6 +118,12 @@ int random(int min, int max) { return min + rand() % ((max + 1) - min); }
 double random(double fMin, double fMax) {
     double f = (double)rand() / RAND_MAX;
     return fMin + f * (fMax - fMin);
+}
+
+void delay() {
+    QTime dieTime = QTime::currentTime().addMSecs(50);
+    while (QTime::currentTime() < dieTime)
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }
 
 } // namespace Utility

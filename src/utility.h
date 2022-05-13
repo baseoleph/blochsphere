@@ -50,5 +50,7 @@ void    updateComplexLineEdit(QLineEdit *lineEdit);
 
 int    random(int min, int max);
 double random(double fMin, double fMax);
+
+void delay();
 } // namespace Utility
 #endif // BLOCHUTILITY_H
