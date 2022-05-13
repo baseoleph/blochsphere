@@ -79,7 +79,7 @@ QString parseComplexToStr(complex c, int d) {
     }
 
     if (not fuzzyCompare(im, 0.)) {
-        if (fuzzyCompare(abs(im), 1.)) {
+        if (fuzzyCompare(std::abs(im), 1.)) {
             str += im > 0 ? "+i" : "-i";
         } else {
             str += im >= 0 ? "+" : "";

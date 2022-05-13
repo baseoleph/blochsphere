@@ -44,14 +44,14 @@ void Qubit::evalVertex() {
     double the = 0;
     double phi = 0;
 
-    if (abs(b_) > EPSILON) {
+    if (std::abs(b_) > EPSILON) {
         phi = (complex(0, -1) * log(b_ / sqrt(complex(1, 0) - a_ * a_))).real();
     }
 
-    if (abs(a_) == 0) {
+    if (std::abs(a_) == 0) {
         the = M_PI;
     } else {
-        the = 2.0 * asin(abs(b_));
+        the = 2.0 * asin(std::abs(b_));
     }
 
     changePoint(the, phi);

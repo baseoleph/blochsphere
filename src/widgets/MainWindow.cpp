@@ -833,7 +833,7 @@ void MainWindow::slotSetAxOp() {
         va.x = rxp.capturedTexts()[1].toDouble();
         va.y = rxp.capturedTexts()[2].toDouble();
         va.z = rxp.capturedTexts()[3].toDouble();
-        if (abs(va.x) + abs(va.y) + abs(va.z) < EPSILON) {
+        if (std::abs(va.x) + std::abs(va.y) + std::abs(va.z) < EPSILON) {
             QMessageBox::warning(this, "Warning", "Vector must be non-zero");
             return;
         }

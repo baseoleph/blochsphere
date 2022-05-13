@@ -58,7 +58,7 @@ bool UnitaryMatrix2x2::compareOperators(UnitaryMatrix2x2 op1, UnitaryMatrix2x2 o
     if (!cmp) {
         cmp = true;
         complex ephi(1, 0);
-        if (abs(op2.a() + op2.b()) < EPSILON) {
+        if (std::abs(op2.a() + op2.b()) < EPSILON) {
             ephi = (op2.a() - op2.b()) / (op1.a() - op1.b());
         } else {
             ephi = (op2.a() + op2.b()) / (op1.a() + op1.b());

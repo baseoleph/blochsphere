@@ -213,7 +213,7 @@ decomposition Operator::zxDecomposition(UnitaryMatrix2x2 op) {
     complex c = op.c();
     complex d = op.d();
 
-    if (abs(a) > EPSILON && abs(b) > EPSILON) {
+    if (std::abs(a) > EPSILON && std::abs(b) > EPSILON) {
         alpha = 0.5 * arg(a * d - b * c);
         beta = 0.5 * (arg(d / a) + arg(c / b));
         delta = 0.5 * (arg(d / a) - arg(c / b));
@@ -223,12 +223,12 @@ decomposition Operator::zxDecomposition(UnitaryMatrix2x2 op) {
         } else {
             gamma = M_PI - real(asin(-2.0 * a * b * z));
         }
-    } else if (abs(b) < EPSILON && abs(c) < EPSILON) {
+    } else if (std::abs(b) < EPSILON && std::abs(c) < EPSILON) {
         alpha = arg(a * d) / 2.0;
         gamma = 0;
         delta = 0;
         beta = -delta + arg(d / a);
-    } else if (abs(a) < EPSILON && abs(d) < EPSILON) {
+    } else if (std::abs(a) < EPSILON && std::abs(d) < EPSILON) {
         alpha = arg(-b * c) / 2.0;
         beta = 0;
         delta = beta + arg(b / c);
@@ -241,10 +241,10 @@ decomposition Operator::zxDecomposition(UnitaryMatrix2x2 op) {
     }
     double v = gamma / 2.0;
 
-    if (abs(exp(i * (alpha - beta / 2.0 - delta / 2.0)) * cos(v) - a) > EPSILON ||
-        abs(-i * exp(i * (alpha - beta / 2.0 + delta / 2.0)) * sin(v) - b) > EPSILON ||
-        abs(-i * exp(i * (alpha + beta / 2.0 - delta / 2.0)) * sin(v) - c) > EPSILON ||
-        abs(exp(i * (alpha + beta / 2.0 + delta / 2.0)) * cos(v) - d) > EPSILON) {
+    if (std::abs(exp(i * (alpha - beta / 2.0 - delta / 2.0)) * cos(v) - a) > EPSILON ||
+        std::abs(-i * exp(i * (alpha - beta / 2.0 + delta / 2.0)) * sin(v) - b) > EPSILON ||
+        std::abs(-i * exp(i * (alpha + beta / 2.0 - delta / 2.0)) * sin(v) - c) > EPSILON ||
+        std::abs(exp(i * (alpha + beta / 2.0 + delta / 2.0)) * cos(v) - d) > EPSILON) {
         alpha = M_PI + alpha;
     }
 
@@ -272,7 +272,7 @@ decomposition Operator::zyDecomposition(UnitaryMatrix2x2 op) {
     complex c = op.c();
     complex d = op.d();
 
-    if (abs(a) > EPSILON && abs(b) > EPSILON) {
+    if (std::abs(a) > EPSILON && std::abs(b) > EPSILON) {
         alpha = arg(a * d - b * c) / 2.0;
         beta = (arg(d / a) + arg(-c / b)) / 2.0;
         delta = (arg(d / a) - arg(-c / b)) / 2.0;
@@ -283,13 +283,13 @@ decomposition Operator::zyDecomposition(UnitaryMatrix2x2 op) {
         } else {
             gamma = M_PI - real(asin(-2.0 * a * b * z));
         }
-    } else if (abs(b) < EPSILON && abs(c) < EPSILON) {
+    } else if (std::abs(b) < EPSILON && std::abs(c) < EPSILON) {
         alpha = arg(a * d) / 2.0;
         delta = 0;
         beta = -delta + arg(d / a);
         gamma = 0;
-    } else if (abs(a) < EPSILON && abs(d) < EPSILON) {
-        if (abs(1.0 - b * c) < EPSILON) {
+    } else if (std::abs(a) < EPSILON && std::abs(d) < EPSILON) {
+        if (std::abs(1.0 - b * c) < EPSILON) {
             alpha = M_PI / 2.0;
         } else {
             alpha = arg(-b * c) / 2.0;
@@ -300,8 +300,8 @@ decomposition Operator::zyDecomposition(UnitaryMatrix2x2 op) {
     }
 
     double v = gamma / 2.0;
-    if ((abs(a - exp(i * (alpha - beta / 2.0 - delta / 2.0)) * cos(v)) > EPSILON) ||
-        (abs(b + exp(i * (alpha - beta / 2.0 + delta / 2.0)) * sin(v)) > EPSILON)) {
+    if ((std::abs(a - exp(i * (alpha - beta / 2.0 - delta / 2.0)) * cos(v)) > EPSILON) ||
+        (std::abs(b + exp(i * (alpha - beta / 2.0 + delta / 2.0)) * sin(v)) > EPSILON)) {
         alpha = M_PI + alpha;
     }
 
@@ -329,14 +329,14 @@ decomposition Operator::xyDecomposition(UnitaryMatrix2x2 op) {
     complex c = op.c();
     complex d = op.d();
 
-    if (abs(d) > EPSILON) {
-        if (abs(complex(1) + a / conj(d)) < EPSILON) {
+    if (std::abs(d) > EPSILON) {
+        if (std::abs(complex(1) + a / conj(d)) < EPSILON) {
             alpha = M_PI / 2.0;
         } else {
             alpha = arg(a / conj(d)) / 2.0;
         }
-    } else if (abs(c) > EPSILON) {
-        if (abs(complex(1) - b / conj(c)) < EPSILON) {
+    } else if (std::abs(c) > EPSILON) {
+        if (std::abs(complex(1) - b / conj(c)) < EPSILON) {
             alpha = M_PI / 2.0;
         } else {
             alpha = arg(-b / conj(c)) / 2.0;
@@ -457,14 +457,14 @@ decomposition Operator::zyxDecomposition(UnitaryMatrix2x2 op) {
     complex c = op.c();
     complex d = op.d();
 
-    if (abs(d) > EPSILON) {
-        if (abs(complex(1, 0) + a / conj(d)) < EPSILON) {
+    if (std::abs(d) > EPSILON) {
+        if (std::abs(complex(1, 0) + a / conj(d)) < EPSILON) {
             alpha = M_PI / 2.0;
         } else {
             alpha = arg(a / conj(d)) / 2.0;
         }
-    } else if (abs(c) > EPSILON) {
-        if (abs(complex(1, 0) - b / conj(c)) < EPSILON) {
+    } else if (std::abs(c) > EPSILON) {
+        if (std::abs(complex(1, 0) - b / conj(c)) < EPSILON) {
             alpha = M_PI / 2.0;
         } else {
             alpha = arg(-b / conj(c)) / 2.0;
@@ -499,7 +499,7 @@ decomposition Operator::zyxDecomposition(UnitaryMatrix2x2 op) {
     }
 
     if (fabs(a2 - b2) < EPSILON && fabs(a1 - b1) < EPSILON) {
-        if (abs(a1 + b1) > EPSILON) {
+        if (std::abs(a1 + b1) > EPSILON) {
             gamma = -M_PI / 2;
             delta = 0;
             beta = -delta - 2.0 * atan((a2 + b2) / (a1 + b1));
@@ -579,7 +579,7 @@ vectorangle Operator::vectorAngleDec(UnitaryMatrix2x2 op) {
 
     va.angle = 2.0 * acos(cos(zyDec.gamma / 2.0) * cos(zyDec.beta / 2.0 + zyDec.delta / 2.0));
     double sint = sin(va.angle / 2.0);
-    if (abs(sint) > EPSILON) {
+    if (std::abs(sint) > EPSILON) {
         va.x = sin(zyDec.gamma / 2.0) / sint * sin(zyDec.delta / 2.0 - zyDec.beta / 2.0);
         va.y = sin(zyDec.gamma / 2.0) / sint * cos(zyDec.beta / 2.0 - zyDec.delta / 2.0);
         va.z = cos(zyDec.gamma / 2.0) / sint * sin(zyDec.beta / 2.0 + zyDec.delta / 2.0);

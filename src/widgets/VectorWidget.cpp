@@ -164,7 +164,7 @@ void VectorWidget::slotAlpBet() {
 
     double  a = alpEd->text().toDouble();
     complex b = Utility::parseStrToComplex(betEd->text());
-    if (abs(a) + abs(b) < EPSILON) {
+    if (std::abs(a) + std::abs(b) < EPSILON) {
         QMessageBox::warning(this, "Warning", "Vector must be non-zero");
         return;
     }
@@ -195,7 +195,7 @@ void VectorWidget::slotBloVec() {
     double x = xEd->text().toDouble();
     double y = yEd->text().toDouble();
     double z = zEd->text().toDouble();
-    if (abs(x) + abs(y) + abs(z) < EPSILON) {
+    if (std::abs(x) + std::abs(y) + std::abs(z) < EPSILON) {
         QMessageBox::warning(this, "Warning", "Vector must be non-zero");
         return;
     }
@@ -231,7 +231,9 @@ void VectorWidget::slotSetRandomPsi() {
     fillFieldsOfVector(sp);
 }
 
-void VectorWidget::updateComplexLineEdit(const QString &) { Utility::updateComplexLineEdit(betEd); }
+void VectorWidget::updateComplexLineEdit(const QString &) {
+    Utility::updateComplexLineEdit(betEd);
+}
 
 void VectorWidget::fillFieldsOfVector(Spike sp, FIELD exclude) {
     Vector v;
