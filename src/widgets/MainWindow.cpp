@@ -188,7 +188,6 @@ void MainWindow::createMenu() {
 }
 
 void MainWindow::createTopBar() {
-    // auto qtb = new QToolBar("Tool bar");
     auto qtb = new QToolBar("Tool bar", this);
     qtb->addAction(resetAct);
     qtb->addAction(clearAct);

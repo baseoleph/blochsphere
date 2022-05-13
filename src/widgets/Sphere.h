@@ -52,8 +52,6 @@ private:
 
     QPoint ptrMousePosition;
 
-    bool isNowAnimate = false;
-
     static void drawSphere(int lats, int longs);
     void        drawCircle();
     void        drawAxis();

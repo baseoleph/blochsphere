@@ -98,25 +98,22 @@ void Sphere::wheelEvent(QWheelEvent *pe) {
 }
 
 void Sphere::drawSphere(int lats, int longs) {
-    int i, j;
-    for (i = 0; i <= lats; i++) {
-        double lat0 = M_PI * (-0.5 + (double)(i - 1) / lats);
+    for (int i = 0; i <= lats; i++) {
+        double lat0 = M_PI * (-0.5 + static_cast<double>(i - 1.) / lats);
         double z0 = sin(lat0);
         double zr0 = cos(lat0);
 
-        double lat1 = M_PI * (-0.5 + (double)i / lats);
+        double lat1 = M_PI * (-0.5 + static_cast<double>(i) / lats);
         double z1 = sin(lat1);
         double zr1 = cos(lat1);
 
         glBegin(GL_QUAD_STRIP);
-        for (j = 0; j <= longs; j++) {
-            double lng = 2 * M_PI * (double)(j - 1) / longs;
+        for (int j = 0; j <= longs; j++) {
+            double lng = 2 * M_PI * static_cast<double>(j - 1) / longs;
             double x = cos(lng);
             double y = sin(lng);
 
-            //            glNormal3f(x * zr0, y * zr0, z0);
             glVertex3f(x * zr0, y * zr0, z0);
-            //            glNormal3f(x * zr1, y * zr1, z1);
             glVertex3f(x * zr1, y * zr1, z1);
         }
         glEnd();
@@ -256,9 +253,9 @@ void Sphere::drawVectors() {
         arrowhead.append(e->getSpike().arrow2);
         arrowhead.append(e->getSpike().arrow3);
         arrowhead.append(e->getSpike().arrow4);
-        for (int i = 0; i < arrowhead.size(); i++) {
+        for (auto &i : arrowhead) {
             glVertex3f(vertex.x(), vertex.y(), vertex.z());
-            glVertex3f(arrowhead[i].x(), arrowhead[i].y(), arrowhead[i].z());
+            glVertex3f(i.x(), i.y(), i.z());
         }
         glEnd();
     }
