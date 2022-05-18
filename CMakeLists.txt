@@ -63,7 +63,8 @@ set(PROJECT_SOURCES
         src/widgets/VectorWidget.h
         )
 
-add_executable(blochsphere ${PROJECT_SOURCES})
+set(APP_ICON_RESOURCE_WINDOWS blochsphere.rc)
+add_executable(blochsphere ${PROJECT_SOURCES} ${APP_ICON_RESOURCE_WINDOWS})
 
 target_link_libraries(blochsphere PRIVATE
         Qt5::Core

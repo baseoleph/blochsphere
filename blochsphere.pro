@@ -21,6 +21,8 @@ QT += opengl gui widgets core
 
 QMAKE_CXXFLAGS += -std=c++11
 
+win32:RC_FILE += blochsphere.rc
+
 SOURCES += \
     src/main.cpp \
     src/utility.cpp \
