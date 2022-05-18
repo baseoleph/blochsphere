@@ -29,8 +29,8 @@ struct QubitFields {
     double  z;
     bool    aCheck = true;
     bool    bCheck = true;
-    bool    tCheck = true;
-    bool    pCheck = true;
+    bool    theCheck = true;
+    bool    phiCheck = true;
     bool    xCheck = true;
     bool    yCheck = true;
     bool    zCheck = true;

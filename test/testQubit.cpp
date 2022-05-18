@@ -36,12 +36,12 @@ bool compare(QubitFields qf1, QubitFields qf2, const std::string &title) {
             << "\n  actual: (" << qf2.b.real() << ", " << qf2.b.imag() << ")";
     }
 
-    if (qf1.tCheck) {
+    if (qf1.theCheck) {
         EXPECT_TRUE(fuzzyCompare(qf1.the, qf2.the))
             << ((flag = false) ? "" : "") << title << " the;\nexpected: " << qf1.the
             << "\n  actual: " << qf2.the;
     }
-    if (qf1.pCheck) {
+    if (qf1.phiCheck) {
         EXPECT_TRUE(fuzzyCompare(qf1.phi, qf2.phi))
             << ((flag = false) ? "" : "") << title << " phi;\nexpected: " << qf1.phi
             << "\n  actual: " << qf2.phi;
