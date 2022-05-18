@@ -962,7 +962,7 @@ CurDecompFun MainWindow::getCurrentDecomposition() {
 void MainWindow::slotAbout() {
     QString aboutText =
         "<h3 class=\"code-line\" data-line-start=0 data-line-end=1 ><a "
-        "id=\"blochsphere_0\"></a>blochsphere</h3>\n"
+        "id=\"blochsphere_0\"></a>blochsphere " BLOCHSPHERE_VERSION "</h3>\n"
         "<hr>\n"
         "<p class=\"has-line-data\" data-line-start=\"2\" data-line-end=\"3\">The program helps to "
         "see a geometric representation of qubits.</p>\n"
