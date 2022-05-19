@@ -29,7 +29,12 @@
 #define DURATION 100.
 #define MAX_COUNT_SPHERES 5
 #define MAX_COUNT_OF_STEPS 100
-#define BLOCHSPHERE_VERSION "v1.0.4"
+#define BLOCHSPHERE_VERSION "v1.0.5"
+#if QT_VERSION >= 0x050000
+#define BIT_VERSION "x64"
+#else
+#define BIT_VERSION "x86"
+#endif
 
 typedef std::complex<double> complex;
 
