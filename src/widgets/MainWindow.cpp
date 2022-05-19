@@ -1,4 +1,4 @@
-// The program helps to see a geometric representation of qubits
+// A Bloch sphere emulator program.
 // Copyright (C) 2022 Vasiliy Stephanov <baseoleph@gmail.com>
 
 // This program is free software: you can redistribute it and/or modify
@@ -964,8 +964,8 @@ void MainWindow::slotAbout() {
         "<h3 class=\"code-line\" data-line-start=0 data-line-end=1 ><a "
         "id=\"blochsphere_0\"></a>blochsphere " BLOCHSPHERE_VERSION "</h3>\n"
         "<hr>\n"
-        "<p class=\"has-line-data\" data-line-start=\"2\" data-line-end=\"3\">The program helps to "
-        "see a geometric representation of qubits.</p>\n"
+        "<p class=\"has-line-data\" data-line-start=\"2\" data-line-end=\"3\">"
+        "A Bloch sphere emulator program.</p>\n"
         "<p class=\"has-line-data\" data-line-start=\"4\" data-line-end=\"5\">Copyright © 2022 "
         "Vasiliy Stephanov <a href=\"mailto:baseoleph@gmail.com\">baseoleph@gmail.com</a></p>\n"
         "Source code: <a href=https://github.com/baseoleph/blochsphere>"

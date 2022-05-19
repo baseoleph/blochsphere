@@ -1,4 +1,4 @@
-# The program helps to see a geometric representation of qubits
+# A Bloch sphere emulator program.
 # Copyright (C) 2022 Vasiliy Stephanov <baseoleph@gmail.com>
 
 # This program is free software: you can redistribute it and/or modify

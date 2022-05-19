@@ -1,4 +1,4 @@
-// The program helps to see a geometric representation of qubits
+// A Bloch sphere emulator program.
 // Copyright (C) 2022 Vasiliy Stephanov <baseoleph@gmail.com>
 
 // This program is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@
 #define DURATION 100.
 #define MAX_COUNT_SPHERES 5
 #define MAX_COUNT_OF_STEPS 100
-#define BLOCHSPHERE_VERSION "v1.0.3"
+#define BLOCHSPHERE_VERSION "v1.0.4"
 
 typedef std::complex<double> complex;
 
