@@ -968,6 +968,8 @@ void MainWindow::slotAbout() {
         "see a geometric representation of qubits.</p>\n"
         "<p class=\"has-line-data\" data-line-start=\"4\" data-line-end=\"5\">Copyright © 2022 "
         "Vasiliy Stephanov <a href=\"mailto:baseoleph@gmail.com\">baseoleph@gmail.com</a></p>\n"
+        "Source code: <a href=https://github.com/baseoleph/blochsphere>"
+        "https://github.com/baseoleph/blochsphere</a>\n"
         "<hr>\n"
         "<p class=\"has-line-data\" data-line-start=\"6\" data-line-end=\"7\">Based on <a "
         "href=\"https://github.com/baseoleph/blochsphere/tree/base\">BLOCH</a> by Denis "
