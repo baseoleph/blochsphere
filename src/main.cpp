@@ -17,9 +17,14 @@
 #include "src/widgets/MainWindow.h"
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QTextCodec>
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
+
+#if QT_VERSION < 0x050000
+    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("utf-8"));
+#endif
 
     MainWindow      w;
     QDesktopWidget *desktop = QApplication::desktop();
