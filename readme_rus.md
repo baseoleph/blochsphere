@@ -1,5 +1,8 @@
 # blochsphere
-
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/63150311/169586700-1a92ff1f-a8c9-4953-9b4a-48d865e116c7.png" alt="blochsphere"/>
+ </p>
+ 
 **blochsphere** — это программа эмулятор сферы Блоха.
 
 Возможности программы:
@@ -17,6 +20,7 @@
 
 **blochshere** основан на программе [BLOCH](https://github.com/baseoleph/blochsphere/tree/base). Была переделана
 архитектура, улучшена производительность и повышена надежность работы алгоритмов. Алгоритмы разложения оператора в
-композиции поворота любезно предоставлены [Швецким М. В.](https://atlas.herzen.spb.ru/teacher.php?id=1084)
+композиции поворота любезно предоставлены [Швецким М. В.](https://atlas.herzen.spb.ru/teacher.php?id=1084). Логотип
+разработала Томша Анастасия (nastya.to2010@yandex.ru).
 
 Программа написана с использованием Qt5 (и Qt4 для поддержки Windows XP) и OpenGL.
