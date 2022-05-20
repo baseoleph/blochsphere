@@ -1,4 +1,7 @@
 # blochsphere
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/63150311/169529683-a5168a32-a1f9-48b9-bfe4-eec56e7a409d.png" alt="blochsphere"/>
+ </p>
 
 **blochsphere** a Bloch sphere emulator program.
 
