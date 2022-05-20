@@ -4,11 +4,11 @@
 
 The program features:
 
-- Adjust the number of active spheres (cubits) from 1 to 5;
-- Set a cubit using any of the three
+- Adjust the number of active spheres (qubits) from 1 to 5;
+- Set a qubit using any of the three
   interpretations: <img src="https://render.githubusercontent.com/render/math?math=(\theta, \phi), (\alpha, \beta), (x, y, z)">
   ; note that <img src="https://render.githubusercontent.com/render/math?math=\alpha"> is real number;
-- Generate a random cubit;
+- Generate a random qubit;
 - Using one of [decompositions](https://en.wikipedia.org/wiki/Euler_angles#Rotation_matrix) to generate operator.
 - Quickly apply standard operators;
 - Apply operators to a single specific sphere or to all spheres at once;
