@@ -975,7 +975,7 @@ void MainWindow::slotAbout() {
         "href=\"https://github.com/baseoleph/blochsphere/tree/base\">BLOCH</a> by Denis "
         "Kadochnikov (Денис Кадочников)</p>\n"
         "<p class=\"has-line-data\" data-line-start=\"8\" data-line-end=\"9\">Decomposition "
-        "algorithms by M.V. Shvetskiy (Михаил Владимирович Шведский) <a "
+        "algorithms by M.V. Shvetskiy (Михаил Владимирович Швецкий) <a "
         "href=\"mailto:audit269@gmail.com\">audit269@gmail.com</a>:</p>\n"
         "<ul>\n"
         "<li class=\"has-line-data\" data-line-start=\"9\" data-line-end=\"10\"><a "
