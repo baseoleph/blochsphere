@@ -10,8 +10,7 @@ The program features:
 
 - Adjustment of the number of active spheres (qubits) from 1 to 5;
 - Setting a qubit using any of the three
-  interpretations: <img src="https://render.githubusercontent.com/render/math?math=(\theta, \phi), (\alpha, \beta), (x, y, z)">
-  ; note that <img src="https://render.githubusercontent.com/render/math?math=\alpha"> is real number;
+  interpretations: $(\theta, \phi), (\alpha, \beta), (x, y, z)$; note that $\alpha$ is real number;
 - Generating a random qubit;
 - Using one of [decompositions](https://en.wikipedia.org/wiki/Euler_angles#Rotation_matrix) to generate operator.
 - Quickly applying standard operators;
