@@ -3,14 +3,15 @@
   <img src="https://user-images.githubusercontent.com/63150311/169586700-1a92ff1f-a8c9-4953-9b4a-48d865e116c7.png" alt="blochsphere"/>
  </p>
 
-
 **blochsphere** a Bloch sphere emulator program.
 
 The program features:
 
 - Adjustment of the number of active spheres (qubits) from 1 to 5;
 - Setting a qubit using any of the three
-  interpretations: $(\theta, \phi), (\alpha, \beta), (x, y, z)$; note that $\alpha$ is real number;
+  interpretations: $(\theta,\ \phi)$, $(\alpha,\ \beta)$, $(x,\ y,\ z)$; note that 
+    $\alpha$ is real number;
+  
 - Generating a random qubit;
 - Using one of [decompositions](https://en.wikipedia.org/wiki/Euler_angles#Rotation_matrix) to generate operator.
 - Quickly applying standard operators;
