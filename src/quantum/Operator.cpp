@@ -200,10 +200,6 @@ QString getComplexStr(complex a) {
 }
 
 decomposition Operator::zxDecomposition(UnitaryMatrix2x2 op) {
-    //  Author  : Швецкий Михаил Владимирович
-    //  Original:
-    //  https://github.com/baseoleph/blochsphere/commit/ff22dd04382d02a839c56f27a80ad18064eb6595
-
     complex i = complex(0, 1);
     double  alpha = 0;
     double  beta = 0;
@@ -213,41 +209,148 @@ decomposition Operator::zxDecomposition(UnitaryMatrix2x2 op) {
     complex b = op.b();
     complex c = op.c();
     complex d = op.d();
+    double EPS = EPSILON;
 
-    if (std::abs(a) > EPSILON && std::abs(b) > EPSILON) {
-        alpha = 0.5 * arg(a * d - b * c);
-        beta = 0.5 * (arg(d / a) + arg(c / b));
-        delta = 0.5 * (arg(d / a) - arg(c / b));
-        complex z = exp(-i * (M_PI / 2.0 + 2.0 * alpha - beta));
-        if (real(exp(-i * 2.0 * alpha) * (a * d + b * c)) > 0) {
-            gamma = real(asin(-2.0 * a * b * z));
-        } else {
-            gamma = M_PI - real(asin(-2.0 * a * b * z));
-        }
-    } else if (std::abs(b) < EPSILON && std::abs(c) < EPSILON) {
-        alpha = arg(a * d) / 2.0;
-        gamma = 0;
-        delta = 0;
-        beta = -delta + arg(d / a);
-    } else if (std::abs(a) < EPSILON && std::abs(d) < EPSILON) {
-        alpha = arg(-b * c) / 2.0;
-        beta = 0;
-        delta = beta + arg(b / c);
-        complex z = exp(-i * (M_PI / 2.0 + alpha - beta / 2.0 + delta / 2.0));
-        if (real(-b * z) > 0) {
-            gamma = M_PI;
-        } else {
-            gamma = -M_PI;
-        }
-    }
-    double v = gamma / 2.0;
+    // Author  : Швецкий Михаил Владимирович
+    // clang-format off
 
-    if (std::abs(exp(i * (alpha - beta / 2.0 - delta / 2.0)) * cos(v) - a) > EPSILON ||
-        std::abs(-i * exp(i * (alpha - beta / 2.0 + delta / 2.0)) * sin(v) - b) > EPSILON ||
-        std::abs(-i * exp(i * (alpha + beta / 2.0 - delta / 2.0)) * sin(v) - c) > EPSILON ||
-        std::abs(exp(i * (alpha + beta / 2.0 + delta / 2.0)) * cos(v) - d) > EPSILON) {
-        alpha = M_PI + alpha;
+    // ****************************
+    // Вычисление Z-Y-разложения...
+    // ----------------------------
+    // Корректировка значения alpha
+    // ----------------------------
+    if (abs(d)>EPS)
+      if (abs(complex(1)+a/conj(d))<EPS)
+        alpha=M_PI/2.0;
+      else alpha=arg(a/conj(d))/2.0;
+         else if (abs(c)>EPS)
+           if (abs(complex(1)-b/conj(c))<EPS)
+             alpha=M_PI/2.0;
+           else alpha=arg(-b/conj(c))/2.0;
+    // -----------------------------------
+    complex A, B;
+    double a1, a2, b1, b2;
+    A = (exp(-i*alpha)*(a+b) + exp(i*alpha)*(conj(c)+conj(d)))/2.0;
+    B = (exp(-i*alpha)*(a+b) - exp(i*alpha)*(conj(c)+conj(d)))/2.0;
+
+    a1 = real(A); a2 = imag(A); b1 = real(B); b2 = imag(B);
+
+    double a1n=a1, a2n=a2, b1n=b1, b2n=b2;
+    a1=a1n; a2=b1n; b1=b2n; b2=a2n;       // Для Z-X-разложения
+    // ------------------------------
+    if (fabs(a1)<EPS && fabs(b2)<EPS)
+      if (fabs(b1)>EPS)                     // a1=0, a2=?, b1!=0, b2=0
+      {
+        delta=0;                            // delta - любое из R
+        beta=delta + 2.0*atan2(-a2,-b1);
+        gamma=M_PI;
+      }
+      else if (fabs(a2)>EPS)                // a1=0, a2!=0, b1=?, b2=0
+           {
+             delta= M_PI;                   // delta - любое из R
+             beta = delta-M_PI+2.0*atan2(-b1,a2);
+             gamma= M_PI;
+           }
+           else;
+    // ------------------------------
+    if (fabs(a2)<EPS && fabs(b1)<EPS)
+      if (fabs(a1)>EPS)                     // a1!=0, a2=0, b1=0, b2=?
+      {
+        delta=0;                            // delta - любое из R
+        beta=-delta + 2.0*atan2(-b2,a1);
+        gamma=0;
+      }
+      else if (fabs(b2)>EPS)                // a1=?, a2=0, b1=0, b2!=0
+           {
+             delta=0;                       // delta - любое из R
+             beta =-delta-M_PI+2.0*atan2(a1,b2);
+             gamma=0;
+           }
+           else;
+    // ---------------------------------------------
+    if (fabs(a1)<EPS && fabs(a2)>EPS && fabs(b1)<EPS
+                     && fabs(b2)>EPS)       // a1=0, a2!=0, b1=0, b2!=0
+    {
+      beta=M_PI;
+      gamma=2.0*atan2(-a2,-b2);
+      delta=0;
     }
+    // ---------------------------------------------
+    if (fabs(a1)>EPS && fabs(a2)>EPS && fabs(b1)<EPS
+                     && fabs(b2)<EPS)       // a1!=0, a2!=0, b1=0, b2=0
+    {
+      beta=M_PI/2.0;
+      gamma=2.0*atan2(-a2,a1);
+      delta=-M_PI/2.0;
+    }
+    else;
+    // ---------------------------------------------
+    if (fabs(a1)>EPS && fabs(a2)<EPS && fabs(b1)>EPS
+                     && fabs(b2)<EPS)       // a1!=0, a2=0, b1!=0, b2=0
+    {
+      beta=0;
+      gamma=2.0*atan2(-b1,a1);
+      delta=0;
+    }
+    else;
+    // ---------------------------------------------
+    if (fabs(a1)>EPS && fabs(a2)<EPS && fabs(b1)>EPS
+                     && fabs(b2)>EPS)       // a1!=0, a2=0, b1!=0, b2!=0
+    {
+      beta=atan(-b2/a1);
+      gamma=2.0*atan2(-b1,-b2/sin(beta));
+      delta=beta;
+    }
+    else;
+    // ---------------------------------------------
+    if (fabs(a1)>EPS && fabs(a2)>EPS && fabs(b1)>EPS
+                     && fabs(b2)>EPS)       // a1!=0, a2!=0, b1!=0, b2!=0
+    {
+      beta =atan(-b2/a1)+atan(a2/b1);
+      delta=atan(-b2/a1)-atan(a2/b1);
+      gamma=2.0*atan2(-a2/sin(beta/2.0-delta/2.0),
+                      a1/cos(beta/2.0+delta/2.0));
+    }
+    else;
+    // ---------------------------------------------
+    if (fabs(a1)>EPS && fabs(a2)>EPS && fabs(b1)>EPS
+                     && fabs(b2)<EPS)       // a1!=0, a2!=0, b1!=0, b2=0
+    {
+      beta =atan(-b2/a1)+atan(a2/b1);
+      delta=atan(-b2/a1)-atan(a2/b1);
+      gamma=2.0*atan2(-a2/sin(beta/2.0-delta/2.0),
+                      a1/cos(beta/2.0+delta/2.0));
+    }
+    else;
+    // ---------------------------------------------
+    if (fabs(a1)<EPS && fabs(a2)<EPS && fabs(b1)>EPS
+                     && fabs(b2)>EPS)       // a1=0, a2=0, b1!=0, b2!=0
+    {
+      beta=M_PI/2.0;
+      gamma=2.0*atan2(-b1,-b2);
+      delta=M_PI/2.0;
+    }
+    else;
+    // ---------------------------------------------
+    if (fabs(a1)<EPS && fabs(a2)>EPS && fabs(b1)>EPS
+                     && fabs(b2)>EPS)       // a1=0, a2!=0, b1!=0, b2!=0
+    {
+      beta  = M_PI/2.0 + atan(a2/b1);
+      delta = M_PI-beta;
+      gamma = 2.0*atan2(-b1/cos(beta/2.0-delta/2.0),-b2);
+    }
+    else;
+    // ---------------------------------------------
+    if (fabs(a1)>EPS && fabs(a2)>EPS && fabs(b1)<EPS
+                     && fabs(b2)>EPS)       // a1!=0, a2!=0, b1=0, b2!=0
+    {
+      beta  = M_PI/2.0 + atan(-b2/a1);
+      delta = -M_PI + beta;
+      gamma = 2.0*atan2(-a2, -b2/sin(beta/2.0+delta/2.0));
+    }
+    else;
+
+    // clang-format on
 
     decomposition dec;
     dec.alpha = alpha;
@@ -260,10 +363,6 @@ decomposition Operator::zxDecomposition(UnitaryMatrix2x2 op) {
 decomposition Operator::zxDecomposition() { return zxDecomposition(_op); }
 
 decomposition Operator::zyDecomposition(UnitaryMatrix2x2 op) {
-    //  Author  : Швецкий Михаил Владимирович
-    //  Original:
-    //  https://github.com/baseoleph/blochsphere/commit/690dca3e8dcc32e4b4eed0fcfc65c5bdf8dd06b0
-
     complex i = complex(0, 1);
     double  alpha = 0;
     double  beta = 0;
@@ -273,39 +372,148 @@ decomposition Operator::zyDecomposition(UnitaryMatrix2x2 op) {
     complex b = op.b();
     complex c = op.c();
     complex d = op.d();
+    double EPS = EPSILON;
 
-    if (std::abs(a) > EPSILON && std::abs(b) > EPSILON) {
-        alpha = arg(a * d - b * c) / 2.0;
-        beta = (arg(d / a) + arg(-c / b)) / 2.0;
-        delta = (arg(d / a) - arg(-c / b)) / 2.0;
+    // Author  : Швецкий Михаил Владимирович
+    // clang-format off
 
-        complex z = exp(-i * (2.0 * alpha - beta));
-        if (real(exp(-i * 2.0 * alpha) * (a * d + b * c)) > 0) {
-            gamma = real(asin(-2.0 * a * b * z));
-        } else {
-            gamma = M_PI - real(asin(-2.0 * a * b * z));
-        }
-    } else if (std::abs(b) < EPSILON && std::abs(c) < EPSILON) {
-        alpha = arg(a * d) / 2.0;
-        delta = 0;
-        beta = -delta + arg(d / a);
-        gamma = 0;
-    } else if (std::abs(a) < EPSILON && std::abs(d) < EPSILON) {
-        if (std::abs(1.0 - b * c) < EPSILON) {
-            alpha = M_PI / 2.0;
-        } else {
-            alpha = arg(-b * c) / 2.0;
-        }
-        beta = 0;
-        gamma = M_PI;
-        delta = beta + arg(-b / c);
+    // ****************************
+    // Вычисление Z-Y-разложения...
+    // ----------------------------
+    // Корректировка значения alpha
+    // ----------------------------
+    if (abs(d)>EPS)
+    if (abs(complex(1)+a/conj(d))<EPS)
+    alpha=M_PI/2.0;
+    else alpha=arg(a/conj(d))/2.0;
+     else if (abs(c)>EPS)
+       if (abs(complex(1)-b/conj(c))<EPS)
+         alpha=M_PI/2.0;
+       else alpha=arg(-b/conj(c))/2.0;
+    // -----------------------------------
+    complex A, B;
+    double a1, a2, b1, b2;
+    A = (exp(-i*alpha)*(a+b) + exp(i*alpha)*(conj(c)+conj(d)))/2.0;
+    B = (exp(-i*alpha)*(a+b) - exp(i*alpha)*(conj(c)+conj(d)))/2.0;
+
+    a1 = real(A); a2 = imag(A); b1 = real(B); b2 = imag(B);
+
+    double a1n=a1, a2n=a2, b1n=b1, b2n=b2;
+    a1=a1n; a2=-b2n; b1=b1n; b2=a2n;       // Для Z-Y-разложения
+    // ------------------------------
+    if (fabs(a1)<EPS && fabs(b2)<EPS)
+    if (fabs(b1)>EPS)                     // a1=0, a2=?, b1!=0, b2=0
+    {
+    delta=0;                            // delta - любое из R
+    beta=delta + 2.0*atan2(-a2,-b1);
+    gamma=M_PI;
     }
-
-    double v = gamma / 2.0;
-    if ((std::abs(a - exp(i * (alpha - beta / 2.0 - delta / 2.0)) * cos(v)) > EPSILON) ||
-        (std::abs(b + exp(i * (alpha - beta / 2.0 + delta / 2.0)) * sin(v)) > EPSILON)) {
-        alpha = M_PI + alpha;
+    else if (fabs(a2)>EPS)                // a1=0, a2!=0, b1=?, b2=0
+       {
+         delta= M_PI;                   // delta - любое из R
+         beta = delta-M_PI+2.0*atan2(-b1,a2);
+         gamma= M_PI;
+       }
+       else;
+    // ------------------------------
+    if (fabs(a2)<EPS && fabs(b1)<EPS)
+    if (fabs(a1)>EPS)                     // a1!=0, a2=0, b1=0, b2=?
+    {
+    delta=0;                            // delta - любое из R
+    beta=-delta + 2.0*atan2(-b2,a1);
+    gamma=0;
     }
+    else if (fabs(b2)>EPS)                // a1=?, a2=0, b1=0, b2!=0
+       {
+         delta=0;                       // delta - любое из R
+         beta =-delta-M_PI+2.0*atan2(a1,b2);
+         gamma=0;
+       }
+       else;
+    // ---------------------------------------------
+    if (fabs(a1)<EPS && fabs(a2)>EPS && fabs(b1)<EPS
+                 && fabs(b2)>EPS)       // a1=0, a2!=0, b1=0, b2!=0
+    {
+    beta=M_PI;
+    gamma=2.0*atan2(-a2,-b2);
+    delta=0;
+    }
+    // ---------------------------------------------
+    if (fabs(a1)>EPS && fabs(a2)>EPS && fabs(b1)<EPS
+                 && fabs(b2)<EPS)       // a1!=0, a2!=0, b1=0, b2=0
+    {
+    beta=M_PI/2.0;
+    gamma=2.0*atan2(-a2,a1);
+    delta=-M_PI/2.0;
+    }
+    else;
+    // ---------------------------------------------
+    if (fabs(a1)>EPS && fabs(a2)<EPS && fabs(b1)>EPS
+                 && fabs(b2)<EPS)       // a1!=0, a2=0, b1!=0, b2=0
+    {
+    beta=0;
+    gamma=2.0*atan2(-b1,a1);
+    delta=0;
+    }
+    else;
+    // ---------------------------------------------
+    if (fabs(a1)>EPS && fabs(a2)<EPS && fabs(b1)>EPS
+                 && fabs(b2)>EPS)       // a1!=0, a2=0, b1!=0, b2!=0
+    {
+    beta=atan(-b2/a1);
+    gamma=2.0*atan2(-b1,-b2/sin(beta));
+    delta=beta;
+    }
+    else;
+    // ---------------------------------------------
+    if (fabs(a1)>EPS && fabs(a2)>EPS && fabs(b1)>EPS
+                 && fabs(b2)>EPS)       // a1!=0, a2!=0, b1!=0, b2!=0
+    {
+    beta =atan(-b2/a1)+atan(a2/b1);
+    delta=atan(-b2/a1)-atan(a2/b1);
+    gamma=2.0*atan2(-a2/sin(beta/2.0-delta/2.0),
+                  a1/cos(beta/2.0+delta/2.0));
+    }
+    else;
+    // ---------------------------------------------
+    if (fabs(a1)>EPS && fabs(a2)>EPS && fabs(b1)>EPS
+                 && fabs(b2)<EPS)       // a1!=0, a2!=0, b1!=0, b2=0
+    {
+    beta =atan(-b2/a1)+atan(a2/b1);
+    delta=atan(-b2/a1)-atan(a2/b1);
+    gamma=2.0*atan2(-a2/sin(beta/2.0-delta/2.0),
+                  a1/cos(beta/2.0+delta/2.0));
+    }
+    else;
+    // ---------------------------------------------
+    if (fabs(a1)<EPS && fabs(a2)<EPS && fabs(b1)>EPS
+                 && fabs(b2)>EPS)       // a1=0, a2=0, b1!=0, b2!=0
+    {
+    beta=M_PI/2.0;
+    gamma=2.0*atan2(-b1,-b2);
+    delta=M_PI/2.0;
+    }
+    else;
+    // ---------------------------------------------
+    if (fabs(a1)<EPS && fabs(a2)>EPS && fabs(b1)>EPS
+                 && fabs(b2)>EPS)       // a1=0, a2!=0, b1!=0, b2!=0
+    {
+    beta  = M_PI/2.0 + atan(a2/b1);
+    delta = M_PI-beta;
+    gamma = 2.0*atan2(-b1/cos(beta/2.0-delta/2.0),-b2);
+    }
+    else;
+    // ---------------------------------------------
+    if (fabs(a1)>EPS && fabs(a2)>EPS && fabs(b1)<EPS
+                 && fabs(b2)>EPS)       // a1!=0, a2!=0, b1=0, b2!=0
+    {
+    beta  = M_PI/2.0 + atan(-b2/a1);
+    delta = -M_PI + beta;
+    gamma = 2.0*atan2(-a2, -b2/sin(beta/2.0+delta/2.0));
+    }
+    else;
+
+    // clang-format on
 
     decomposition dec;
     dec.alpha = alpha;
@@ -318,10 +526,6 @@ decomposition Operator::zyDecomposition(UnitaryMatrix2x2 op) {
 decomposition Operator::zyDecomposition() { return zyDecomposition(_op); }
 
 decomposition Operator::xyDecomposition(UnitaryMatrix2x2 op) {
-    //  Author  : Швецкий Михаил Владимирович
-    //  Original:
-    //  https://github.com/baseoleph/blochsphere/commit/cdc00f14787f28de44d8ae0ee1582ebaa82aba0e
-
     complex i = complex(0, 1);
     double  alpha = 0;
     double  beta = 0;
@@ -331,90 +535,145 @@ decomposition Operator::xyDecomposition(UnitaryMatrix2x2 op) {
     complex b = op.b();
     complex c = op.c();
     complex d = op.d();
+    double EPS = EPSILON;
 
-    if (std::abs(d) > EPSILON) {
-        if (std::abs(complex(1) + a / conj(d)) < EPSILON) {
-            alpha = M_PI / 2.0;
-        } else {
-            alpha = arg(a / conj(d)) / 2.0;
-        }
-    } else if (std::abs(c) > EPSILON) {
-        if (std::abs(complex(1) - b / conj(c)) < EPSILON) {
-            alpha = M_PI / 2.0;
-        } else {
-            alpha = arg(-b / conj(c)) / 2.0;
-        }
+    // Author  : Швецкий Михаил Владимирович
+    // clang-format off
+
+    // *************************
+    // Вычисление X-Y-разложения
+    // ----------------------------
+    // Корректировка значения alpha
+    // ----------------------------
+    if (abs(d)>EPS)
+      if (abs(complex(1)+a/conj(d))<EPS)
+        alpha=M_PI/2.0;
+      else alpha=arg(a/conj(d))/2.0;
+    else if (abs(c)>EPS)
+      if (abs(complex(1)-b/conj(c))<EPS)
+        alpha=M_PI/2.0;
+      else alpha=arg(-b/conj(c))/2.0;
+    // ------------------------------
+    complex A, B;
+    double a1, a2, b1, b2;
+    A = (exp(-i*alpha)*(a+b) + exp(i*alpha)*(conj(c)+conj(d)))/2.0;
+    B = (exp(-i*alpha)*(a+b) - exp(i*alpha)*(conj(c)+conj(d)))/2.0;
+
+    a1 = real(A); a2 = imag(A); b1 = real(B); b2 = imag(B);
+    // ------------------------------
+    if (fabs(a1)<EPS && fabs(b2)<EPS)
+      if (fabs(b1)>EPS)                     // a1=0, a2=?, b1!=0, b2=0
+      {
+        delta=0;                            // delta - любое из R
+        beta=delta + 2.0*atan2(-a2,-b1);
+        gamma=M_PI;
+      }
+      else if (fabs(a2)>EPS)                // a1=0, a2!=0, b1=?, b2=0
+           {
+             delta= M_PI;                   // delta - любое из R
+             beta = delta-M_PI+2.0*atan2(-b1,a2);
+             gamma= M_PI;
+           }
+           else;
+    // ------------------------------
+    if (fabs(a2)<EPS && fabs(b1)<EPS)
+      if (fabs(a1)>EPS)                     // a1!=0, a2=0, b1=0, b2=?
+      {
+        delta=0;                            // delta - любое из R
+        beta=-delta + 2.0*atan2(-b2,a1);
+        gamma=0;
+      }
+      else if (fabs(b2)>EPS)                // a1=?, a2=0, b1=0, b2!=0
+           {
+             delta=0;                       // delta - любое из R
+             beta =-delta-M_PI+2.0*atan2(a1,b2);
+             gamma=0;
+           }
+           else;
+    // ---------------------------------------------
+    if (fabs(a1)<EPS && fabs(a2)>EPS && fabs(b1)<EPS
+                     && fabs(b2)>EPS)       // a1=0, a2!=0, b1=0, b2!=0
+    {
+      beta=M_PI;
+      gamma=2.0*atan2(-a2,-b2);
+      delta=0;
     }
-
-    complex A = (exp(-i * alpha) * (a + b) + exp(i * alpha) * (conj(c) + conj(d))) / 2.0;
-    complex B = (exp(-i * alpha) * (a + b) - exp(i * alpha) * (conj(c) + conj(d))) / 2.0;
-
-    double a1 = real(A);
-    double a2 = imag(A);
-    double b1 = real(B);
-    double b2 = imag(B);
-
-    if (fabs(a1) < EPSILON && fabs(b2) < EPSILON) {
-        delta = 0;
-        beta = delta + 2.0 * atan2(-a2, -b1);
-        gamma = M_PI;
+    // ---------------------------------------------
+    if (fabs(a1)>EPS && fabs(a2)>EPS && fabs(b1)<EPS
+                     && fabs(b2)<EPS)       // a1!=0, a2!=0, b1=0, b2=0
+    {
+      beta=M_PI/2.0;
+      gamma=2.0*atan2(-a2,a1);
+      delta=-M_PI/2.0;
     }
-
-    if (fabs(a2) < EPSILON && fabs(b1) < EPSILON) {
-        delta = 0;
-        beta = -delta + 2.0 * atan2(-b2, a1);
-        gamma = 0;
+    else;
+    // ---------------------------------------------
+    if (fabs(a1)>EPS && fabs(a2)<EPS && fabs(b1)>EPS
+                     && fabs(b2)<EPS)       // a1!=0, a2=0, b1!=0, b2=0
+    {
+      beta=0;
+      gamma=2.0*atan2(-b1,a1);
+      delta=0;
     }
-
-    if (fabs(a1) < EPSILON && fabs(a2) > EPSILON && fabs(b1) < EPSILON && fabs(b2) > EPSILON) {
-        beta = M_PI;
-        gamma = 2.0 * atan2(-a2, -b2);
-        delta = 0;
+    else;
+    // ---------------------------------------------
+    if (fabs(a1)>EPS && fabs(a2)<EPS && fabs(b1)>EPS
+                     && fabs(b2)>EPS)       // a1!=0, a2=0, b1!=0, b2!=0
+    {
+      beta=atan(-b2/a1);
+      gamma=2.0*atan2(-b1,-b2/sin(beta));
+      delta=beta;
     }
-
-    if (fabs(a1) > EPSILON && fabs(a2) > EPSILON && fabs(b1) < EPSILON && fabs(b2) < EPSILON) {
-        beta = M_PI / 2.0;
-        gamma = 2.0 * atan2(-a2, a1);
-        delta = -M_PI / 2.0;
+    else;
+    // ---------------------------------------------
+    if (fabs(a1)>EPS && fabs(a2)>EPS && fabs(b1)>EPS
+                     && fabs(b2)>EPS)       // a1!=0, a2!=0, b1!=0, b2!=0
+    {
+      beta =atan(-b2/a1)+atan(a2/b1);
+      delta=atan(-b2/a1)-atan(a2/b1);
+      gamma=2.0*atan2(-a2/sin(beta/2.0-delta/2.0),
+                      a1/cos(beta/2.0+delta/2.0));
     }
-
-    if (fabs(a1) > EPSILON && fabs(a2) < EPSILON && fabs(b1) > EPSILON && fabs(b2) < EPSILON) {
-        beta = 0;
-        gamma = 2.0 * atan2(-b1, a1);
-        delta = 0;
+    else;
+    // ---------------------------------------------
+    if (fabs(a1)>EPS && fabs(a2)>EPS && fabs(b1)>EPS
+                     && fabs(b2)<EPS)       // a1!=0, a2!=0, b1!=0, b2=0
+    {
+      beta =atan(-b2/a1)+atan(a2/b1);
+      delta=atan(-b2/a1)-atan(a2/b1);
+      gamma=2.0*atan2(-a2/sin(beta/2.0-delta/2.0),
+                      a1/cos(beta/2.0+delta/2.0));
     }
-
-    if (fabs(a1) > EPSILON && fabs(a2) < EPSILON && fabs(b1) > EPSILON && fabs(b2) > EPSILON) {
-        beta = atan(-b2 / a1);
-        gamma = 2.0 * atan2(-b1, -b2 / sin(beta));
-        delta = beta;
+    else;
+    // ---------------------------------------------
+    if (fabs(a1)<EPS && fabs(a2)<EPS && fabs(b1)>EPS
+                     && fabs(b2)>EPS)       // a1=0, a2=0, b1!=0, b2!=0
+    {
+      beta=M_PI/2.0;
+      gamma=2.0*atan2(-b1,-b2);
+      delta=M_PI/2.0;
     }
-
-    if (fabs(a1) > EPSILON && fabs(a2) > EPSILON && fabs(b1) > EPSILON && fabs(b2) > EPSILON) {
-        beta = atan(-b2 / a1) + atan(a2 / b1);
-        delta = atan(-b2 / a1) - atan(a2 / b1);
-        gamma =
-            2.0 * atan2(-a2 / sin(beta / 2.0 - delta / 2.0), a1 / cos(beta / 2.0 + delta / 2.0));
+    else;
+    // ---------------------------------------------
+    if (fabs(a1)<EPS && fabs(a2)>EPS && fabs(b1)>EPS
+                     && fabs(b2)>EPS)       // a1=0, a2!=0, b1!=0, b2!=0
+    {
+      beta  = M_PI/2.0 + atan(a2/b1);
+      delta = M_PI-beta;
+      gamma = 2.0*atan2(-b1/cos(beta/2.0-delta/2.0),-b2);
     }
-
-    if (fabs(a1) > EPSILON && fabs(a2) > EPSILON && fabs(b1) > EPSILON && fabs(b2) < EPSILON) {
-        beta = atan(-b2 / a1) + atan(a2 / b1);
-        delta = atan(-b2 / a1) - atan(a2 / b1);
-        gamma =
-            2.0 * atan2(-a2 / sin(beta / 2.0 - delta / 2.0), a1 / cos(beta / 2.0 + delta / 2.0));
+    else;
+    // ---------------------------------------------
+    if (fabs(a1)>EPS && fabs(a2)>EPS && fabs(b1)<EPS
+                     && fabs(b2)>EPS)       // a1!=0, a2!=0, b1=0, b2!=0
+    {
+      beta  = M_PI/2.0 + atan(-b2/a1);
+      delta = -M_PI + beta;
+      gamma = 2.0*atan2(-a2, -b2/sin(beta/2.0+delta/2.0));
     }
+    else;
 
-    if (fabs(a1) < EPSILON && fabs(a2) < EPSILON && fabs(b1) > EPSILON && fabs(b2) > EPSILON) {
-        beta = M_PI / 2.0;
-        gamma = 2.0 * atan2(-b1, -b2);
-        delta = M_PI / 2.0;
-    }
-
-    if (fabs(a1) > EPSILON && fabs(a2) > EPSILON && fabs(b1) < EPSILON && fabs(b2) > EPSILON) {
-        beta = M_PI / 2.0 + atan(-b2 / a1);
-        delta = -M_PI + beta;
-        gamma = 2.0 * atan2(-a2, -b2 / sin(beta / 2.0 + delta / 2.0));
-    }
+    // clang-format on
 
     decomposition dec;
     dec.alpha = alpha;
@@ -427,10 +686,6 @@ decomposition Operator::xyDecomposition(UnitaryMatrix2x2 op) {
 decomposition Operator::xyDecomposition() { return xyDecomposition(_op); }
 
 decomposition Operator::zyxDecomposition(UnitaryMatrix2x2 op) {
-    //  Author  : Швецкий Михаил Владимирович
-    //  Original:
-    //  https://github.com/baseoleph/blochsphere/commit/7e3567036330e10d948873364cde38d51eb12897
-
     complex i = complex(0, 1);
     double  alpha = 0;
     double  beta = 0;
@@ -440,107 +695,157 @@ decomposition Operator::zyxDecomposition(UnitaryMatrix2x2 op) {
     complex b = op.b();
     complex c = op.c();
     complex d = op.d();
+    double EPS = EPSILON;
 
-    if (std::abs(d) > EPSILON) {
-        if (std::abs(complex(1, 0) + a / conj(d)) < EPSILON) {
-            alpha = M_PI / 2.0;
-        } else {
-            alpha = arg(a / conj(d)) / 2.0;
-        }
-    } else if (std::abs(c) > EPSILON) {
-        if (std::abs(complex(1, 0) - b / conj(c)) < EPSILON) {
-            alpha = M_PI / 2.0;
-        } else {
-            alpha = arg(-b / conj(c)) / 2.0;
-        }
-    }
+    //  Author  : Швецкий Михаил Владимирович
+    // clang-format off
 
-    complex A = (exp(-i * alpha) * (a + b) + exp(i * alpha) * (conj(c) + conj(d))) / 2.0;
-    complex B = (exp(-i * alpha) * (a + b) - exp(i * alpha) * (conj(c) + conj(d))) / 2.0;
-    double  a1 = real(A);
-    double  a2 = imag(A);
-    double  b1 = real(B);
-    double  b2 = imag(B);
-
-    if (fabs(a1 + b1) < EPSILON && fabs(a2 + b2) < EPSILON && fabs(a2 - b2) > EPSILON) {
-        gamma = M_PI / 2.0;
-        delta = 0;
-        if (a1 - b1 > 0) {
-            beta = delta + 2.0 * asin(-1.0 / sqrt(2.0) * (a2 - b2));
-        } else {
-            beta = 2.0 * M_PI - delta - 2.0 * asin(-1.0 / sqrt(2.0) * (a2 - b2));
-        }
-    } else {
-        if (fabs(a1 + b1) < EPSILON && fabs(a2 + b2) < EPSILON && fabs(a1 - b1) > EPSILON) {
-            gamma = M_PI / 2.0;
-            delta = 0;
-            if (-a2 + b2 > 0) {
-                beta = delta + 2.0 * acos(1.0 / sqrt(2.0) * (a1 - b1));
-            } else {
-                beta = delta - 2.0 * acos(1.0 / sqrt(2.0) * (a1 - b1));
+    // ***************************
+    // Вычисление Z-Y-X-разложения
+    // ---------------------------
+    // Вычисление угла alpha
+    // ---------------------
+    if (abs(d) > EPS)
+      if (abs(complex(1) + a / conj(d)) < EPS)
+        alpha = M_PI / 2.0;
+      else
+        alpha = arg(a / conj(d)) / 2.0;
+    else if (abs(c) > EPS)
+      if (abs(complex(1) - b / conj(c)) < EPS)
+        alpha = M_PI / 2.0;
+      else
+        alpha = arg(-b / conj(c)) / 2.0;
+    // -----------------------------------
+    complex A, B;
+    A = (exp(-i * alpha) * (a + b) + exp(i * alpha) * (conj(c) + conj(d))) / 2.0;
+    B = (exp(-i * alpha) * (a + b) - exp(i * alpha) * (conj(c) + conj(d))) / 2.0;
+    // ----------------------------------------------
+    double a1, a2, b1, b2;
+    a1 = real(A);
+    a2 = imag(A);
+    b1 = real(B);
+    b2 = imag(B);
+    // -----------------------------------------------------
+    // Определение (полезных!) вспомогательных переменных...
+    // -----------------------------------------------------
+    double u1, u2, u3, u4;
+    u1 = a1 + b1;
+    u2 = a1 - b1;
+    u3 = a2 + b2;
+    u4 = a2 - b2;
+    // ---------------------------------------------
+    if (fabs(u1) < EPS && fabs(u3) < EPS && fabs(u2) > EPS) {
+      gamma = M_PI / 2.0;
+      delta = 0; // delta - любое из R
+      if (-u4 > 0)
+        beta = delta + 2.0 * acos(1.0 / sqrt(2.0) * u2); // (!)
+      else
+        beta = delta - 2.0 * acos(1.0 / sqrt(2.0) * u2); // (!)
+    } else if (fabs(u1) < EPS && fabs(u3) < EPS && fabs(u4) > EPS) {
+      gamma = M_PI / 2.0;
+      delta = 0; // delta - любое из R
+      beta = delta + 2.0 * atan2(-1.0 / sqrt(2.0) * u4, u2);
+      /*
+       if (u2>0)
+         beta = delta + 2.0*asin(-1.0/sqrt(2.0)*u4);
+       else beta = 2.0*M_PI - (delta + 2.0*asin(-1.0/sqrt(2.0)*u4));
+      */
+    } else
+      ;
+    // ----------------------------------------------
+    if (fabs(u4) < EPS && fabs(u2) < EPS && fabs(u1) > EPS) {
+      gamma = -M_PI / 2; // или gamma=3*M_PI/2;
+      delta = 0;         // delta - любое из R
+      beta = -delta - 2.0 * atan(u3 / u1);
+    } else if (fabs(u4) < EPS && fabs(u2) < EPS && fabs(u3) > EPS) {
+      gamma = -M_PI / 2.0;
+      delta = M_PI; // delta - любое из R
+      beta = 2.0 * atan(u1 / u3);
+    } else
+      ;
+    // -----------------------------
+    if (fabs(u1) < EPS && fabs(u4) > EPS && fabs(u2) < EPS && fabs(u3) > EPS) {
+      beta = M_PI;
+      delta = 0;
+      gamma = 2.0 * atan2((-u4 + u3) / 2.0, -(u3 + u4) / 2.0);
+      /*
+       if (-(u3+u4)/2.0>0 || fabs((u3+u4)/2.0)<EPS)
+         gamma=2.0*asin((-u4+u3)/2.0);
+       else gamma=2.0*M_PI-2.0*asin((-u4+u3)/2.0);
+      */
+    } else
+      ;
+    // -----------------------------
+    if (fabs(u1) > EPS && fabs(u4) > EPS && fabs(u2) < EPS && fabs(u3) < EPS) {
+      beta = M_PI / 2.0;
+      delta = -M_PI / 2.0;
+      gamma = 2.0 * atan2(-(u1 + u4) / 2.0, (u1 - u4) / 2.0);
+      /*
+       if (u1>0)
+         gamma = -M_PI/2.0 + 2*asin(sqrt(2.0)/2.0*(-u4));
+       else gamma = 2.0*M_PI
+                      -(-M_PI/2.0 + 2*asin(sqrt(2.0)/2.0*(-u4)));
+       // -----------------------------------
+       // Другой способ вычисления угла gamma
+       // -----------------------------------
+       if (u1-u4>0)
+         gamma = 2.0*asin(-(u1+u4)/2.0);
+       else gamma = 2.0*M_PI - 2.0*asin(-(u1+u4)/2.0);
+      */
+    } else
+      ;
+    // ---------------------------------------------
+    if (fabs(u1) > EPS && fabs(u4) < EPS && fabs(u2) > EPS && fabs(u3) < EPS) {
+      beta = 0;
+      delta = 0;
+      // ---------------------------------------------
+      // Решение системы тригонометрических уравнений:
+      //  sin(gamma/2)=(u2-u1)/2;
+      //  cos(gamma/2)=(u2+u1)/2;
+      // -----------------------------------------
+      gamma = 2.0 * atan2((u2 - u1) / 2.0, (u1 + u2) / 2.0);
+      /*
+       if ((u1+u2)/2.0>0 || fabs((u1+u2)/2.0)<EPS)
+         gamma = 2.0*asin((u2-u1)/2.0);
+       else gamma = 2.0*M_PI - 2.0*asin((u2-u1)/2.0);
+      */
+    } else
+      ;
+    // ----------------------------------------------
+    if (fabs(u1) > EPS && fabs(u2) > EPS && fabs(u3) > EPS)
+    // && fabs(u4)>EPS)
+    {
+      beta = -atan(u3 / u1) - atan(u4 / u2);
+      delta = -atan(u3 / u1) + atan(u4 / u2);
+      gamma = M_PI / 2.0 +
+              2.0 * atan2(sqrt(2.0) / 2.0 * u3 / sin(beta / 2 + delta / 2),
+                          sqrt(2.0) / 2.0 * u2 / cos(beta / 2 - delta / 2));
+      /*
+       if (sqrt(2.0)/2.0 * u2 / cos(beta/2.0-delta/2.0) > 0)
+         gamma=M_PI/2.0 + 2.0*asin(sqrt(2.0)/2.0*
+                             u3 / sin(beta/2.0+delta/2.0));
+       else {
+              gamma=M_PI/2.0
+                    - 2.0*asin(sqrt(2.0)/2.0 * u3/sin(beta/2.0+delta/2.0));
+              alpha=alpha+M_PI;
             }
-        }
-    }
+       */
+    } else
+      ;
+    // -----------------------------
+    if (fabs(u1) < EPS && fabs(u4) < EPS && fabs(u2) > EPS && fabs(u3) > EPS) {
+      beta = M_PI / 2.0;
+      delta = M_PI / 2.0;
+      gamma = 2.0 * atan2((u2 + u3) / 2.0, (u2 - u3) / 2.0);
+      /*
+       if (u2-u3>0)
+         gamma = 2.0*asin((u2+u3)/2.0);
+       else gamma = 2.0*M_PI - 2.0*asin((u2+u3)/2.0);
+      */
+    } else
+      ;
 
-    if (fabs(a2 - b2) < EPSILON && fabs(a1 - b1) < EPSILON) {
-        if (std::abs(a1 + b1) > EPSILON) {
-            gamma = -M_PI / 2;
-            delta = 0;
-            beta = -delta - 2.0 * atan((a2 + b2) / (a1 + b1));
-        } else if (fabs(a2 + b2) > EPSILON) {
-            gamma = -M_PI / 2.0;
-            delta = M_PI;
-            beta = 2.0 * atan((a1 + b1) / (a2 + b2));
-        }
-    }
-
-    if (fabs(a1 + b1) < EPSILON && fabs(a2 - b2) > EPSILON && fabs(a1 - b1) < EPSILON &&
-        fabs(a2 + b2) > EPSILON) {
-        beta = M_PI;
-        delta = 0;
-        if (-a2 > 0 || fabs(a2) < EPSILON) {
-            gamma = 2.0 * asin(b2);
-        } else {
-            gamma = 2.0 * M_PI - 2.0 * asin(b2);
-        }
-    }
-
-    if (fabs(a1 + b1) > EPSILON && fabs(a2 - b2) > EPSILON && fabs(a1 - b1) < EPSILON &&
-        fabs(a2 + b2) < EPSILON) {
-        beta = M_PI / 2.0;
-        delta = -M_PI / 2.0;
-        if (a1 + b1 > 0) {
-            gamma = -M_PI / 2.0 + 2 * asin(sqrt(2.0) / 2.0 * (-a2 + b2));
-        } else {
-            gamma = 2.0 * M_PI - (-M_PI / 2.0 + 2 * asin(sqrt(2.0) / 2.0 * (-a2 + b2)));
-        }
-    }
-
-    if (fabs(a1 + b1) > EPSILON && fabs(a2 - b2) < EPSILON && fabs(a1 - b1) > EPSILON &&
-        fabs(a2 + b2) < EPSILON) {
-        beta = 0;
-        delta = 0;
-
-        if (a1 > 0 || fabs(a1) < EPSILON) {
-            gamma = 2.0 * asin(-b1);
-        } else {
-            gamma = 2.0 * M_PI - 2.0 * asin(-b1);
-        }
-    }
-
-    if (fabs(a1 + b1) > EPSILON && fabs(a1 - b1) > EPSILON && fabs(a2 + b2) > EPSILON) {
-        beta = -atan((a2 + b2) / (a1 + b1)) - atan((a2 - b2) / (a1 - b1));
-        delta = -atan((a2 + b2) / (a1 + b1)) + atan((a2 - b2) / (a1 - b1));
-
-        if (sqrt(2.0) / 2.0 * (a1 - b1) / cos(beta / 2.0 - delta / 2.0) > 0) {
-            gamma = M_PI / 2.0 +
-                    2.0 * asin(sqrt(2.0) / 2.0 * (a2 + b2) / sin(beta / 2.0 + delta / 2.0));
-        } else {
-            gamma = M_PI / 2.0 -
-                    2.0 * asin(sqrt(2.0) / 2.0 * (a2 + b2) / sin(beta / 2.0 + delta / 2.0));
-            alpha = alpha + M_PI;
-        }
-    }
+    // clang-format on
 
     decomposition dec;
     dec.alpha = alpha;
