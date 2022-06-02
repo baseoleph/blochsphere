@@ -976,21 +976,7 @@ void MainWindow::slotAbout() {
         "Kadochnikov (Денис Кадочников)</p>\n"
         "<p class=\"has-line-data\" data-line-start=\"8\" data-line-end=\"9\">Decomposition "
         "algorithms by M.V. Shvetskiy (Михаил Владимирович Швецкий) <a "
-        "href=\"mailto:audit269@gmail.com\">audit269@gmail.com</a>:</p>\n"
-        "<ul>\n"
-        "<li class=\"has-line-data\" data-line-start=\"9\" data-line-end=\"10\"><a "
-        "href=\"https://github.com/baseoleph/blochsphere/commit/"
-        "690dca3e8dcc32e4b4eed0fcfc65c5bdf8dd06b0\">Z-Y</a></li>\n"
-        "<li class=\"has-line-data\" data-line-start=\"10\" data-line-end=\"11\"><a "
-        "href=\"https://github.com/baseoleph/blochsphere/commit/"
-        "ff22dd04382d02a839c56f27a80ad18064eb6595\">Z-X</a></li>\n"
-        "<li class=\"has-line-data\" data-line-start=\"11\" data-line-end=\"12\"><a "
-        "href=\"https://github.com/baseoleph/blochsphere/commit/"
-        "cdc00f14787f28de44d8ae0ee1582ebaa82aba0e\">X-Y</a></li>\n"
-        "<li class=\"has-line-data\" data-line-start=\"12\" data-line-end=\"13\"><a "
-        "href=\"https://github.com/baseoleph/blochsphere/commit/"
-        "7e3567036330e10d948873364cde38d51eb12897\">Z-Y-X</a></li>\n"
-        "</ul>";
+        "href=\"mailto:audit269@gmail.com\">audit269@gmail.com</a>.</p>\n";
 
     QMessageBox::about(this, "blochsphere", aboutText);
     if (++easterEggCounter > 2) {
