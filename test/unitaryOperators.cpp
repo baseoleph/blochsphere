@@ -532,10 +532,10 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
 
     // 46
     {
-        a=complex(3.0/4.0, sqrt(3.0)/4.0);
-        b=complex(1.0/4.0,-sqrt(3.0)/4.0);
-        c=complex(1.0/4.0,-sqrt(3.0)/4.0);
-        d=complex(3.0/4.0, sqrt(3.0)/4.0);
+        a = complex(3.0 / 4.0, sqrt(3.0) / 4.0);
+        b = complex(1.0 / 4.0, -sqrt(3.0) / 4.0);
+        c = complex(1.0 / 4.0, -sqrt(3.0) / 4.0);
+        d = complex(3.0 / 4.0, sqrt(3.0) / 4.0);
         EXPECT_TRUE(op.updateMatrix({a, b, c, d})) << "Not Unitary!";
         ops.append(op);
     }
@@ -566,6 +566,18 @@ QVector<UnitaryMatrix2x2> unitaryOperators2x2() {
         b = -i * sqrt(1.0 / 2.0);
         c = -i * sqrt(1.0 / 2.0);
         d = -i * sqrt(1.0 / 2.0);
+        EXPECT_TRUE(op.updateMatrix({a, b, c, d})) << "Not Unitary!";
+        ops.append(op);
+    }
+
+    // 50
+    {
+        double e = sqrt(3.0 / 8);
+        double r = 0.5;
+        a = e;
+        b = e + i * r;
+        c = -e + i * r;
+        d = e;
         EXPECT_TRUE(op.updateMatrix({a, b, c, d})) << "Not Unitary!";
         ops.append(op);
     }
