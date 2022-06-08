@@ -705,145 +705,141 @@ decomposition Operator::zyxDecomposition(UnitaryMatrix2x2 op) {
     // ---------------------------
     // Вычисление угла alpha
     // ---------------------
-    if (abs(d) > EPS)
-      if (abs(complex(1) + a / conj(d)) < EPS)
-        alpha = M_PI / 2.0;
-      else
-        alpha = arg(a / conj(d)) / 2.0;
-    else if (abs(c) > EPS)
-      if (abs(complex(1) - b / conj(c)) < EPS)
-        alpha = M_PI / 2.0;
-      else
-        alpha = arg(-b / conj(c)) / 2.0;
+    if (abs(d)>EPS)
+    if (abs(complex(1)+a/conj(d))<EPS)
+    alpha=M_PI/2.0;
+    else alpha=arg(a/conj(d))/2.0;
+    else if (abs(c)>EPS)
+     if (abs(complex(1)-b/conj(c))<EPS)
+            alpha=M_PI/2.0;
+     else alpha=arg(-b/conj(c))/2.0;
     // -----------------------------------
-    complex A, B;
-    A = (exp(-i * alpha) * (a + b) + exp(i * alpha) * (conj(c) + conj(d))) / 2.0;
-    B = (exp(-i * alpha) * (a + b) - exp(i * alpha) * (conj(c) + conj(d))) / 2.0;
+    complex A,B;
+    A=(exp(-i*alpha)*(a+b) + exp(i*alpha)*(conj(c)+conj(d)))/2.0;
+    B=(exp(-i*alpha)*(a+b) - exp(i*alpha)*(conj(c)+conj(d)))/2.0;
     // ----------------------------------------------
     double a1, a2, b1, b2;
-    a1 = real(A);
-    a2 = imag(A);
-    b1 = real(B);
-    b2 = imag(B);
+    a1=real(A); a2=imag(A); b1=real(B); b2=imag(B);
     // -----------------------------------------------------
     // Определение (полезных!) вспомогательных переменных...
     // -----------------------------------------------------
     double u1, u2, u3, u4;
-    u1 = a1 + b1;
-    u2 = a1 - b1;
-    u3 = a2 + b2;
-    u4 = a2 - b2;
+    u1=a1+b1; u2=a1-b1; u3=a2+b2; u4=a2-b2;
     // ---------------------------------------------
-    if (fabs(u1) < EPS && fabs(u3) < EPS && fabs(u2) > EPS) {
-      gamma = M_PI / 2.0;
-      delta = 0; // delta - любое из R
-      if (-u4 > 0)
-        beta = delta + 2.0 * acos(1.0 / sqrt(2.0) * u2); // (!)
-      else
-        beta = delta - 2.0 * acos(1.0 / sqrt(2.0) * u2); // (!)
-    } else if (fabs(u1) < EPS && fabs(u3) < EPS && fabs(u4) > EPS) {
-      gamma = M_PI / 2.0;
-      delta = 0; // delta - любое из R
-      beta = delta + 2.0 * atan2(-1.0 / sqrt(2.0) * u4, u2);
-      /*
-       if (u2>0)
-         beta = delta + 2.0*asin(-1.0/sqrt(2.0)*u4);
-       else beta = 2.0*M_PI - (delta + 2.0*asin(-1.0/sqrt(2.0)*u4));
-      */
-    } else
-      ;
-    // ----------------------------------------------
-    if (fabs(u4) < EPS && fabs(u2) < EPS && fabs(u1) > EPS) {
-      gamma = -M_PI / 2; // или gamma=3*M_PI/2;
-      delta = 0;         // delta - любое из R
-      beta = -delta - 2.0 * atan(u3 / u1);
-    } else if (fabs(u4) < EPS && fabs(u2) < EPS && fabs(u3) > EPS) {
-      gamma = -M_PI / 2.0;
-      delta = M_PI; // delta - любое из R
-      beta = 2.0 * atan(u1 / u3);
-    } else
-      ;
-    // -----------------------------
-    if (fabs(u1) < EPS && fabs(u4) > EPS && fabs(u2) < EPS && fabs(u3) > EPS) {
-      beta = M_PI;
-      delta = 0;
-      gamma = 2.0 * atan2((-u4 + u3) / 2.0, -(u3 + u4) / 2.0);
-      /*
-       if (-(u3+u4)/2.0>0 || fabs((u3+u4)/2.0)<EPS)
-         gamma=2.0*asin((-u4+u3)/2.0);
-       else gamma=2.0*M_PI-2.0*asin((-u4+u3)/2.0);
-      */
-    } else
-      ;
-    // -----------------------------
-    if (fabs(u1) > EPS && fabs(u4) > EPS && fabs(u2) < EPS && fabs(u3) < EPS) {
-      beta = M_PI / 2.0;
-      delta = -M_PI / 2.0;
-      gamma = 2.0 * atan2(-(u1 + u4) / 2.0, (u1 - u4) / 2.0);
-      /*
-       if (u1>0)
-         gamma = -M_PI/2.0 + 2*asin(sqrt(2.0)/2.0*(-u4));
-       else gamma = 2.0*M_PI
-                      -(-M_PI/2.0 + 2*asin(sqrt(2.0)/2.0*(-u4)));
-       // -----------------------------------
-       // Другой способ вычисления угла gamma
-       // -----------------------------------
-       if (u1-u4>0)
-         gamma = 2.0*asin(-(u1+u4)/2.0);
-       else gamma = 2.0*M_PI - 2.0*asin(-(u1+u4)/2.0);
-      */
-    } else
-      ;
-    // ---------------------------------------------
-    if (fabs(u1) > EPS && fabs(u4) < EPS && fabs(u2) > EPS && fabs(u3) < EPS) {
-      beta = 0;
-      delta = 0;
-      // ---------------------------------------------
-      // Решение системы тригонометрических уравнений:
-      //  sin(gamma/2)=(u2-u1)/2;
-      //  cos(gamma/2)=(u2+u1)/2;
-      // -----------------------------------------
-      gamma = 2.0 * atan2((u2 - u1) / 2.0, (u1 + u2) / 2.0);
-      /*
-       if ((u1+u2)/2.0>0 || fabs((u1+u2)/2.0)<EPS)
-         gamma = 2.0*asin((u2-u1)/2.0);
-       else gamma = 2.0*M_PI - 2.0*asin((u2-u1)/2.0);
-      */
-    } else
-      ;
-    // ----------------------------------------------
-    if (fabs(u1) > EPS && fabs(u2) > EPS && fabs(u3) > EPS)
-    // && fabs(u4)>EPS)
+    if (fabs(u1)<EPS && fabs(u3)<EPS && fabs(u2)>EPS)
     {
-      beta = -atan(u3 / u1) - atan(u4 / u2);
-      delta = -atan(u3 / u1) + atan(u4 / u2);
-      gamma = M_PI / 2.0 +
-              2.0 * atan2(sqrt(2.0) / 2.0 * u3 / sin(beta / 2 + delta / 2),
-                          sqrt(2.0) / 2.0 * u2 / cos(beta / 2 - delta / 2));
-      /*
-       if (sqrt(2.0)/2.0 * u2 / cos(beta/2.0-delta/2.0) > 0)
-         gamma=M_PI/2.0 + 2.0*asin(sqrt(2.0)/2.0*
-                             u3 / sin(beta/2.0+delta/2.0));
-       else {
-              gamma=M_PI/2.0
-                    - 2.0*asin(sqrt(2.0)/2.0 * u3/sin(beta/2.0+delta/2.0));
-              alpha=alpha+M_PI;
-            }
-       */
-    } else
-      ;
+    gamma=M_PI/2.0;
+    delta=0;       // delta - любое из R
+    if (-u4>0)
+    beta=delta + 2.0*acos(1.0/sqrt(2.0)*u2);     // (!)
+    else beta=delta - 2.0*acos(1.0/sqrt(2.0)*u2);  // (!)
+    }
+    else if (fabs(u1)<EPS && fabs(u3)<EPS && fabs(u4)>EPS)
+    {
+     gamma=M_PI/2.0;
+     delta=0;                // delta - любое из R
+     beta=delta - M_PI + 2.0*atan2(1.0/sqrt(2.0)*u2,
+                                   1.0/sqrt(2.0)*u4);
+    }
+    else;
+    // ----------------------------------------------
+    if (fabs(u4)<EPS && fabs(u2)<EPS && fabs(u1)>EPS)
+    {
+    gamma=-M_PI/2;                // или gamma=3*M_PI/2;
+    delta=0;                      // delta - любое из R
+    beta=-delta + 2.0*atan2(-1.0/sqrt(2.0)*u3,
+                         1.0/sqrt(2.0)*u1);
+    }
+    else if (fabs(u4)<EPS && fabs(u2)<EPS && fabs(u3)>EPS)
+    {
+     gamma=-M_PI/2.0;
+     delta=0;           // delta - любое из R
+     beta=-delta-M_PI+2.0*atan2(1.0/sqrt(2.0)*u1,
+                                1.0/sqrt(2.0)*u3);
+    }
+    else;
     // -----------------------------
-    if (fabs(u1) < EPS && fabs(u4) < EPS && fabs(u2) > EPS && fabs(u3) > EPS) {
-      beta = M_PI / 2.0;
-      delta = M_PI / 2.0;
-      gamma = 2.0 * atan2((u2 + u3) / 2.0, (u2 - u3) / 2.0);
-      /*
-       if (u2-u3>0)
-         gamma = 2.0*asin((u2+u3)/2.0);
-       else gamma = 2.0*M_PI - 2.0*asin((u2+u3)/2.0);
-      */
-    } else
-      ;
+    if (fabs(u1)<EPS && fabs(u4)>EPS
+               && fabs(u2)<EPS && fabs(u3)>EPS)
+    {
+    beta=M_PI;
+    delta=0;
+    gamma = 2.0*atan2((u3-u4)/2.0,-(u3+u4)/2.0);
+    }
+    else;
+    // -----------------------------
+    if (fabs(u1)>EPS && fabs(u4)>EPS
+               && fabs(u2)<EPS && fabs(u3)<EPS)
+    {
+    beta = M_PI/2.0;
+    delta=-M_PI/2.0;
+    gamma = 2.0*atan2(-(u1+u4)/2.0, (u1-u4)/2.0);
+    }
+    else;
+    // ---------------------------------------------
+    if (fabs(u1)>EPS && fabs(u4)<EPS && fabs(u2)>EPS
+               && fabs(u3)<EPS)
+    {
+    beta=0;
+    delta=0;
+    // ---------------------------------------------
+    // Решение системы тригонометрических уравнений:
+    //  sin(gamma/2)=(u2-u1)/2;
+    //  cos(gamma/2)=(u2+u1)/2;
+    // -----------------------------------------
+    gamma = 2.0*atan2((u2-u1)/2.0, (u2+u1)/2.0);
+    }
+    else;
+    // ----------------------------------------------
+    if (fabs(u1)>EPS && fabs(u2)>EPS && fabs(u3)>EPS)
+                            // && fabs(u4)>EPS)
+    {
+    beta =-atan(u3/u1)-atan(u4/u2);
+    delta=-atan(u3/u1)+atan(u4/u2);
+    gamma = M_PI/2.0
+          + 2.0 * atan2(sqrt(2.0)/2.0 * u3/sin(beta/2+delta/2),
+                        sqrt(2.0)/2.0 * u2/cos(beta/2-delta/2));
+    }
+    else;
+    // -----------------------------
+    if (fabs(u1)<EPS && fabs(u4)<EPS
+               && fabs(u2)>EPS && fabs(u3)>EPS)
+    {
+    beta = M_PI/2.0;
+    delta= M_PI/2.0;
+    gamma= 2.0*atan2((u2+u3)/2.0, (u2-u3)/2.0);
+    }
+    else;
+    // -----------------------------
+    if (fabs(u1)<EPS && fabs(u4)>EPS
+               && fabs(u2)>EPS && fabs(u3)>EPS)
+    {
+    beta = M_PI/2.0 - atan(u4/u2);
+    delta= M_PI/2.0 + atan(u4/u2);
+    gamma=2.0*atan2(( u3 + u2/cos(beta/2.0-delta/2.0))/2.0,
+                (-u3 + u2/cos(beta/2.0-delta/2.0))/2.0);
+    }
+    else;
+    // -----------------------------
+    if (fabs(u1)>EPS && fabs(u4)>EPS
+               && fabs(u2)<EPS && fabs(u3)>EPS)
+    {
+    beta =M_PI/2.0 + atan(-u3/u1);
+    delta=-M_PI+beta;
+    gamma=2.0*atan2((-u1/cos(beta/2.0+delta/2.0)-u4)/2.0,
+                ( u1/cos(beta/2.0+delta/2.0)-u4)/2.0);
+    }
+    else;
+    // -----------------------------
+    if (fabs(u1)>EPS && fabs(u4)>EPS
+               && fabs(u2)>EPS && fabs(u3)<EPS)
+    {
+    beta =-atan(u4/u2);
+    delta=-beta;
+    gamma=2.0*atan2((-u4/sin(beta/2.0-delta/2.0)-u1)/2.0,
+                (-u4/sin(beta/2.0-delta/2.0)+u1)/2.0);
+    }
+    else;
 
     // clang-format on
 
